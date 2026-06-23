@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>더나음 — 관리자</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#0F6E56;--pl:#1D9E75;--pb:#E1F5EE;--pd:#085041;--bg:#F5F5F2;--card:#fff;--border:#E0E0DD;--t:#1A1A1A;--t2:#6B6B6B;--t3:#9B9B9B;--red:#D85A30}
+body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);max-width:600px;margin:0 auto;min-height:100vh;-webkit-font-smoothing:antialiased}
+.topbar{background:var(--pd);color:white;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-title{font-size:16px;font-weight:700}
+.topbar-sub{font-size:11px;opacity:.7}
+.wrap{padding:20px}
+/* TABS */
+.tabs{display:flex;gap:0;background:var(--card);border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:9px;color:var(--t3)}
+.tab.on{background:var(--pd);color:white}
+/* CASE LIST */
+.case-item{background:var(--card);border-radius:14px;padding:16px;margin-bottom:10px;border:.5px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+.case-item:active{transform:scale(.99)}
+.case-num{width:36px;height:36px;border-radius:50%;background:var(--pb);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.case-info{flex:1;min-width:0}
+.case-title{font-size:14px;font-weight:600;margin-bottom:3px}
+.case-meta{font-size:11px;color:var(--t3);display:flex;gap:8px}
+.case-tag{background:var(--pb);color:var(--primary);padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600}
+.case-arrow{color:var(--t3);font-size:18px}
+.mini-btn{border:0;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--pb);color:var(--primary)}
+.mini-btn.del{background:#FDECEC;color:#D64545}
+.mini-btn:active{transform:scale(.95)}
+.add-btn{width:100%;padding:14px;border-radius:14px;background:var(--pl);color:white;border:0;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.add-btn:active{transform:scale(.98)}
+/* FORM */
+.form-wrap{background:var(--card);border-radius:16px;padding:20px;margin-bottom:16px;border:.5px solid var(--border)}
+.form-title{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--pd);display:flex;align-items:center;gap:8px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field textarea,.field select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:inherit;background:#FAFAF8;color:var(--t)}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--pl);background:white}
+.field textarea{min-height:80px;resize:vertical;line-height:1.6}
+.field-hint{font-size:11px;color:var(--t3);margin-top:4px}
+/* TAGS */
+.tag-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:32px}
+.tag-item{display:flex;align-items:center;gap:4px;background:var(--pb);color:var(--primary);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.tag-rm{background:none;border:0;color:var(--primary);cursor:pointer;font-size:14px;line-height:1;padding:0 2px}
+.tag-input-row{display:flex;gap:8px}
+.tag-inp{flex:1;padding:10px 14px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-family:inherit}
+.tag-inp:focus{outline:none;border-color:var(--pl)}
+.tag-add-btn{padding:10px 16px;border-radius:10px;background:var(--pb);color:var(--primary);border:0;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+/* SECTION DIVIDER */
+.sec-divider{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 12px;padding-bottom:6px;border-bottom:.5px solid var(--border)}
+/* BTNS */
+.btn-row{display:flex;gap:8px;margin-top:16px}
+.btn-save{flex:1;padding:14px;border-radius:12px;background:var(--pl);color:white;border:0;font-size:15px;font-weight:600;cursor:pointer}
+.btn-del{padding:14px 20px;border-radius:12px;background:#FFF0ED;color:var(--red);border:0;font-size:14px;font-weight:600;cursor:pointer}
+.btn-cancel{flex:1;padding:14px;border-radius:12px;background:var(--bg);color:var(--t2);border:1px solid var(--border);font-size:14px;font-weight:600;cursor:pointer}
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:14px;line-height:1.7}
+/* TOAST */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(0,0,0,.85);color:white;padding:11px 18px;border-radius:999px;font-size:13px;z-index:1000;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+/* VIDEO PREVIEW */
+.vid-preview{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;margin-top:8px;position:relative}
+.vid-preview video{width:100%;height:100%;object-fit:cover}
+.vid-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px;background:var(--bg)}
+/* STATUS */
+.status-badge{font-size:11px;padding:3px 8px;border-radius:999px;font-weight:600}
+.status-live{background:#E8F5E9;color:#2E7D32}
+.status-draft{background:var(--bg);color:var(--t3)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">더나음 관리자</div>
+    <div class="topbar-sub">케이스 · 제품 관리</div>
+  </div>
+  <div style="font-size:11px;opacity:.7">deonaeum-abcab</div>
+</div>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('cases',this)">케이스</button>
+    <button class="tab" onclick="switchTab('products',this)">제품</button>
+    <button class="tab" onclick="switchTab('notices',this)">더나음 소식</button>
+    <button class="tab" onclick="switchTab('lounge',this)">약사 라운지</button>
+  </div>
+
+  <!-- 케이스 탭 -->
+  <div id="casesTab">
+    <button class="add-btn" onclick="openCaseForm()">＋ 새 케이스 추가</button>
+    <div id="caseList"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <!-- 제품 탭 -->
+  <div id="productsTab" style="display:none">
+    <div class="form-wrap">
+      <div class="form-title">📊 엑셀로 제품 업로드</div>
+      <div class="field">
+        <label>엑셀 파일 선택</label>
+        <input type="file" id="xlsxFile" accept=".xlsx,.xls" onchange="handleXlsx(this)" style="padding:10px;background:var(--bg);border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;width:100%">
+        <div class="field-hint">더나음 제품 양식 파일 업로드 (회사명·제품명·분류·대표성분1·대표성분2·대표성분3·상세성분·용법용량 8열)</div>
+      </div>
+      <div id="xlsxPreview" style="display:none">
+        <div class="sec-divider">미리보기 (<span id="previewCount">0</span>개 제품)</div>
+        <div id="previewList" style="max-height:300px;overflow-y:auto;margin-bottom:14px"></div>
+        <button class="btn-save" style="width:100%" onclick="uploadProducts()">🚀 Firebase에 저장</button>
+      </div>
+    </div>
+    <div class="sec-divider" style="margin-top:8px">현재 등록된 제품 (<span id="prodCount">0</span>개)</div>
+    <div id="prodListWrap"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <!-- 더나음 소식 탭 -->
+  <div id="noticesTab" style="display:none">
+    <div class="form-wrap">
+      <div class="form-title">📢 더나음 소식 작성</div>
+      <div class="field"><label>제목</label><input id="nTitle" placeholder="소식 제목"></div>
+      <div class="field"><label>내용</label><textarea id="nBody" placeholder="내용을 입력하세요"></textarea></div>
+      <div class="field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="nPin" style="width:auto"> 상단 고정</label></div>
+      <input type="hidden" id="nEditId">
+      <button class="btn-save" style="width:100%" onclick="saveNotice()">저장</button>
+    </div>
+    <div class="sec-divider" style="margin-top:8px">등록된 소식</div>
+    <div id="noticeAdminList"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <!-- 약사 라운지 관리 탭 -->
+  <div id="loungeTab" style="display:none">
+    <div class="form-title" style="margin:4px 0 12px">💬 약사 라운지 글 관리 <span style="font-size:12px;font-weight:400;color:#888">· 부적절 글 삭제</span></div>
+    <div id="postAdminList"><div class="empty">로딩 중...</div></div>
+  </div>
+</div>
+
+<!-- 케이스 폼 -->
+<div id="caseFormWrap" style="display:none">
+  <div class="wrap">
+    <div class="form-wrap">
+      <div class="form-title">
+        <span id="formTitleText">새 케이스</span>
+        <span id="formCaseNum" style="font-size:12px;color:var(--t3);font-weight:400"></span>
+      </div>
+
+      <div class="field">
+        <label>케이스 제목</label>
+        <input id="fTitle" placeholder="예: 60대 여성 · 눈 피로 + 무릎 통증">
+      </div>
+
+      <div class="field">
+        <label>태그</label>
+        <div class="tag-wrap" id="tagWrap"></div>
+        <div class="tag-input-row">
+          <input class="tag-inp" id="tagInput" placeholder="#눈건강  #관절  #피로..." onkeydown="handleTagKey(event)">
+          <button class="tag-add-btn" onclick="addTag()">추가</button>
+        </div>
+        <div class="field-hint">입력 후 추가 버튼 또는 Enter</div>
+      </div>
+
+      <div class="field">
+        <label>영상</label>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input type="file" id="fVideoFile" accept="video/*" style="display:none" onchange="uploadVideo(this)">
+          <button onclick="document.getElementById('fVideoFile').click()" style="padding:10px 16px;border-radius:10px;background:var(--pd);color:white;border:0;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">📁 파일 선택</button>
+          <div id="uploadProgress" style="flex:1;display:flex;align-items:center;font-size:12px;color:var(--t2)">또는 URL 직접 입력</div>
+        </div>
+        <input id="fVideo" placeholder="https://firebasestorage.googleapis.com/..." oninput="previewVideo()">
+        <div class="field-hint">파일 선택 시 Firebase Storage에 자동 업로드돼요</div>
+</div>
+        <div class="vid-preview" id="vidPreview">
+          <div class="vid-placeholder">영상 URL을 입력하면 미리보기가 표시돼요</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>환자 썸네일 이모지</label>
+        <input id="fEmoji" placeholder="👩‍🦳" style="width:80px">
+        <div class="field-hint">케이스 카드에 표시되는 이모지</div>
+      </div>
+
+
+
+      <div class="btn-row">
+        <button class="btn-cancel" onclick="closeForm()">취소</button>
+        <button class="btn-save" onclick="saveCase()">저장</button>
+        <button class="btn-del" id="delBtn" onclick="deleteCase()" style="display:none">삭제</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+const cfg={apiKey:"AIzaSyDB_PFZnR_eNp9rH4Pd9avnLNDef6DlUQ8",authDomain:"deonaeum-abcab.firebaseapp.com",projectId:"deonaeum-abcab",storageBucket:"deonaeum-abcab.firebasestorage.app",messagingSenderId:"660777673752",appId:"1:660777673752:web:48d7475f16f71a2b1bcf6d"};
+firebase.initializeApp(cfg);
+const db = firebase.firestore();
+
+// Firebase 함수 전역 노출
+window._db = db;
+window._fbReady = true;
+
+// 케이스 로드
+loadCases();
+</script>
+
+<script>
+let cases = [];
+let tags = [];
+let editingId = null;
+
+/* ── TAB ── */
+function switchTab(t, btn) {
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('casesTab').style.display = t==='cases'?'block':'none';
+  document.getElementById('productsTab').style.display = t==='products'?'block':'none';
+  document.getElementById('noticesTab').style.display = t==='notices'?'block':'none';
+  document.getElementById('loungeTab').style.display = t==='lounge'?'block':'none';
+}
+
+/* ── LOAD CASES ── */
+async function loadCases() {
+  const list = document.getElementById('caseList');
+  try {
+    const snap = await window._db.collection('cases').get();
+    cases = [];
+    snap.forEach(d => cases.push({id:d.id, ...d.data()}));
+    cases.sort((a,b) => a.id.localeCompare(b.id));
+
+    if (!cases.length) {
+      list.innerHTML = '<div class="empty">아직 케이스가 없어요<br>새 케이스를 추가해보세요</div>';
+      return;
+    }
+
+    list.innerHTML = cases.map(c => `
+      <div class="case-item" onclick="openCaseForm('${c.id}')">
+        <div class="case-num">${c.id}</div>
+        <div class="case-info">
+          <div class="case-title">${c.emoji||''} ${c.title||'제목 없음'}</div>
+          <div class="case-meta">
+            ${(c.tags||[]).map(t=>`<span class="case-tag">#${t}</span>`).join('')}
+            <span>${c.respondents||0}명 응답</span>
+          </div>
+        </div>
+        <div class="case-arrow">›</div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="empty">불러오기 실패<br>${e.message}</div>`;
+  }
+}
+
+/* ── FORM OPEN ── */
+function openCaseForm(id) {
+  editingId = id || null;
+  tags = [];
+
+  // 폼 초기화
+  ['fTitle','fVideo','fEmoji'].forEach(f=>{
+    document.getElementById(f).value = '';
+  });
+  document.getElementById('tagWrap').innerHTML = '';
+  document.getElementById('vidPreview').innerHTML = '<div class="vid-placeholder">영상 URL을 입력하면 미리보기가 표시돼요</div>';
+
+  if (id) {
+    // 수정 모드
+    const c = cases.find(x=>x.id===id);
+    if (!c) return;
+    document.getElementById('formTitleText').textContent = '케이스 수정';
+    document.getElementById('formCaseNum').textContent = `#${c.id}`;
+    document.getElementById('fTitle').value = c.title||'';
+    document.getElementById('fVideo').value = c.videoUrl||'';
+    document.getElementById('fEmoji').value = c.emoji||'';
+    tags = c.tags||[];
+    renderTags();
+    previewVideo();
+    document.getElementById('delBtn').style.display = 'block';
+  } else {
+    // 추가 모드
+    const nextNum = String(cases.length + 1).padStart(3,'0');
+    document.getElementById('formTitleText').textContent = '새 케이스';
+    document.getElementById('formCaseNum').textContent = `#${nextNum}`;
+    document.getElementById('delBtn').style.display = 'none';
+  }
+
+  document.getElementById('caseFormWrap').style.display = 'block';
+  document.querySelector('.wrap').style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+function closeForm() {
+  document.getElementById('caseFormWrap').style.display = 'none';
+  document.querySelector('.wrap').style.display = 'block';
+  loadCases();
+}
+
+/* ── TAGS ── */
+function renderTags() {
+  document.getElementById('tagWrap').innerHTML = tags.map((t,i) => `
+    <div class="tag-item">
+      #${t}
+      <button class="tag-rm" onclick="removeTag(${i})">×</button>
+    </div>`).join('');
+}
+
+function addTag() {
+  const inp = document.getElementById('tagInput');
+  const val = inp.value.replace(/#/g,'').trim();
+  if (!val) return;
+  if (tags.includes(val)) { toast('이미 추가된 태그예요'); inp.value=''; return; }
+  tags.push(val);
+  renderTags();
+  inp.value = '';
+  inp.focus();
+}
+
+function removeTag(idx) {
+  tags.splice(idx,1);
+  renderTags();
+}
+
+function handleTagKey(e) {
+  if (e.key === 'Enter') { e.preventDefault(); addTag(); }
+}
+
+/* ── VIDEO PREVIEW ── */
+document.getElementById('fThumb') && document.getElementById('fThumb').addEventListener('input', function(){
+  const url = this.value.trim();
+  const wrap = document.getElementById('thumbPreview');
+  if (!url) { wrap.innerHTML=''; return; }
+  wrap.innerHTML = `<img src="${url}" style="width:100%;border-radius:10px;aspect-ratio:16/9;object-fit:cover" onerror="this.parentElement.innerHTML='<div style=color:var(--red);font-size:12px>이미지를 불러올 수 없어요</div>'">`;
+});
+
+function previewVideo() {
+  const url = document.getElementById('fVideo').value.trim();
+  const wrap = document.getElementById('vidPreview');
+  if (!url) {
+    wrap.innerHTML = '<div class="vid-placeholder">영상 URL을 입력하면 미리보기가 표시돼요</div>';
+    return;
+  }
+  wrap.innerHTML = `
+    <video controls playsinline crossorigin="anonymous"
+      style="width:100%;height:100%;object-fit:cover;display:block"
+      onerror="this.parentElement.innerHTML='<div style=padding:20px;color:#999;font-size:12px;text-align:center>미리보기 불가 — URL은 저장됩니다</div>'">
+      <source src="${url}" type="video/mp4">
+      <source src="${url}" type="video/webm">
+    </video>`;
+  wrap.querySelector('video').load();
+}
+
+/* ── SAVE ── */
+async function saveCase() {
+  const title = document.getElementById('fTitle').value.trim();
+  if (!title) { toast('케이스 제목을 입력해주세요'); return; }
+
+  const id = editingId || String(cases.length + 1).padStart(3,'0');
+  const data = {
+    id,
+    title,
+    tags,
+    videoUrl: document.getElementById('fVideo').value.trim(),
+    emoji: document.getElementById('fEmoji').value.trim() || '👤',
+    respondents: cases.find(c=>c.id===id)?.respondents || 0,
+    updatedAt: new Date().toISOString(),
+  };
+
+  try {
+    await window._db.collection('cases').doc(id).set(data);
+    toast(editingId ? '케이스가 수정됐어요 ✓' : '케이스가 추가됐어요 ✓');
+    setTimeout(() => closeForm(), 800);
+  } catch(e) {
+    toast('저장 실패: ' + e.message);
+  }
+}
+
+/* ── DELETE ── */
+async function deleteCase() {
+  if (!editingId) return;
+  if (!confirm(`케이스 #${editingId}을 삭제할까요?`)) return;
+  try {
+    await window._db.collection('cases').doc(editingId).delete();
+    toast('삭제됐어요');
+    setTimeout(() => closeForm(), 800);
+  } catch(e) {
+    toast('삭제 실패: ' + e.message);
+  }
+}
+
+/* ── TOAST ── */
+let tt = null;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  if(tt) clearTimeout(tt);
+  tt = setTimeout(()=>el.classList.remove('show'), 2000);
+}
+
+// 전역 함수 노출
+window.switchTab = switchTab;
+window.openCaseForm = openCaseForm;
+window.closeForm = closeForm;
+window.addTag = addTag;
+window.removeTag = removeTag;
+window.handleTagKey = handleTagKey;
+window.previewVideo = previewVideo;
+window.saveCase = saveCase;
+window.deleteCase = deleteCase;
+window.loadCases = loadCases;
+
+/* ── XLSX IMPORT (SheetJS) ── */
+const SHEETJS = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+let xlsxLoaded = false;
+let parsedProducts = [];
+
+function loadSheetJS(cb) {
+  if (xlsxLoaded) { cb(); return; }
+  const s = document.createElement('script');
+  s.src = SHEETJS;
+  s.onload = () => { xlsxLoaded = true; cb(); };
+  document.head.appendChild(s);
+}
+
+function handleXlsx(input) {
+  const file = input.files[0];
+  if (!file) return;
+  loadSheetJS(() => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const wb = XLSX.read(e.target.result, {type:'binary'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+        parsedProducts = [];
+        // 헤더 행 스킵 (샘플 행도 스킵)
+        let seq = 0;
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const company  = String(row[0]||'').trim();
+          const name     = String(row[1]||'').trim();
+          const category = String(row[2]||'').trim();
+          const cat1     = String(row[3]||'').trim();
+          const cat2     = String(row[4]||'').trim();
+          const cat3     = String(row[5]||'').trim();
+          const detailRaw= String(row[6]||'').trim();
+          const dosage   = String(row[7]||'').trim();
+          // 헤더·샘플·빈 행 스킵
+          if (!name) continue;
+          if (name.includes('예시') || name === '제품명' || company === '회사명') continue;
+          const cats = [cat1,cat2,cat3].filter(Boolean);
+          const ingredients = detailRaw.split(/[,/]/).map(x=>x.trim()).filter(Boolean);
+          seq++;
+          const id = 'P' + String(seq).padStart(3,'0');
+          parsedProducts.push({ id, company, name, category, cats, ingredients, dosage, emoji:'', imageUrl:'', puri:null, recommendCount:0 });
+        }
+        renderPreview();
+      } catch(err) {
+        toast('파일 읽기 실패: ' + err.message);
+      }
+    };
+    reader.readAsBinaryString(file);
+  });
+}
+
+function renderPreview() {
+  document.getElementById('previewCount').textContent = parsedProducts.length;
+  document.getElementById('xlsxPreview').style.display = parsedProducts.length ? 'block' : 'none';
+  document.getElementById('previewList').innerHTML = parsedProducts.map((p,i) => `
+    <div style="padding:10px 12px;background:${i%2===0?'var(--bg)':'white'};border-radius:8px;margin-bottom:4px;font-size:12px">
+      <div style="font-weight:600;margin-bottom:3px">${p.name} <span style="color:var(--t3);font-weight:400">· ${p.company}${p.category?' · '+p.category:''}</span></div>
+      <div style="color:var(--pd);font-weight:600;margin-bottom:2px">대표성분: ${(p.cats||[]).join(' / ')||'-'}</div>
+      <div style="color:var(--t2)">상세: ${(p.ingredients||[]).join(' · ')||'-'}</div>
+    </div>`).join('');
+}
+
+async function uploadProducts() {
+  if (!parsedProducts.length) return;
+  toast('업로드 중...');
+  let ok=0, fail=0;
+  for (const p of parsedProducts) {
+    try {
+      await window._db.collection('products').doc(p.id).set(p);
+      ok++;
+    } catch(e) { fail++; }
+  }
+  toast(`완료! ${ok}개 저장 / ${fail}개 실패`);
+  loadProducts();
+}
+
+async function loadProducts() {
+  const wrap = document.getElementById('prodListWrap');
+  const countEl = document.getElementById('prodCount');
+  if (!wrap) return;
+  try {
+    const snap = await window._db.collection('products').get();
+    const prods = [];
+    snap.forEach(d => prods.push({id:d.id,...d.data()}));
+    prods.sort((a,b)=>a.name.localeCompare(b.name));
+    countEl.textContent = prods.length;
+    if (!prods.length) { wrap.innerHTML='<div class="empty">아직 등록된 제품이 없어요</div>'; return; }
+    wrap.innerHTML = prods.map((p,i)=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:${i%2===0?'var(--card)':'var(--bg)'};border-radius:10px;margin-bottom:4px">
+        <div style="width:44px;height:44px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg);display:flex;align-items:center;justify-content:center;border:.5px solid var(--bd)">
+          ${p.imageUrl?`<img src="${p.imageUrl}" style="width:100%;height:100%;object-fit:cover">`:`<span style="font-size:20px">${p.emoji||'💊'}</span>`}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600">${p.name||p.n}</div>
+          <div style="font-size:11px;color:var(--t3)">${p.company||p.c}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="file" id="imgInput_${p.id}" accept="image/*" style="display:none" onchange="uploadProdImage('${p.id}',this)">
+          <button onclick="document.getElementById('imgInput_${p.id}').click()" style="background:var(--pb);border:0;color:var(--p);font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px;cursor:pointer">📷</button>
+          <button onclick="deleteProduct('${p.id}')" style="background:none;border:0;color:var(--red);font-size:18px;cursor:pointer;padding:4px">🗑</button>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    wrap.innerHTML = '<div class="empty">불러오기 실패</div>';
+  }
+}
+
+async function uploadVideo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const prog = document.getElementById('uploadProgress');
+  prog.textContent = '업로드 중... 0%';
+  try {
+    const storage = firebase.storage();
+    const ref = storage.ref('videos/' + file.name);
+    const task = ref.put(file);
+    task.on('state_changed',
+      snap => {
+        const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+        prog.textContent = `업로드 중... ${pct}%`;
+      },
+      err => { prog.textContent = '업로드 실패: ' + err.message; },
+      async () => {
+        const url = await task.snapshot.ref.getDownloadURL();
+        document.getElementById('fVideo').value = url;
+        prog.textContent = '✓ 업로드 완료!';
+        previewVideo();
+        toast('영상 업로드 완료!');
+      }
+    );
+  } catch(e) {
+    prog.textContent = '오류: ' + e.message;
+  }
+}
+window.uploadVideo = uploadVideo;
+
+async function uploadProdImage(prodId, input) {
+  const file = input.files[0];
+  if (!file) return;
+  toast('이미지 업로드 중...');
+  try {
+    const ext = file.name.split('.').pop();
+    const ref = firebase.storage().ref(`products/${prodId}.${ext}`);
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+    await window._db.collection('products').doc(prodId).update({ imageUrl: url });
+    toast('✓ 이미지 업로드 완료!');
+    loadProducts();
+  } catch(e) {
+    toast('업로드 실패: ' + e.message);
+  }
+}
+window.uploadProdImage = uploadProdImage;
+
+async function deleteProduct(id) {
+  if (!confirm(`"${id}" 제품을 삭제할까요?`)) return;
+  try {
+    await window._db.collection('products').doc(id).delete();
+    toast('삭제됐어요');
+    loadProducts();
+  } catch(e) {
+    toast('삭제 실패: ' + e.message);
+  }
+}
+window.deleteProduct = deleteProduct;
+
+window.handleXlsx = handleXlsx;
+window.uploadProducts = uploadProducts;
+window.loadProducts = loadProducts;
+
+// 탭 전환 시 로드
+const origSwitchTab = window.switchTab;
+window.switchTab = function(t, btn) {
+  origSwitchTab(t, btn);
+  if (t === 'products') loadProducts();
+  if (t === 'notices') loadNoticesAdmin();
+  if (t === 'lounge') loadPostsAdmin();
+};
+
+/* ── 더나음 소식 ── */
+let _notices = [];
+async function loadNoticesAdmin() {
+  const list = document.getElementById('noticeAdminList');
+  try {
+    const snap = await window._db.collection('notices').get();
+    _notices = []; snap.forEach(d => _notices.push({id:d.id, ...d.data()}));
+  } catch(e) { list.innerHTML = '<div class="empty">불러오기 실패</div>'; return; }
+  _notices.sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+  if (!_notices.length) { list.innerHTML = '<div class="empty">등록된 소식이 없어요</div>'; return; }
+  list.innerHTML = _notices.map(n => `
+    <div class="case-item">
+      <div class="case-info">
+        <div class="case-title">${n.pinned?'📌 ':''}${(n.title||'').replace(/</g,'&lt;')}</div>
+        <div class="case-meta"><span>${(n.createdAt||'').slice(0,10)}</span></div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="mini-btn" onclick="editNotice('${n.id}')">수정</button>
+        <button class="mini-btn del" onclick="delNotice('${n.id}')">삭제</button>
+      </div>
+    </div>`).join('');
+}
+function editNotice(id) {
+  const n = _notices.find(x=>x.id===id); if(!n) return;
+  document.getElementById('nTitle').value = n.title||'';
+  document.getElementById('nBody').value = n.body||'';
+  document.getElementById('nPin').checked = !!n.pinned;
+  document.getElementById('nEditId').value = id;
+  window.scrollTo(0,0);
+}
+async function saveNotice() {
+  const title = document.getElementById('nTitle').value.trim();
+  const body = document.getElementById('nBody').value.trim();
+  const pinned = document.getElementById('nPin').checked;
+  const editId = document.getElementById('nEditId').value;
+  if (!title) { alert('제목을 입력해주세요'); return; }
+  try {
+    if (editId) await window._db.collection('notices').doc(editId).update({title, body, pinned});
+    else await window._db.collection('notices').add({title, body, pinned, createdAt:new Date().toISOString()});
+    alert('저장됐어요');
+    document.getElementById('nTitle').value=''; document.getElementById('nBody').value='';
+    document.getElementById('nPin').checked=false; document.getElementById('nEditId').value='';
+    loadNoticesAdmin();
+  } catch(e) { alert('저장 실패: '+e.message); }
+}
+async function delNotice(id) {
+  if (!confirm('이 소식을 삭제할까요?')) return;
+  try { await window._db.collection('notices').doc(id).delete(); loadNoticesAdmin(); }
+  catch(e) { alert('삭제 실패: '+e.message); }
+}
+
+/* ── 약사 라운지 글 관리 ── */
+let _posts = [];
+async function loadPostsAdmin() {
+  const list = document.getElementById('postAdminList');
+  try {
+    const snap = await window._db.collection('posts').get();
+    _posts = []; snap.forEach(d => _posts.push({id:d.id, ...d.data()}));
+  } catch(e) { list.innerHTML = '<div class="empty">불러오기 실패</div>'; return; }
+  _posts.sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+  if (!_posts.length) { list.innerHTML = '<div class="empty">등록된 글이 없어요</div>'; return; }
+  list.innerHTML = _posts.map(p => `
+    <div class="case-item">
+      <div class="case-info">
+        <div class="case-title">${(p.title||'').replace(/</g,'&lt;')}</div>
+        <div class="case-meta"><span>💊 ${(p.nick||'').replace(/</g,'&lt;')}</span><span>👍 ${p.likes||0} · 💬 ${p.commentCount||0}</span><span>${(p.createdAt||'').slice(0,10)}</span></div>
+      </div>
+      <div style="flex-shrink:0"><button class="mini-btn del" onclick="delPost('${p.id}')">삭제</button></div>
+    </div>`).join('');
+}
+async function delPost(id) {
+  if (!confirm('이 글을 삭제할까요? (부적절 글 관리)')) return;
+  try { await window._db.collection('posts').doc(id).delete(); loadPostsAdmin(); }
+  catch(e) { alert('삭제 실패: '+e.message); }
+}
+window.loadNoticesAdmin = loadNoticesAdmin; window.editNotice = editNotice;
+window.saveNotice = saveNotice; window.delNotice = delNotice;
+window.loadPostsAdmin = loadPostsAdmin; window.delPost = delPost;
+</script>
+</body>
+</html>
