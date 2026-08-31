@@ -360,7 +360,7 @@ body{
 /* 안내 문구 — 5초 재생이 끝나면 두 번째 줄로 교체.
    회색→회색이면 변화를 눈치채기 어려워 색까지 함께 바꿉니다. */
 .hguide{
-  position:relative;min-height:64px;margin-top:16px;
+  position:relative;min-height:72px;margin-top:16px;
   display:grid;place-items:center;padding:0 24px;
 }
 .hguide p{
@@ -371,8 +371,7 @@ body{
   transition:opacity .4s,transform .4s;
 }
 .hguide p.on{opacity:1;transform:translateY(0)}
-/* 두 번째 줄은 문장이 길어 한 단계 작게 — 세 줄로 넘어가면 덱을 밀어냅니다 */
-.hguide p.g2{color:var(--p);font-size:16px;line-height:1.5}
+.hguide p.g2{color:var(--p)}
 
 .deck{
   position:relative;
@@ -437,8 +436,85 @@ body{
 }
 
 /* ============================================
-   HOME
-   ============================================ *//* ============================================
+   동료 소견 추천 — 5장 좌우 스와이프
+   추천 수·닉네임·배지를 모두 가립니다. 무엇이든 노출되면
+   소견 내용이 아니라 그 신호를 보고 고르게 됩니다.
+   ============================================ */
+.pcaps{display:flex;gap:5px;margin-top:12px}
+.pcaps i{
+  flex:1;height:6px;border-radius:999px;
+  background:rgba(255,255,255,.28);overflow:hidden;
+}
+.pcaps i.on{background:#fff}
+.peer-guide{padding:18px 20px 12px;text-align:center}
+.peer-guide b{
+  display:block;font-size:17px;font-weight:700;
+  color:var(--p);letter-spacing:-.4px;
+}
+.peer-guide span{
+  display:block;margin-top:5px;
+  font-size:12.5px;color:var(--t3);font-weight:500;
+}
+.peer-stage{position:relative;margin:0 20px;min-height:400px}
+.pcard{
+  position:absolute;left:0;right:0;top:0;
+  background:var(--card);border:1px solid var(--bd);
+  border-radius:16px;padding:18px 16px 16px;
+  box-shadow:0 4px 18px rgba(25,31,40,.07);
+  transition:transform .34s cubic-bezier(.32,.72,0,1),opacity .34s;
+  touch-action:pan-y;
+}
+.pcard.drag{transition:none}
+.pcard.front{cursor:grab}
+.pc-h{display:flex;align-items:center;gap:8px;margin-bottom:13px}
+.pc-av{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;font-weight:700;color:var(--t3);flex-shrink:0;
+}
+.pc-who{font-size:13px;font-weight:600;color:var(--t3)}
+.pc-prod{
+  display:flex;align-items:center;gap:7px;
+  font-size:13.5px;font-weight:600;color:var(--t);
+  padding:5px 0;line-height:1.4;
+}
+.pc-rk{
+  width:19px;height:19px;border-radius:6px;flex-shrink:0;
+  background:var(--pb);color:var(--pd);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:700;
+}
+.pc-sum{
+  margin-top:12px;padding-top:13px;border-top:1px solid var(--bd-soft);
+  font-size:13.5px;color:var(--t2);line-height:1.75;
+  white-space:pre-wrap;word-break:break-word;
+  max-height:104px;overflow:hidden;position:relative;
+}
+.pcard.open .pc-sum{max-height:none}
+.pc-more{
+  font-size:13px;color:var(--t4);font-weight:700;
+  letter-spacing:2px;padding-top:2px;
+}
+.pcard.open .pc-more{display:none}
+
+/* 스와이프 방향 표시 — 손가락을 따라 진해집니다 */
+.pov{
+  position:absolute;top:16px;z-index:6;
+  font-size:13px;font-weight:800;letter-spacing:-.2px;
+  padding:7px 14px;border-radius:10px;
+  opacity:0;pointer-events:none;
+}
+.pov.yes{right:16px;background:rgba(0,200,150,.95);color:#fff;transform:rotate(9deg)}
+.pov.no{left:16px;background:rgba(139,149,161,.95);color:#fff;transform:rotate(-9deg)}
+.peer-tip{text-align:center;font-size:11.5px;color:var(--t4);font-weight:500;padding:16px 20px 10px}
+.peer-empty{
+  margin:0 20px;padding:44px 20px;text-align:center;
+  color:var(--t3);font-size:13.5px;line-height:1.8;
+  background:var(--card);border:1px solid var(--bd);border-radius:16px;
+}
+
+/* ============================================
    HOME
    ============================================ */
 .hw{padding:8px 20px 16px}
@@ -1411,7 +1487,7 @@ body{
 </div>
 <div class="hguide">
   <p class="g1 on" id="hg1">위아래로 스와이프 해주세요</p>
-  <p class="g2" id="hg2">케이스 클릭 후 전체 영상 및 약사님의 임상 판단을 등록해 주세요.</p>
+  <p class="g2" id="hg2">케이스를 눌러 전체 영상 확인하고<br>약사님의 임상 판단을 등록해주세요</p>
 </div>
 <div class="deck" id="caseDeck"></div>
 <div class="tabbar">
@@ -1518,18 +1594,18 @@ body{
 <div class="screen" id="peerCmtScreen">
 <div class="rh">
   <div class="rcs" id="rcaseP"></div>
-  <div class="rt">다른 약사 처방</div>
-  <div style="font-size:12px;opacity:.9;margin-top:4px" id="peerSubText">동료 약사들의 처방에 추천을 보내주세요</div>
-  <div style="margin-top:7px;font-size:12px;opacity:.95">남은 추천권 <span class="votes-left" id="votesLeft">3</span></div>
+  <div class="rt">동료 약사의 판단</div>
+  <div class="pcaps" id="pcaps"><i></i><i></i><i></i></div>
 </div>
-<div class="rs">
-  <div class="sortbar">
-    <button class="sorttab on" id="psortRec" onclick="setPeerSort('rec')">다추천순</button>
-    <button class="sorttab" id="psortSim" onclick="setPeerSort('sim')">유사한순</button>
-    <button class="sorttab" id="psortNew" onclick="setPeerSort('new')">최신순</button>
-  </div>
-  <div id="peerCmtList"></div>
-  <button class="btn" id="peerDoneBtn" style="margin-top:14px" onclick="goTab('home')">다음에 추천하기</button>
+<div class="peer-guide">
+  <b>오른쪽으로 밀어 추천</b>
+  <span>왼쪽으로 밀면 다음 소견이 나와요</span>
+</div>
+<div class="peer-stage" id="peerStage"></div>
+<div class="peer-tip" id="peerTip">소견을 누르면 전체를 볼 수 있어요</div>
+<div class="peer-empty" id="peerEmpty" style="display:none"></div>
+<div style="padding:4px 20px 28px">
+  <button class="btn" id="peerDoneBtn" onclick="peerFinish()">다음에 추천하기</button>
 </div>
 </div>
 
@@ -2671,9 +2747,9 @@ function _deckLayout(dy){
     el.style.opacity = op;
     el.style.zIndex = 10 - Math.abs(o);
     el.style.pointerEvents = o === 0 ? 'auto' : 'none';
-    /* 앞 카드만 필터를 씁니다. 뒤 카드는 이미 단색이라 filter 가
-       필요 없고, 안 쓰는 만큼 합성 부담도 줄어듭니다. */
-    if(o === 0) el.style.filter = el.dataset.done ? 'saturate(.45) brightness(.92)' : 'none';
+    /* 보고 있는 카드는 완료 여부와 무관하게 항상 컬러 그대로.
+       참여 상태는 테두리·라벨 색이 이미 말해줍니다. */
+    if(o === 0) el.style.filter = 'none';
     const info = el.querySelector('.dinfo');
     if(info) info.style.opacity = o === 0 ? 1 : 0;
   });
@@ -3232,90 +3308,214 @@ function updatePrescGate(){
 
 /* STEP 4: 다른 약사 처방 평가 (처방 단위 추천 / 추천권 3) */
 let PEER_RX=[];
-function setPeerSort(t){
-  S.peerSort=t;
-  S.peerShown=6;
-  document.getElementById('psortRec').classList.toggle('on',t==='rec');
-  document.getElementById('psortSim').classList.toggle('on',t==='sim');
-  document.getElementById('psortNew').classList.toggle('on',t==='new');
-  drawPeerRx();
-}
-function updateVotesLeft(){
-  const el=document.getElementById('votesLeft');if(el)el.textContent=S.votesLeft;
-  const b=document.getElementById('peerDoneBtn');
-  if(b){
-    if(S.votesLeft<=0){b.textContent='마무리하기 →';b.setAttribute('onclick',"goStep('result')");}
-    else{b.textContent='다음에 추천하기';b.setAttribute('onclick',"goTab('home')");}
-  }
-}
+/* ============================================================
+   동료 소견 추천 — 5장 좌우 스와이프
+   ------------------------------------------------------------
+   후보는 다추천 2 · 유사 1 · 신규 2 비율로 뽑고 섞습니다.
+   출처 배지는 안 보입니다 — 보이면 그걸 보고 고릅니다.
+   추천 수·닉네임·연차도 전부 가립니다. 같은 이유입니다.
+   평가가 끝난 뒤 결과 화면에서 누구 소견이었는지 공개됩니다.
+   ============================================================ */
+let PEER_DECK = [];      /* 이번 라운드에 보여줄 후보 5장 */
+let _peerPos = 0;        /* 지금 맨 앞 카드 */
+let _peerUsed = 0;       /* 사용한 추천 수 */
+let _peerMax = 3;        /* 케이스당 추천권 */
+
 async function renderPeerCmt(){
-  const c=S.case;
-  document.getElementById('rcaseP').textContent=`케이스 ${c.id}`;
-  const w=document.getElementById('peerCmtList');
-  w.innerHTML='<div class="empty" style="padding:24px">로딩 중...</div>';
+  const c = S.case;
+  document.getElementById('rcaseP').textContent = `케이스 ${c.id}`;
+  const stage = document.getElementById('peerStage');
+  stage.innerHTML = '<div class="empty" style="padding:24px">로딩 중...</div>';
   await ensureResps();
-  PEER_RX=(RESP_CACHE||[]).filter(x=>x.caseId===c.id && x.nick!==S.user?.nick);
-  /* 추천권 복원: 케이스당 3개 - 이미 추천한 수 (나갔다 와도 유지) */
-  const maxV=Math.min(3,PEER_RX.length);
-  const usedV=PEER_RX.filter(rx=>(rx.recVoters||[]).includes(S.user?.nick)).length;
-  S.votesLeft=Math.max(0,maxV-usedV);
-  S.peerShown=6;
-  updateVotesLeft();
+
+  PEER_RX = (RESP_CACHE||[]).filter(x => x.caseId === c.id && x.nick !== S.user?.nick);
+  _peerMax  = Math.min(3, PEER_RX.length);
+  _peerUsed = PEER_RX.filter(rx => (rx.recVoters||[]).includes(S.user?.nick)).length;
+  S.votesLeft = Math.max(0, _peerMax - _peerUsed);
+
+  PEER_DECK = _buildPeerDeck();
+  _peerPos = 0;
   drawPeerRx();
 }
-/* 내 처방과 겹치는 제품 수 (유사한순) */
+
+/* 내 처방과 겹치는 제품 수 (유사 후보 판정) */
 function rxSimScore(rx){
-  const mine=new Set(S.pairs.map(p=>p.prod.id));
-  return (rx.pairs||[]).reduce((a,p)=>a+(mine.has(p.pid)?1:0),0);
+  const mine = new Set(S.pairs.map(p => p.prod.id));
+  return (rx.pairs||[]).reduce((a,p) => a + (mine.has(p.pid) ? 1 : 0), 0);
 }
+
+function _buildPeerDeck(){
+  /* 이미 추천한 소견은 후보에서 뺍니다 — 다시 보여줄 이유가 없습니다 */
+  const pool = PEER_RX.filter(rx => !(rx.recVoters||[]).includes(S.user?.nick));
+  const pick = [], seen = new Set();
+  const take = (arr, n) => {
+    for(const rx of arr){
+      if(pick.length >= 5 || n <= 0) break;
+      if(seen.has(rx.id)) continue;
+      seen.add(rx.id); pick.push(rx); n--;
+    }
+  };
+  take([...pool].sort((a,b) => (b.recs||0) - (a.recs||0)), 2);                       /* 다추천 2 */
+  take([...pool].sort((a,b) => rxSimScore(b) - rxSimScore(a)), 1);                   /* 유사 1 */
+  take([...pool].sort((a,b) =>
+        String(b.createdAt||b.date||'').localeCompare(String(a.createdAt||a.date||''))), 2); /* 신규 2 */
+  take(pool, 5);                                                                     /* 부족분 채움 */
+  /* 순서에 출처가 드러나지 않게 섞습니다 */
+  for(let i = pick.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [pick[i], pick[j]] = [pick[j], pick[i]];
+  }
+  return pick;
+}
+
+function _peerCaps(){
+  const w = document.getElementById('pcaps');
+  if(!w) return;
+  w.innerHTML = Array.from({length: Math.max(1,_peerMax)},
+    (_, i) => `<i class="${i < _peerUsed ? 'on' : ''}"></i>`).join('');
+  const btn = document.getElementById('peerDoneBtn');
+  if(btn) btn.textContent = _peerUsed > 0 ? '마무리하기' : '다음에 추천하기';
+}
+
 function drawPeerRx(){
-  const w=document.getElementById('peerCmtList');
+  const stage = document.getElementById('peerStage');
+  const empty = document.getElementById('peerEmpty');
+  const tip   = document.getElementById('peerTip');
+  _peerCaps();
+
   if(!PEER_RX.length){
-    w.innerHTML='<div class="empty">아직 다른 약사의 처방이 없어요<br>당신이 첫 응답자입니다</div>';
-    document.getElementById('peerSubText').textContent='첫 응답자입니다';
+    stage.style.display = 'none'; tip.style.display = 'none';
+    empty.style.display = 'block';
+    empty.innerHTML = '아직 다른 약사의 소견이 없어요<br>약사님이 첫 응답자입니다';
     return;
   }
-  document.getElementById('peerSubText').textContent=`${PEER_RX.length}건의 동료 처방 · 추천을 보내주세요`;
-  let list=[...PEER_RX];
-  const sort=S.peerSort||'rec';
-  if(sort==='rec')list.sort((a,b)=>(b.recs||0)-(a.recs||0));
-  else if(sort==='sim')list.sort((a,b)=>rxSimScore(b)-rxSimScore(a)||(b.recs||0)-(a.recs||0));
-  else list.sort((a,b)=>String(b.createdAt||b.date||'').localeCompare(String(a.createdAt||a.date||'')));
-  const shown=Math.min(S.peerShown||6,list.length);
-  const view=list.slice(0,shown);
-  w.innerHTML=view.map(rx=>{
-    const voted=(rx.recVoters||[]).includes(S.user?.nick);
-    const noLeft=S.votesLeft<=0&&!voted;
-    const prods=(rx.pairs||[]).map(p=>{
-      const purps=(p.purposes||[]).map(k=>`<span style="margin-left:3px;color:var(--p)">${purpIcon(k,13)}</span>`).join('');
-      return `<div class="rxcard-prod"><span class="pk3">${p.rank||''}</span>${p.pnm||''}${purps}</div>`;
+  if(_peerPos >= PEER_DECK.length){
+    stage.style.display = 'none'; tip.style.display = 'none';
+    empty.style.display = 'block';
+    empty.innerHTML = _peerUsed > 0
+      ? `추천 ${_peerUsed}건을 보냈어요<br>아래 마무리하기를 눌러주세요`
+      : '지금 볼 소견을 다 넘겼어요<br>다음에 다시 추천해주세요';
+    return;
+  }
+
+  stage.style.display = 'block'; tip.style.display = 'block';
+  empty.style.display = 'none';
+  stage.innerHTML = '';
+
+  /* 뒤 카드는 2장까지만 살짝 겹쳐 놓습니다 */
+  for(let d = Math.min(2, PEER_DECK.length - _peerPos - 1); d >= 0; d--){
+    const rx = PEER_DECK[_peerPos + d];
+    const front = (d === 0);
+    const el = document.createElement('div');
+    el.className = 'pcard' + (front ? ' front' : '');
+    el.dataset.rid = rx.id;
+    el.style.transform = `translateY(${d*9}px) scale(${1 - d*0.02})`;
+    el.style.opacity = front ? 1 : (d === 1 ? .6 : .3);
+    el.style.zIndex = 10 - d;
+    el.style.pointerEvents = front ? 'auto' : 'none';
+
+    const prods = (rx.pairs||[]).map(p => {
+      const purps = (p.purposes||[]).map(k =>
+        `<span style="color:${PURP_COLOR[k]||'var(--p)'}">${purpIcon(k,14)}</span>`).join('');
+      return `<div class="pc-prod"><span class="pc-rk">${p.rank||''}</span><span>${esc(p.pnm||'')}</span>${purps}</div>`;
     }).join('');
-    const sum=(rx.summary||'').trim();
-    return `<div class="rxcard">
-      <div class="rxcard-h"><span class="rxcard-nick" style="display:inline-flex;align-items:center;gap:5px">${_nickAvatar(rx.nick,20)}${esc(rx.nick)}</span><span style="font-size:11px;color:var(--t3);margin-left:auto"><svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> ${rx.recs||0}</span></div>
-      ${prods}
-      ${sum?`<div class="rxcard-sum" style="white-space:pre-wrap">${sum.replace(/</g,'&lt;')}</div>`:''}
-      <div class="rxcard-acts">
-        <span class="more" onclick="openRxDetail('${rx.id}')">상세보기 →</span>
-        <button class="recbtn${voted?' on':''}${noLeft?' dis':''}" onclick="recommendRx('${rx.id}')">${voted?'<svg class="tuc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> 추천함':'<svg class="tuc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> 추천'}</button>
-      </div>
-    </div>`;
-  }).join('');
-  if(list.length>shown){
-    w.insertAdjacentHTML('beforeend',`<button class="expand-btn" style="margin-top:4px" onclick="morePeer()">더보기 (${list.length-shown}명 더) ▾</button>`);
+    const sum = (rx.summary||'').trim();
+
+    el.innerHTML =
+        `<div class="pov yes">추천</div><div class="pov no">넘김</div>`
+      + `<div class="pc-h"><div class="pc-av">약</div><div class="pc-who">동료 약사</div></div>`
+      + prods
+      + (sum ? `<div class="pc-sum">${esc(sum)}</div><div class="pc-more">···</div>` : '');
+
+    if(front) _bindPeerCard(el, rx.id);
+    stage.appendChild(el);
   }
 }
-function morePeer(){S.peerShown=(S.peerShown||6)+6;drawPeerRx();}
-async function recommendRx(id){
+
+function _bindPeerCard(el, rid){
+  const yes = el.querySelector('.pov.yes'), no = el.querySelector('.pov.no');
+  let sx = null, moved = false;
+
+  el.addEventListener('pointerdown', e => {
+    sx = e.clientX; moved = false;
+    el.classList.add('drag');
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  el.addEventListener('pointermove', e => {
+    if(sx === null) return;
+    const dx = e.clientX - sx;
+    if(Math.abs(dx) > 6) moved = true;
+    el.style.transform = `translateX(${dx}px) rotate(${(dx/30).toFixed(2)}deg)`;
+    yes.style.opacity = Math.min(Math.max(dx,0)/80, 1);
+    no.style.opacity  = Math.min(Math.max(-dx,0)/80, 1);
+  });
+  el.addEventListener('pointerup', e => {
+    if(sx === null) return;
+    const dx = e.clientX - sx; sx = null;
+    el.classList.remove('drag');
+
+    if(dx > 90){                       /* 오른쪽 → 추천 */
+      el.style.transform = 'translateX(460px) rotate(15deg)';
+      el.style.opacity = 0;
+      recommendRx(rid, true);
+      _peerUsed++;
+      setTimeout(() => {
+        _peerPos++;
+        if(_peerUsed >= _peerMax){ toast('추천을 모두 보냈어요'); goStep('result'); return; }
+        drawPeerRx();
+      }, 280);
+      return;
+    }
+    if(dx < -90){                      /* 왼쪽 → 넘김 */
+      el.style.transform = 'translateX(-460px) rotate(-15deg)';
+      el.style.opacity = 0;
+      setTimeout(() => { _peerPos++; drawPeerRx(); }, 280);
+      return;
+    }
+    /* 제자리 복귀 — 밀지 않았으면 소견 펼치기 */
+    el.style.transform = 'translateY(0) scale(1)';
+    yes.style.opacity = 0; no.style.opacity = 0;
+    if(!moved) el.classList.toggle('open');
+  });
+  el.addEventListener('pointercancel', () => {
+    if(sx === null) return;
+    sx = null; el.classList.remove('drag');
+    el.style.transform = 'translateY(0) scale(1)';
+    yes.style.opacity = 0; no.style.opacity = 0;
+  });
+}
+
+function peerFinish(){
+  if(_peerUsed > 0) goStep('result');
+  else goTab('home');
+}
+/* swipe=true 로 부르면 스와이프 전용 경로:
+   토글(추천 취소)·토스트·재렌더를 건너뜁니다. 카드가 이미 날아갔고
+   다음 카드 렌더는 호출한 쪽이 처리하기 때문입니다. */
+async function recommendRx(id, swipe){
   if(!S.user?.nick){toast('로그인이 필요해요');return;}
   const rx=PEER_RX.find(x=>x.id===id);if(!rx)return;
   rx.recVoters=rx.recVoters||[];
+  if(swipe){
+    if(rx.recVoters.includes(S.user.nick))return;
+    rx.recVoters.push(S.user.nick);rx.recs=(rx.recs||0)+1;
+    S.votesLeft=Math.max(0,S.votesLeft-1);
+    try{
+      if(String(id).indexOf('local-')!==0){
+        await db.collection('responses').doc(id).update({
+          recs:firebase.firestore.FieldValue.increment(1),
+          recVoters:firebase.firestore.FieldValue.arrayUnion(S.user.nick)
+        });
+      }
+    }catch(e){console.log('추천 저장 실패',e);}
+    return;
+  }
   /* 이미 추천한 처방을 다시 누르면 추천 취소(토글) — 추천권 복구 */
   if(rx.recVoters.includes(S.user.nick)){
     rx.recVoters=rx.recVoters.filter(n=>n!==S.user.nick);
     rx.recs=Math.max(0,(rx.recs||0)-1);
     S.votesLeft++;
-    updateVotesLeft();drawPeerRx();
+    drawPeerRx();
     toast(`추천을 취소했어요 (남은 추천권 ${S.votesLeft})`);
     try{
       if(String(id).indexOf('local-')!==0){
@@ -3329,7 +3529,7 @@ async function recommendRx(id){
   }
   if(S.votesLeft<=0){toast('추천권을 모두 사용했어요');return;}
   rx.recVoters.push(S.user.nick);rx.recs=(rx.recs||0)+1;S.votesLeft--;
-  updateVotesLeft();drawPeerRx();
+  drawPeerRx();
   if(S.votesLeft<=0)toast('추천 완료! 아래 마무리하기를 눌러주세요');
   else toast(`추천 완료 (남은 추천권 ${S.votesLeft})`);
   try{
