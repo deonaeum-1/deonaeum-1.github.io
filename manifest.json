@@ -1,0 +1,42 @@
+{
+  "name": "더나음 — Better Choices, Better Health",
+  "short_name": "더나음",
+  "description": "약사 집단지성 임상 판단 플랫폼. 환자 케이스에 처방하고, 동료 약사의 판단과 비교하고, 목적별 제품 순위를 확인하세요.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait",
+  "background_color": "#F2F4F6",
+  "theme_color": "#F2F4F6",
+  "categories": ["medical", "health", "productivity"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
