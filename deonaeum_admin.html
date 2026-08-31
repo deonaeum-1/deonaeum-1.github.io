@@ -85,6 +85,7 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
     <button class="tab" onclick="switchTab('products',this)">제품</button>
     <button class="tab" onclick="switchTab('notices',this)">더나음 소식</button>
     <button class="tab" onclick="switchTab('lounge',this)">약사 라운지</button>
+    <button class="tab" onclick="switchTab('lic',this)">약사 인증 <span id="licBadge" style="display:none;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px"></span></button>
   </div>
 
   <!-- 케이스 탭 -->
@@ -149,6 +150,18 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
   <div id="loungeTab" style="display:none">
     <div class="form-title" style="margin:4px 0 12px">💬 약사 라운지 글 관리 <span style="font-size:12px;font-weight:400;color:#888">· 부적절 글 삭제</span></div>
     <div id="postAdminList"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <!-- 약사 인증 탭 -->
+  <div id="licTab" style="display:none">
+    <div class="form-title" style="margin:4px 0 12px">약사 면허 인증 심사
+      <span style="font-size:12px;font-weight:400;color:#888">· 승인 시 면허증 사진은 즉시 삭제됩니다</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="tag-add-btn" onclick="loadLicenses()" style="flex:1">새로고침</button>
+      <button class="tag-add-btn" onclick="toggleLicView()" id="licViewBtn" style="flex:1">인증 완료 목록 보기</button>
+    </div>
+    <div id="licList"><div class="empty">로딩 중...</div></div>
   </div>
 
 </div>
@@ -225,6 +238,15 @@ window._fbReady = true;
 
 // 케이스 로드
 loadCases();
+/* 페이지 진입 시 심사 대기 건수만 조회해 탭 배지에 표시 */
+(async()=>{
+  try{
+    const s=await db.collection('users').where('licStatus','==','pending').get();
+    const b=document.getElementById('licBadge');
+    if(b&&s.size){b.textContent=s.size;b.style.display='inline-block';}
+  }catch(e){}
+})();
+
 </script>
 
 <script>
@@ -240,6 +262,8 @@ function switchTab(t, btn) {
   document.getElementById('productsTab').style.display = t==='products'?'block':'none';
   document.getElementById('noticesTab').style.display = t==='notices'?'block':'none';
   document.getElementById('loungeTab').style.display = t==='lounge'?'block':'none';
+  document.getElementById('licTab').style.display = t==='lic'?'block':'none';
+  if(t==='lic') loadLicenses();
 }
 
 /* ── LOAD CASES ── */
@@ -844,6 +868,153 @@ async function pmSave(){
 }
 window.openPaperEditor=openPaperEditor;window.closePaperEditor=closePaperEditor;
 window.pmAddRow=pmAddRow;window.pmSave=pmSave;
+
+/* ============================================================
+   약사 면허 인증 심사
+   ------------------------------------------------------------
+   승인·반려 어느 쪽이든 면허증 이미지는 Storage에서 즉시
+   삭제합니다. 신분증 성격의 파일을 계속 들고 있는 게 가장 큰
+   리스크이므로, 확인이 끝나면 남기지 않습니다.
+   실명·면허번호 텍스트는 중복 가입 방지를 위해 유지합니다.
+   ============================================================ */
+let _licShowVerified = false;
+
+function toggleLicView(){
+  _licShowVerified = !_licShowVerified;
+  document.getElementById('licViewBtn').textContent =
+    _licShowVerified ? '심사 대기 목록 보기' : '인증 완료 목록 보기';
+  loadLicenses();
+}
+
+async function loadLicenses(){
+  const list = document.getElementById('licList');
+  list.innerHTML = '<div class="empty">로딩 중...</div>';
+  try{
+    const want = _licShowVerified ? 'verified' : 'pending';
+    const snap = await db.collection('users').where('licStatus','==',want).get();
+    const rows = [];
+    snap.forEach(d => rows.push({ nick:d.id, ...d.data() }));
+    rows.sort((a,b) => String(b.licAt||'').localeCompare(String(a.licAt||'')));
+
+    /* 대기 건수 배지 — 다른 탭에 있을 때도 보이게 */
+    if(!_licShowVerified){
+      const badge = document.getElementById('licBadge');
+      if(badge){
+        badge.textContent = rows.length;
+        badge.style.display = rows.length ? 'inline-block' : 'none';
+      }
+    }
+
+    if(!rows.length){
+      list.innerHTML = '<div class="empty">' +
+        (_licShowVerified ? '인증 완료된 약사가 없습니다.' : '심사 대기 중인 신청이 없습니다.') +
+        '</div>';
+      return;
+    }
+
+    /* 같은 면허번호가 둘 이상이면 경고 표시 */
+    const noCount = {};
+    rows.forEach(r => { if(r.licNo) noCount[r.licNo] = (noCount[r.licNo]||0) + 1; });
+
+    list.innerHTML = rows.map(r => {
+      const dup = r.licNo && noCount[r.licNo] > 1;
+      const when = r.licAt ? new Date(r.licAt).toLocaleString('ko-KR') : '-';
+      const img = r.licUrl
+        ? `<img src="${r.licUrl}" onclick="window.open('${r.licUrl}','_blank')"
+             style="width:100%;border-radius:10px;margin:10px 0;cursor:zoom-in;border:1px solid var(--border)">`
+        : `<div class="field-hint" style="margin:10px 0">면허증 이미지가 삭제되었습니다 (심사 완료)</div>`;
+      const actions = _licShowVerified
+        ? `<div class="btn-row">
+             <button class="btn-del" onclick="revokeLic('${encodeURIComponent(r.nick)}')">인증 취소</button>
+           </div>`
+        : `<div class="btn-row">
+             <button class="btn-save" onclick="approveLic('${encodeURIComponent(r.nick)}')">승인</button>
+             <button class="btn-del" onclick="rejectLic('${encodeURIComponent(r.nick)}')">반려</button>
+           </div>`;
+      return `<div class="form-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+          <div style="font-size:16px;font-weight:700">${r.licName||'(이름 없음)'}
+            <span style="font-size:12px;font-weight:500;color:var(--t3)">· ${r.nick}</span>
+          </div>
+          <div style="font-size:12px;color:var(--t3)">${when}</div>
+        </div>
+        <div style="font-size:14px;color:var(--t2)">면허번호 <b>${r.licNo||'-'}</b>
+          ${dup ? '<span style="color:var(--red);font-weight:700;margin-left:8px">중복 번호 주의</span>' : ''}
+        </div>
+        ${img}
+        ${actions}
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.log('인증 목록 로딩 실패', e);
+    list.innerHTML = '<div class="empty">불러오기에 실패했습니다.</div>';
+  }
+}
+
+/* 면허증 이미지 삭제 — 실패해도 심사 결과 반영은 계속 진행 */
+async function _wipeLicFile(nick){
+  try{
+    const u = await db.collection('users').doc(nick).get();
+    const p = u.exists && u.data().licPath;
+    if(p) await firebase.storage().ref(p).delete().catch(()=>{});
+  }catch(e){}
+}
+
+async function approveLic(encNick){
+  const nick = decodeURIComponent(encNick);
+  if(!confirm(`${nick} 님을 인증 승인할까요?\n\n승인하면 면허증 사진은 즉시 삭제됩니다.`)) return;
+  try{
+    await _wipeLicFile(nick);
+    await db.collection('users').doc(nick).update({
+      licStatus:'verified',
+      licVerifiedAt:new Date().toISOString(),
+      licPath:firebase.firestore.FieldValue.delete(),
+      licUrl:firebase.firestore.FieldValue.delete(),
+      licReason:firebase.firestore.FieldValue.delete()
+    });
+    toast(`${nick} 인증 완료`);
+    loadLicenses();
+  }catch(e){
+    console.log('승인 실패', e);
+    toast('승인에 실패했습니다');
+  }
+}
+
+async function rejectLic(encNick){
+  const nick = decodeURIComponent(encNick);
+  const reason = prompt(`${nick} 님의 반려 사유를 입력해주세요.\n(약사님 화면에 그대로 표시됩니다)`,
+                        '면허증 사진이 흐려서 확인이 어려워요. 이름과 면허번호가 선명하게 보이도록 다시 촬영해주세요.');
+  if(reason === null) return;
+  if(!reason.trim()){ toast('사유를 입력해주세요'); return; }
+  try{
+    await _wipeLicFile(nick);
+    await db.collection('users').doc(nick).update({
+      licStatus:'rejected',
+      licReason:reason.trim(),
+      licPath:firebase.firestore.FieldValue.delete(),
+      licUrl:firebase.firestore.FieldValue.delete()
+    });
+    toast(`${nick} 반려 처리`);
+    loadLicenses();
+  }catch(e){
+    console.log('반려 실패', e);
+    toast('반려에 실패했습니다');
+  }
+}
+
+async function revokeLic(encNick){
+  const nick = decodeURIComponent(encNick);
+  if(!confirm(`${nick} 님의 인증을 취소할까요?\n\n다시 면허 인증을 받아야 앱을 이용할 수 있게 됩니다.`)) return;
+  try{
+    await db.collection('users').doc(nick).update({
+      licStatus:'rejected',
+      licReason:'관리자에 의해 인증이 취소되었습니다. 문의가 필요하면 연락해주세요.'
+    });
+    toast(`${nick} 인증 취소`);
+    loadLicenses();
+  }catch(e){ toast('처리에 실패했습니다'); }
+}
+
 </script>
 </body>
 </html>

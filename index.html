@@ -17,10 +17,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
 
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <style>
 /* ============================================
    더나음 — B Type Redesign
@@ -282,6 +282,67 @@ body{
 }
 
 #lf .btn, #sf .btn{margin-top:8px}
+
+/* ============================================
+   면허 인증 게이트
+   ============================================ */
+.lgw{
+  padding:calc(20px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
+  min-height:100vh;
+}
+.lg-hero{text-align:center;padding:26px 0 26px}
+.lg-ic{
+  width:64px;height:64px;margin:0 auto 18px;
+  border-radius:20px;display:flex;align-items:center;justify-content:center;
+  background:var(--pb);color:var(--p);
+}
+.lg-ic svg{width:31px;height:31px}
+.lg-ic.warn{background:var(--warn-soft);color:var(--warn)}
+.lg-ic.red{background:var(--red-soft);color:var(--red)}
+.lg-t{font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:9px;color:var(--t)}
+.lg-d{font-size:13.5px;color:var(--t2);line-height:1.65}
+.lg-card{background:var(--card);border-radius:16px;padding:20px 18px;margin-bottom:12px}
+.lg-lb{font-size:12.5px;font-weight:600;color:var(--t2);margin:14px 0 7px}
+.lg-lb:first-child{margin-top:0}
+.lg-file{
+  display:block;border:1.5px dashed var(--bd);border-radius:12px;
+  padding:24px 16px;text-align:center;cursor:pointer;
+  background:var(--surface);transition:all .15s;
+}
+.lg-file:active{border-color:var(--p);background:var(--pb)}
+.lg-file svg{width:26px;height:26px;color:var(--t4);margin-bottom:9px}
+.lg-file-t{font-size:13px;font-weight:600;color:var(--t2)}
+.lg-file-s{font-size:11.5px;color:var(--t3);margin-top:4px}
+.lg-prev{position:relative;border-radius:12px;overflow:hidden;background:var(--surface)}
+.lg-prev img{width:100%;display:block}
+.lg-prev-x{
+  position:absolute;top:9px;right:9px;width:30px;height:30px;
+  border-radius:50%;border:0;background:rgba(25,31,40,.7);color:#fff;
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.lg-agree{display:flex;gap:10px;align-items:flex-start;padding:16px 0 6px;cursor:pointer}
+.lg-agree input{width:19px;height:19px;flex-shrink:0;margin-top:1px;accent-color:var(--p)}
+.lg-agree span{font-size:12px;color:var(--t2);line-height:1.6}
+.lg-note{
+  font-size:11.5px;color:var(--t3);line-height:1.75;
+  margin-top:12px;padding:13px 14px;background:var(--surface);border-radius:11px;
+}
+.lg-row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;padding:11px 0;border-bottom:1px solid var(--bd-soft);
+}
+.lg-row:last-child{border-bottom:0}
+.lg-row span{color:var(--t3);font-weight:500}
+.lg-row b{font-weight:600;color:var(--t)}
+.lg-reason{
+  font-size:13px;color:#B42318;background:var(--red-soft);
+  border-radius:11px;padding:13px 14px;line-height:1.6;margin-bottom:14px;
+}
+.lg-sub{
+  background:none;border:0;font-family:inherit;
+  font-size:13px;font-weight:600;color:var(--t3);
+  padding:15px;cursor:pointer;width:100%;
+}
 
 /* ============================================
    HOME
@@ -1237,8 +1298,13 @@ body{
       <button class="btn" id="signupBtn" onclick="doSignup()">가입하기</button>
     </div>
   </div>
-  <div class="li"><svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3h2a1 1 0 0 1 1 1v5h5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5v5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-5H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h5V4a1 1 0 0 1 1-1z"/></svg> 약사 전용 임상 판단 플랫폼<br>면허번호 인증은 추후 도입 예정입니다</div>
+  <div class="li"><svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3h2a1 1 0 0 1 1 1v5h5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5v5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-5H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h5V4a1 1 0 0 1 1-1z"/></svg> 약사 전용 임상 판단 플랫폼<br>가입 후 약사 면허 인증이 필요합니다</div>
 </div>
+</div>
+
+<!-- 면허 인증 게이트 -->
+<div class="screen" id="licScreen">
+  <div class="lgw" id="licBody"></div>
 </div>
 
 <!-- HOME -->
@@ -1464,6 +1530,11 @@ body{
     <button class="my-mi danger" onclick="logout()">
       <span class="my-mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2"/><path d="M9 12h11"/><path d="M17 9l3 3-3 3"/></svg></span>
       로그아웃
+      <span class="my-mi-arr">›</span>
+    </button>
+    <button class="my-mi danger" onclick="deleteAccount()">
+      <span class="my-mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"/><path d="M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12"/><path d="M10 11v6M14 11v6"/></svg></span>
+      계정 삭제
       <span class="my-mi-arr">›</span>
     </button>
   </div>
@@ -1876,7 +1947,7 @@ async function doLogin(){
     try{localStorage.setItem('deonaeum_nick',nick);}catch(e){}
     S.user={nick};S.hist=d.hist||[];S.bio=d.bio||'';
     toast('안녕하세요, '+nick+'님!');
-    await loadData();goTab('home');maybeShowOnboarding(d);
+    await afterAuth(d);
   }catch(e){showErr('lerr','오류: '+e.message);}
   finally{setBtnLoading('loginBtn',false);}
 }
@@ -1891,8 +1962,7 @@ async function tryAutoLogin(){
     if(!r.exists){try{localStorage.removeItem('deonaeum_nick');}catch(e){}return false;}
     const d=r.data();
     S.user={nick};S.hist=d.hist||[];S.bio=d.bio||'';
-    await loadData();goTab('home');
-    maybeShowOnboarding(d);
+    await afterAuth(d);
     return true;
   }catch(e){return false;}
 }
@@ -1903,6 +1973,302 @@ function logout(){
   location.reload();
 }
 
+/* ============================================================
+   약사 면허 인증 게이트
+   ------------------------------------------------------------
+   licStatus 값
+     none      제출 전 (필드 없는 기존 계정도 여기로 취급)
+     pending   심사 대기
+     rejected  반려 — 사유 확인 후 재제출 가능
+     verified  인증 완료 — 이 값일 때만 서비스 진입
+
+   미인증 사용자는 loadData() 를 아예 타지 않습니다.
+   불필요한 Firestore 조회를 막고, 인증 전에는 어떤 데이터도
+   내려가지 않도록 하는 이중 목적입니다.
+   ============================================================ */
+let _licBlob=null;      /* 리사이즈된 면허증 이미지 — 업로드 전 임시 보관 */
+let _licPrevUrl=null;   /* 미리보기 objectURL — 교체 시 해제 */
+
+function licStatusOf(d){return (d&&d.licStatus)||'none';}
+
+/* 로그인·자동로그인 공통 분기 */
+async function afterAuth(d){
+  if(licStatusOf(d)==='verified'){
+    await loadData();goTab('home');maybeShowOnboarding(d);
+    return;
+  }
+  S.licData=d||{};
+  _licBlob=null;
+  renderLicGate();
+  gs('licScreen');
+}
+
+function _uuid(){
+  try{if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();}catch(e){}
+  return 'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,12);
+}
+
+const _LIC_IC={
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.9-7 9.5-4.1-1.6-7-5.2-7-9.5V6z"/><path d="M9.2 12.2l2 2 3.6-3.9"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3.2 2"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5"/><path d="M12 16h.01"/></svg>',
+  upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/></svg>'
+};
+
+function renderLicGate(){
+  const d=S.licData||{};
+  const st=licStatusOf(d);
+  const nick=(S.user&&S.user.nick)||'';
+  const el=document.getElementById('licBody');
+  if(!el)return;
+
+  /* ── 심사 대기 ── */
+  if(st==='pending'){
+    el.innerHTML=`
+      <div class="lg-hero">
+        <div class="lg-ic warn">${_LIC_IC.clock}</div>
+        <div class="lg-t">인증 심사 중이에요</div>
+        <div class="lg-d">제출해주신 면허증을 확인하고 있어요.<br>보통 하루 안에 완료돼요.</div>
+      </div>
+      <div class="lg-card">
+        <div class="lg-row"><span>닉네임</span><b>${esc(nick)}</b></div>
+        <div class="lg-row"><span>실명</span><b>${esc(d.licName||'-')}</b></div>
+        <div class="lg-row"><span>면허번호</span><b>${esc(d.licNo||'-')}</b></div>
+        <div class="lg-row"><span>신청일</span><b>${d.licAt?new Date(d.licAt).toLocaleDateString('ko-KR'):'-'}</b></div>
+      </div>
+      <div class="lg-note">인증이 완료되면 바로 이용할 수 있어요. 아래 새로고침으로 결과를 확인해주세요.</div>
+      <button class="lg-sub" onclick="refreshLicStatus()">인증 상태 새로고침</button>
+      <button class="lg-sub" onclick="logout()">로그아웃</button>`;
+    return;
+  }
+
+  /* ── 미제출 / 반려 ── */
+  const rejected=(st==='rejected');
+  el.innerHTML=`
+    <div class="lg-hero">
+      <div class="lg-ic ${rejected?'red':''}">${rejected?_LIC_IC.alert:_LIC_IC.shield}</div>
+      <div class="lg-t">${rejected?'인증이 반려되었어요':'약사 면허 인증이 필요해요'}</div>
+      <div class="lg-d">${rejected
+        ? '아래 사유를 확인하고 다시 신청해주세요.'
+        : '더나음의 데이터는 약사님들의 판단만으로<br>만들어집니다. 확인을 위해 한 번만 인증해주세요.'}</div>
+    </div>
+    ${rejected&&d.licReason?`<div class="lg-reason">${esc(d.licReason)}</div>`:''}
+    <div class="lg-card">
+      <div class="err" id="licErr"></div>
+      <div class="lg-lb">약사 실명</div>
+      <input class="inp" id="licName" placeholder="면허증에 기재된 이름" maxlength="20" value="${esc(d.licName||'')}">
+      <div class="lg-lb">약사 면허번호</div>
+      <input class="inp" id="licNo" placeholder="숫자만 입력" inputmode="numeric" maxlength="10" value="${esc(d.licNo||'')}">
+      <div class="lg-lb">약사 면허증 사진</div>
+      <div id="licPrevWrap"></div>
+      <label class="lg-file" id="licFileBox">
+        ${_LIC_IC.upload}
+        <div class="lg-file-t">사진 촬영 또는 앨범에서 선택</div>
+        <div class="lg-file-s">이름과 면허번호가 선명하게 보이도록</div>
+        <input type="file" accept="image/*" onchange="onLicPicked(this)" hidden>
+      </label>
+      <label class="lg-agree">
+        <input type="checkbox" id="licAgree">
+        <span>약사 자격 확인 목적으로 실명·면허번호·면허증 사진을 수집하는 데 동의합니다. 면허증 사진은 확인이 끝나면 즉시 삭제되며, 실명과 면허번호는 중복 가입 방지를 위해 보관됩니다.</span>
+      </label>
+      <button class="btn" id="licSubmitBtn" onclick="submitLicense()">인증 신청하기</button>
+    </div>
+    <div class="lg-note">제출한 정보는 약사 자격 확인 외의 목적으로 사용되지 않습니다. 인증이 완료되면 면허증 사진은 서버에서 삭제됩니다.</div>
+    <button class="lg-sub" onclick="logout()">로그아웃</button>`;
+}
+
+/* 면허증 사진 선택 — 번호가 읽혀야 하므로 프로필 사진보다 크게(장변 1600px) */
+function onLicPicked(inp){
+  const f=inp.files&&inp.files[0];inp.value='';
+  if(!f)return;
+  if(!f.type.startsWith('image/')){toast('이미지 파일을 선택해주세요');return;}
+  const img=new Image();
+  img.onload=()=>{
+    const MAX=1600;
+    const sc=Math.min(1,MAX/Math.max(img.width,img.height));
+    const w=Math.round(img.width*sc),h=Math.round(img.height*sc);
+    const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+    const cx=cv.getContext('2d');
+    cx.imageSmoothingQuality='high';
+    cx.drawImage(img,0,0,w,h);
+    cv.toBlob(b=>{
+      if(!b){toast('이미지 처리에 실패했어요');return;}
+      _licBlob=b;
+      if(_licPrevUrl)URL.revokeObjectURL(_licPrevUrl);
+      _licPrevUrl=URL.createObjectURL(b);
+      const wrap=document.getElementById('licPrevWrap');
+      const box=document.getElementById('licFileBox');
+      if(wrap)wrap.innerHTML=`<div class="lg-prev"><img src="${_licPrevUrl}"><button class="lg-prev-x" onclick="clearLicPhoto()">✕</button></div>`;
+      if(box)box.style.display='none';
+    },'image/jpeg',.85);
+    URL.revokeObjectURL(img.src);
+  };
+  img.onerror=()=>{toast('이미지를 읽을 수 없어요');URL.revokeObjectURL(img.src);};
+  img.src=URL.createObjectURL(f);
+}
+function clearLicPhoto(){
+  _licBlob=null;
+  if(_licPrevUrl){URL.revokeObjectURL(_licPrevUrl);_licPrevUrl=null;}
+  const wrap=document.getElementById('licPrevWrap');
+  const box=document.getElementById('licFileBox');
+  if(wrap)wrap.innerHTML='';
+  if(box)box.style.display='block';
+}
+
+async function submitLicense(){
+  const nick=S.user&&S.user.nick;
+  if(!nick){toast('다시 로그인해주세요');return;}
+  const name=(document.getElementById('licName').value||'').trim();
+  const no=(document.getElementById('licNo').value||'').trim();
+  const agree=document.getElementById('licAgree').checked;
+  const e=document.getElementById('licErr');
+  if(e)e.style.display='none';
+
+  if(!name){showErr('licErr','면허증에 기재된 실명을 입력해주세요');return;}
+  if(!/^[가-힣a-zA-Z\s]{2,20}$/.test(name)){showErr('licErr','실명은 한글 또는 영문으로 입력해주세요');return;}
+  if(!/^\d{2,10}$/.test(no)){showErr('licErr','면허번호는 숫자만 입력해주세요');return;}
+  if(!_licBlob){showErr('licErr','면허증 사진을 첨부해주세요');return;}
+  if(!agree){showErr('licErr','개인정보 수집에 동의해주세요');return;}
+
+  setBtnLoading('licSubmitBtn',true,'제출 중...');
+  try{
+    /* 같은 면허번호로 이미 인증됐거나 심사 중인 계정이 있는지 확인.
+       한 약사 한 계정을 지켜야 집단지성 데이터가 성립합니다. */
+    const dup=await db.collection('users').where('licNo','==',no).get();
+    let taken=null;
+    dup.forEach(doc=>{
+      if(doc.id===nick)return;
+      const st=doc.data().licStatus;
+      if(st==='verified'||st==='pending')taken=doc.id;
+    });
+    if(taken){
+      showErr('licErr','이미 이 면허번호로 등록된 계정이 있어요. 기존 계정으로 로그인해주세요.');
+      return;
+    }
+
+    /* 추측 불가능한 랜덤 파일명 — 승인·반려 시 즉시 삭제됩니다 */
+    const path=`licenses/${_uuid()}.jpg`;
+    const ref=firebase.storage().ref(path);
+    await ref.put(_licBlob,{contentType:'image/jpeg'});
+    const url=await ref.getDownloadURL();
+
+    await db.collection('users').doc(nick).set({
+      licStatus:'pending',
+      licName:name,
+      licNo:no,
+      licPath:path,
+      licUrl:url,
+      licAt:new Date().toISOString(),
+      licReason:firebase.firestore.FieldValue.delete()
+    },{merge:true});
+
+    S.licData=Object.assign({},S.licData,{licStatus:'pending',licName:name,licNo:no,licAt:new Date().toISOString(),licReason:null});
+    clearLicPhoto();
+    renderLicGate();
+    window.scrollTo(0,0);
+    toast('인증 신청이 접수됐어요');
+  }catch(err){
+    console.log('면허 인증 제출 실패',err);
+    showErr('licErr','제출에 실패했어요. 잠시 후 다시 시도해주세요.');
+  }finally{
+    setBtnLoading('licSubmitBtn',false);
+  }
+}
+
+/* 심사 결과가 반영됐는지 다시 확인 */
+async function refreshLicStatus(){
+  const nick=S.user&&S.user.nick;
+  if(!nick)return;
+  try{
+    const r=await db.collection('users').doc(nick).get();
+    if(!r.exists){toast('계정을 찾을 수 없어요');return;}
+    const d=r.data();
+    if(licStatusOf(d)==='verified'){
+      S.hist=d.hist||[];S.bio=d.bio||'';
+      toast('인증이 완료됐어요!');
+      await loadData();goTab('home');maybeShowOnboarding(d);
+      return;
+    }
+    S.licData=d;renderLicGate();
+    toast(licStatusOf(d)==='rejected'?'심사 결과가 도착했어요':'아직 심사 중이에요');
+  }catch(e){toast('확인에 실패했어요');}
+}
+
+/* ============================================================
+   계정 삭제
+   ------------------------------------------------------------
+   앱스토어 심사 요건(가이드라인 5.1.1(v))상 앱 안에서 계정을
+   완전히 지울 수 있어야 합니다. 처방 기록까지 함께 삭제하므로
+   되돌릴 수 없습니다.
+   ============================================================ */
+async function deleteAccount(){
+  const nick=S.user&&S.user.nick;
+  if(!nick)return;
+  if(!confirm('계정을 삭제하면 작성한 처방·소견·게시글이 모두 사라지고 되돌릴 수 없어요.\n\n계속할까요?'))return;
+  const typed=prompt(`정말 삭제하려면 닉네임 "${nick}" 을 입력해주세요.`);
+  if(typed===null)return;
+  if((typed||'').trim()!==nick){toast('닉네임이 일치하지 않아요');return;}
+
+  toast('계정을 삭제하고 있어요...');
+  try{
+    /* 1) 내 처방 응답 */
+    const rs=await db.collection('responses').where('nick','==',nick).get();
+    await Promise.all(rs.docs.map(d=>d.ref.delete().catch(()=>{})));
+
+    /* 2) 다른 약사 처방에 남긴 추천 흔적 */
+    const rv=await db.collection('responses').where('recVoters','array-contains',nick).get();
+    await Promise.all(rv.docs.map(d=>d.ref.update({
+      recVoters:firebase.firestore.FieldValue.arrayRemove(nick),
+      recs:firebase.firestore.FieldValue.increment(-1)
+    }).catch(()=>{})));
+
+    /* 3) 게시판 — 내 글(하위 댓글까지) */
+    const ps=await db.collection('posts').where('nick','==',nick).get();
+    for(const p of ps.docs){
+      try{
+        const cs=await p.ref.collection('comments').get();
+        await Promise.all(cs.docs.map(c=>c.ref.delete().catch(()=>{})));
+      }catch(e){}
+      await p.ref.delete().catch(()=>{});
+    }
+
+    /* 4) 남의 글에 쓴 댓글 · 좋아요 흔적 */
+    const all=await db.collection('posts').get();
+    for(const p of all.docs){
+      try{
+        const mine=await p.ref.collection('comments').where('nick','==',nick).get();
+        if(!mine.empty){
+          await Promise.all(mine.docs.map(c=>c.ref.delete().catch(()=>{})));
+          await p.ref.update({commentCount:firebase.firestore.FieldValue.increment(-mine.size)}).catch(()=>{});
+        }
+      }catch(e){}
+      const lk=p.data().likers||[];
+      if(lk.indexOf(nick)>=0){
+        await p.ref.update({
+          likers:firebase.firestore.FieldValue.arrayRemove(nick),
+          likes:firebase.firestore.FieldValue.increment(-1)
+        }).catch(()=>{});
+      }
+    }
+
+    /* 5) 면허증 사진이 아직 남아 있으면 삭제 */
+    try{
+      const u=await db.collection('users').doc(nick).get();
+      const lp=u.exists&&u.data().licPath;
+      if(lp)await firebase.storage().ref(lp).delete().catch(()=>{});
+    }catch(e){}
+
+    /* 6) 계정 문서 */
+    await db.collection('users').doc(nick).delete();
+
+    try{localStorage.removeItem('deonaeum_nick');}catch(e){}
+    alert('계정이 삭제되었습니다. 그동안 이용해주셔서 감사합니다.');
+    location.reload();
+  }catch(e){
+    console.log('계정 삭제 실패',e);
+    toast('삭제에 실패했어요. 잠시 후 다시 시도해주세요.');
+  }
+}
 /* 온보딩 */
 const OB_SLIDES=[
  {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16.5 15.5c2.3.2 4.5 1.7 4.5 4.5"/></svg>',t:'더나음에 오신 걸 환영해요',d:'환자에게 가장 좋은 선택을\n늘 고민하는 약사님께.\n그 고민을 이제 동료들과 함께 나눠요'},
