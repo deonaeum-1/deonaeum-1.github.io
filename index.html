@@ -434,7 +434,7 @@ body{
 /* ── 세트 홈 (이번 주 세트 카드 3개) ── */
 .seth{padding:4px 20px 120px}
 .sh-top{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 0 14px}
-.sh-pick{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:4px 8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sh-pick{display:inline-flex;align-items:center;gap:6px;background:none;border:none;padding:4px 8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .sh-pick svg{flex:none}
 .sh-topic{font-size:24px;font-weight:900;letter-spacing:-.5px}
 .sh-wk{font-size:12px;font-weight:700;color:var(--p);background:var(--pb);padding:4px 10px;border-radius:999px}
@@ -2076,6 +2076,11 @@ const _DOC='<svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentCo
 
 let SETS={},FEATURED_SET=null,SEL_SET=null;
 const SET_COLORS={1:'#E11D48',2:'#7C3AED',3:'#0EA5E9',4:'#D97706',5:'#16A34A',6:'#3182F6',7:'#F97316'};
+/* 세트 아이콘 — 주제별 그림 (없으면 생략) */
+const SET_ICONS={
+  1:c=>`<svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><defs><linearGradient id="sgDrop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF5A6E"/><stop offset="1" stop-color="${c}"/></linearGradient></defs><path d="M13 1.5C13 1.5 3 12.6 3 19.2A10 10 0 0 0 23 19.2C23 12.6 13 1.5 13 1.5Z" fill="url(#sgDrop)"/><path d="M8.2 18.6c0-2.6 1.7-5.4 3.1-7.3" stroke="#fff" stroke-opacity=".75" stroke-width="2.2" stroke-linecap="round" fill="none"/><circle cx="8.6" cy="22.4" r="1.4" fill="#fff" fill-opacity=".75"/></svg>`
+};
+function setIcon(n){const f=SET_ICONS[n];return f?f(setColor(n)):'';}
 function setColor(n){return (SETS[String(n)]||{}).color||SET_COLORS[n]||'var(--t)';}
 async function loadData(){
   const t0=performance.now();
@@ -2780,7 +2785,7 @@ function renderSetHome(){
     const bd=pres?(recDoneForCase(c.id)?'<span class="bd ok">완료</span>':'<span class="bd need">추천하기</span>'):'';
     return `<div class="sh-col" onclick="startCase('${c.id}')"><div class="sh-ti">${c.title}</div><div class="sh-cd">${vid(c.videoUrl)}${PL}${bd}</div></div>`;
   };
-  el.innerHTML=`<div class="sh-top"><button class="sh-pick" onclick="openSetPicker()"><span class="sh-topic" style="color:${setColor(n)}">${topic}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${setColor(n)}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>${String(n)===String(FEATURED_SET)?'<span class="sh-wk">이번 주</span>':''}</div>
+  el.innerHTML=`<div class="sh-top"><button class="sh-pick" onclick="openSetPicker()">${setIcon(n)}<span class="sh-topic" style="color:${setColor(n)}">${topic}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${setColor(n)}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
     <div class="sh-row">${col(x.case1,'case1')}${col(x.case2,'case2')}${col(x.acad,'acad')}</div>`;
 }
 function openSetPicker(){
