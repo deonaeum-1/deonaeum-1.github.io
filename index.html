@@ -3909,9 +3909,11 @@ let _peerPos = 0;        /* 지금 맨 앞 카드 */
 let _peerUsed = 0;       /* 사용한 추천 수 */
 let _peerMax = 3;        /* 케이스당 추천권 */
 
-/* 동료 소견 추천 — 4장을 한 화면에, 카드마다 좌(패스)/우(추천) 스와이프
+/* 동료 소견 추천 — 4칸을 한 화면에, 카드마다 좌(패스)/우(추천) 스와이프
+   넘긴 자리에는 다음 소견이 바로 채워짐
+   뽑는 비율: 4장마다 추천 많은 2 · 나랑 비슷 1 · 새로운 1, 묶음 안에서 무작위 순서
    완료 기준: 1개 이상 추천 (recDoneForCase) */
-let _peerSt = {};        /* id → 'y' | 'n' */
+let _peerQ = [];         /* 아직 안 보여준 후보 (순서대로) */
 async function renderPeerCmt(){
   const c = S.case;
   document.getElementById('rcaseP').textContent = c.title || `케이스 ${c.id}`;
@@ -3920,25 +3922,32 @@ async function renderPeerCmt(){
   await ensureResps();
   PEER_RX = (RESP_CACHE||[]).filter(x => x.caseId === c.id && x.nick !== S.user?.nick);
   _peerUsed = PEER_RX.filter(rx => (rx.recVoters||[]).includes(S.user?.nick)).length;
-  _peerMax = 4;
-  PEER_DECK = _buildPeerDeck();
-  _peerSt = {};
+  _peerQ = _buildPeerQueue();
+  PEER_DECK = _peerQ.splice(0,4);
   drawPeerRx();
 }
 function rxSimScore(rx){
   const mine = new Set(S.pairs.map(p => p.prod.id));
   return (rx.pairs||[]).reduce((a,p) => a + (mine.has(p.pid) ? 1 : 0), 0);
 }
-function _buildPeerDeck(){
+function _buildPeerQueue(){
   const pool = PEER_RX.filter(rx => !(rx.recVoters||[]).includes(S.user?.nick) && (rx.summary||'').trim());
-  const pick = [], seen = new Set();
-  const take = (arr, n) => { for(const rx of arr){ if(pick.length>=4||n<=0)break; if(seen.has(rx.id))continue; seen.add(rx.id); pick.push(rx); n--; } };
-  take([...pool].sort((a,b) => (b.recs||0) - (a.recs||0)), 2);
-  take([...pool].sort((a,b) => rxSimScore(b) - rxSimScore(a)), 1);
-  take([...pool].sort((a,b) => String(b.createdAt||b.date||'').localeCompare(String(a.createdAt||a.date||''))), 1);
-  take(pool, 4);
-  for(let i=pick.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pick[i],pick[j]]=[pick[j],pick[i]];}
-  return pick;
+  const ts = rx => String(rx.createdAt||rx.date||'');
+  const REC = [...pool].sort((a,b) => (b.recs||0)-(a.recs||0) || ts(b).localeCompare(ts(a)));   /* 추천 많은 */
+  const SIM = [...pool].sort((a,b) => rxSimScore(b)-rxSimScore(a) || (b.recs||0)-(a.recs||0)); /* 나랑 비슷 */
+  const NEW = [...pool].sort((a,b) => ts(b).localeCompare(ts(a)));                              /* 새로운 */
+  const seen = new Set(), ix = {r:0,s:0,n:0};
+  const next = (L,k) => { while(ix[k]<L.length && seen.has(L[ix[k]].id)) ix[k]++; if(ix[k]<L.length){const x=L[ix[k]++];seen.add(x.id);return x;} return null; };
+  const out = [];
+  while(out.length < pool.length){
+    /* 4장 묶음 = 추천 많은 2 · 나랑 비슷 1 · 새로운 1, 묶음 안에서 섞음 (출처가 안 드러나게) */
+    const blk = [next(REC,'r'), next(REC,'r'), next(SIM,'s'), next(NEW,'n')].filter(Boolean);
+    while(blk.length < 4 && out.length + blk.length < pool.length){ const x = next(NEW,'n')||next(REC,'r')||next(SIM,'s'); if(!x) break; blk.push(x); }
+    if(!blk.length) break;
+    for(let i=blk.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[blk[i],blk[j]]=[blk[j],blk[i]];}
+    out.push(...blk);
+  }
+  return out;
 }
 /* 소견 안 제품명 색칠 (소견 입력 화면과 같은 색) */
 function peerHL(rx){
@@ -3950,39 +3959,36 @@ function peerHL(rx){
   return t.replace(/\u0000([a-z]*)\u0001/g,'<mark class="pr-hl $1">').replace(/\u0002/g,'</mark>');
 }
 function _peerCaps(){
-  const yes = Object.values(_peerSt).filter(v=>v==='y').length;
-  const left = PEER_DECK.filter(r=>!_peerSt[r.id]).length;
   document.getElementById('prCnt').textContent = `추천 ${_peerUsed}`;
   const btn = document.getElementById('peerDoneBtn');
-  const ok = _peerUsed>0 || !PEER_DECK.length;
-  btn.textContent = left ? `카드를 넘겨주세요 (${PEER_DECK.length-left}/${PEER_DECK.length})` : (ok ? '결과 보기' : '1개 이상 추천해주세요');
-  const en = !left && ok;
-  btn.style.opacity = en ? '1' : '.45'; btn.style.pointerEvents = en ? 'auto' : 'none';
+  const ok = _peerUsed > 0 || !PEER_RX.length;
+  btn.textContent = ok ? '결과 보기' : '1개 이상 추천해주세요';
+  btn.style.opacity = ok ? '1' : '.45'; btn.style.pointerEvents = ok ? 'auto' : 'none';
 }
 function drawPeerRx(){
   const stage = document.getElementById('peerStage'), empty = document.getElementById('peerEmpty'), tip = document.getElementById('peerTip');
+  _peerCaps();
   if(!PEER_DECK.length){
     stage.style.display='none'; tip.style.display='none'; empty.style.display='block';
-    empty.innerHTML = PEER_RX.length ? '지금 추천할 새 소견이 없어요' : '아직 다른 약사의 소견이 없어요<br>약사님이 첫 응답자입니다';
-    const btn=document.getElementById('peerDoneBtn'); btn.textContent='결과 보기'; btn.style.opacity='1'; btn.style.pointerEvents='auto';
-    document.getElementById('prCnt').textContent=`추천 ${_peerUsed}`;
+    empty.innerHTML = !PEER_RX.length ? '아직 다른 약사의 소견이 없어요<br>약사님이 첫 응답자입니다'
+      : (_peerUsed ? '소견을 모두 봤어요<br>아래 결과 보기를 눌러주세요' : '지금 추천할 새 소견이 없어요');
+    if(PEER_RX.length && !_peerUsed){const btn=document.getElementById('peerDoneBtn');btn.textContent='결과 보기';btn.style.opacity='1';btn.style.pointerEvents='auto';}
     return;
   }
   stage.style.display='flex'; tip.style.display='block'; empty.style.display='none';
-  stage.innerHTML = PEER_DECK.map((rx,i)=>{
-    const st=_peerSt[rx.id];
-    if(st==='y') return `<div class="pr-c done y">✓ 추천했어요</div>`;
-    if(st==='n') return `<div class="pr-c done n" onclick="peerUndo('${rx.id}')">패스했어요<small>되돌리기</small></div>`;
-    return `<div class="pr-c" data-rid="${rx.id}"><div class="ov yes">추천</div><div class="ov no">패스</div><p>${peerHL(rx)}</p></div>`;
-  }).join('');
+  stage.innerHTML = PEER_DECK.map(rx =>
+    `<div class="pr-c" data-rid="${rx.id}"><div class="ov yes">추천</div><div class="ov no">패스</div><p>${peerHL(rx)}</p></div>`).join('');
   stage.querySelectorAll('.pr-c[data-rid]').forEach(el=>_bindPeerCard(el, el.dataset.rid));
-  _peerCaps();
 }
-function peerUndo(id){ delete _peerSt[id]; drawPeerRx(); }
+/* 넘긴 자리에 다음 소견을 채움 */
 function _peerDecide(rid, yes){
-  if(yes){ recommendRx(rid, true); _peerUsed++; _peerSt[rid]='y'; }
-  else _peerSt[rid]='n';
+  if(yes){ recommendRx(rid, true); _peerUsed++; }
+  const i = PEER_DECK.findIndex(r => r.id === rid);
+  if(i >= 0){ const nx = _peerQ.shift(); if(nx) PEER_DECK[i] = nx; else PEER_DECK.splice(i,1); }
   prZoomClose(); drawPeerRx();
+  const el = document.querySelector(`#peerStage .pr-c[data-rid="${PEER_DECK[i]?.id}"]`);
+  if(el){ el.style.opacity='0'; el.style.transform='scale(.96)'; requestAnimationFrame(()=>{ el.style.transition='opacity .25s, transform .25s'; el.style.opacity='1'; el.style.transform=''; setTimeout(()=>el.style.transition='',260); }); }
+  if(yes) toast('추천했어요');
 }
 function _bindPeerCard(el, rid){
   const yes = el.querySelector('.ov.yes'), no = el.querySelector('.ov.no');
