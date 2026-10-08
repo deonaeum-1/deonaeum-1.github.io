@@ -67,6 +67,15 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
 .status-badge{font-size:11px;padding:3px 8px;border-radius:999px;font-weight:600}
 .status-live{background:#E8F5E9;color:#2E7D32}
 .status-draft{background:var(--bg);color:var(--t3)}
+.up-btn{padding:10px 16px;border-radius:10px;background:#7C3AED;color:#fff;border:0;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.up-prog{flex:1;display:flex;align-items:center;font-size:12px;color:var(--t2)}
+.set-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.set-row input[type=text]{flex:1;padding:9px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:14px;min-width:0}
+.set-row input[type=color]{width:36px;height:34px;border:none;background:none;padding:0}
+.set-no{font-weight:800;width:28px;text-align:center}
+.set-wk{display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap}
+.set-sv{padding:8px 12px;border-radius:8px;border:0;background:var(--pd);color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+.case-set{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:#EEEBFF;color:#5856D6}
 </style>
 </head>
 <body>
@@ -90,6 +99,12 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
 
   <!-- 케이스 탭 -->
   <div id="casesTab">
+    <div class="form-wrap" style="margin-bottom:14px">
+      <div class="form-title">세트 관리</div>
+      <div id="setList"><div class="empty">로딩 중...</div></div>
+      <button class="tag-add-btn" style="margin-top:10px" onclick="addSetRow()">＋ 세트 추가</button>
+      <div class="field-hint">이번 주 동그라미를 누르면 앱 홈 첫 화면 세트가 바로 바뀌어요</div>
+    </div>
     <button class="add-btn" onclick="openCaseForm()">＋ 새 케이스 추가</button>
     <div id="caseList"><div class="empty">로딩 중...</div></div>
   </div>
@@ -180,6 +195,25 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
         <input id="fTitle" placeholder="예: 60대 여성 · 눈 피로 + 무릎 통증">
       </div>
 
+      <div class="field" style="display:flex;gap:10px">
+        <div style="flex:1"><label>세트</label><select id="fSet" style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px"></select></div>
+        <div style="flex:1"><label>역할</label><select id="fRole" onchange="toggleAcad()" style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);font-size:14px">
+          <option value="">없음</option><option value="case1">케이스1</option><option value="case2">케이스2</option><option value="acad">학술</option></select></div>
+      </div>
+
+      <div id="acadBox" style="display:none;border:1.5px solid #7C3AED;border-radius:14px;padding:14px;margin-bottom:16px">
+        <div style="font-size:14px;font-weight:800;color:#7C3AED;margin-bottom:10px">학술 자료</div>
+        <div class="field"><label>학술 영상</label>
+          <div style="display:flex;gap:8px;margin-bottom:6px"><input type="file" id="fEduVideoFile" accept="video/*" style="display:none" onchange="uploadTo(this,'edu','fEduVideo','pEduVideo')"><button class="up-btn" onclick="document.getElementById('fEduVideoFile').click()">📁 파일 선택</button><div id="pEduVideo" class="up-prog"></div></div>
+          <input id="fEduVideo" placeholder="영상 URL"></div>
+        <div class="field"><label>인포그래픽 이미지</label>
+          <div style="display:flex;gap:8px;margin-bottom:6px"><input type="file" id="fEduImageFile" accept="image/*" style="display:none" onchange="uploadTo(this,'edu','fEduImage','pEduImage')"><button class="up-btn" onclick="document.getElementById('fEduImageFile').click()">📁 파일 선택</button><div id="pEduImage" class="up-prog"></div></div>
+          <input id="fEduImage" placeholder="이미지 URL"></div>
+        <div class="field" style="margin-bottom:0"><label>약사용 자세한 정보 (PDF)</label>
+          <div style="display:flex;gap:8px;margin-bottom:6px"><input type="file" id="fEduPdfFile" accept="application/pdf" style="display:none" onchange="uploadTo(this,'edu','fEduPdf','pEduPdf')"><button class="up-btn" onclick="document.getElementById('fEduPdfFile').click()">📁 파일 선택</button><div id="pEduPdf" class="up-prog"></div></div>
+          <input id="fEduPdf" placeholder="PDF URL"></div>
+      </div>
+
       <div class="field">
         <label>태그</label>
         <div class="tag-wrap" id="tagWrap"></div>
@@ -236,8 +270,7 @@ const db = firebase.firestore();
 window._db = db;
 window._fbReady = true;
 
-// 케이스 로드
-loadCases();
+// 케이스 로드는 아래 스크립트 끝에서 실행
 /* 페이지 진입 시 심사 대기 건수만 조회해 탭 배지에 표시 */
 (async()=>{
   try{
@@ -287,6 +320,7 @@ async function loadCases() {
           <div class="case-title">${c.emoji||''} ${c.title||'제목 없음'}</div>
           <div class="case-meta">
             ${(c.tags||[]).map(t=>`<span class="case-tag">#${t}</span>`).join('')}
+            ${c.set?`<span class="case-set">${c.set}세트 · ${({case1:'케이스1',case2:'케이스2',acad:'학술'})[c.role]||'역할 없음'}</span>`:''}
             <span>${c.respondents||0}명 응답</span>
           </div>
         </div>
@@ -303,7 +337,8 @@ function openCaseForm(id) {
   tags = [];
 
   // 폼 초기화
-  ['fTitle','fVideo','fEmoji'].forEach(f=>{
+  fillSetSelect();
+  ['fTitle','fVideo','fEmoji','fEduVideo','fEduImage','fEduPdf'].forEach(f=>{
     document.getElementById(f).value = '';
   });
   document.getElementById('tagWrap').innerHTML = '';
@@ -318,18 +353,25 @@ function openCaseForm(id) {
     document.getElementById('fTitle').value = c.title||'';
     document.getElementById('fVideo').value = c.videoUrl||'';
     document.getElementById('fEmoji').value = c.emoji||'';
+    document.getElementById('fSet').value = c.set!=null?String(c.set):'';
+    document.getElementById('fRole').value = c.role||'';
+    document.getElementById('fEduVideo').value = c.eduVideoUrl||'';
+    document.getElementById('fEduImage').value = c.eduImageUrl||'';
+    document.getElementById('fEduPdf').value = c.eduPdfUrl||'';
     tags = c.tags||[];
     renderTags();
     previewVideo();
     document.getElementById('delBtn').style.display = 'block';
   } else {
+    document.getElementById('fSet').value='';document.getElementById('fRole').value='';
     // 추가 모드
-    const nextNum = String(cases.length + 1).padStart(3,'0');
+    const nextNum = nextCaseId();
     document.getElementById('formTitleText').textContent = '새 케이스';
     document.getElementById('formCaseNum').textContent = `#${nextNum}`;
     document.getElementById('delBtn').style.display = 'none';
   }
 
+  toggleAcad();
   document.getElementById('caseFormWrap').style.display = 'block';
   document.querySelector('.wrap').style.display = 'none';
   window.scrollTo(0,0);
@@ -400,7 +442,10 @@ async function saveCase() {
   const title = document.getElementById('fTitle').value.trim();
   if (!title) { toast('케이스 제목을 입력해주세요'); return; }
 
-  const id = editingId || String(cases.length + 1).padStart(3,'0');
+  const id = editingId || nextCaseId();
+  const DEL = firebase.firestore.FieldValue.delete();
+  const setV = document.getElementById('fSet').value;
+  const role = document.getElementById('fRole').value;
   const data = {
     id,
     title,
@@ -409,10 +454,21 @@ async function saveCase() {
     emoji: document.getElementById('fEmoji').value.trim() || '👤',
     respondents: cases.find(c=>c.id===id)?.respondents || 0,
     updatedAt: new Date().toISOString(),
+    set: setV ? Number(setV) : DEL,
+    role: role || DEL,
   };
+  if (role === 'acad') {
+    data.type = 'edu';
+    data.eduVideoUrl = document.getElementById('fEduVideo').value.trim();
+    data.eduImageUrl = document.getElementById('fEduImage').value.trim();
+    data.eduPdfUrl = document.getElementById('fEduPdf').value.trim();
+  } else if ((cases.find(c=>c.id===id)||{}).type === 'edu') {
+    data.type = DEL;
+  }
 
   try {
-    await window._db.collection('cases').doc(id).set(data);
+    /* merge: 폼에 없는 기존 필드(week 등)는 지우지 않음 */
+    await window._db.collection('cases').doc(id).set(data, {merge:true});
     toast(editingId ? '케이스가 수정됐어요 ✓' : '케이스가 추가됐어요 ✓');
     setTimeout(() => closeForm(), 800);
   } catch(e) {
@@ -612,6 +668,83 @@ async function uploadVideo(input) {
   }
 }
 window.uploadVideo = uploadVideo;
+
+/* ── 세트 ── */
+let setsData = {}, featuredSet = null;
+const SET_DEF_COLORS = {1:'#E11D48',2:'#7C3AED',3:'#0EA5E9',4:'#D97706',5:'#16A34A',6:'#3182F6',7:'#F97316'};
+function nextCaseId(){
+  const nums = cases.map(c=>c.id).filter(x=>/^\d+$/.test(x)).map(Number);
+  return String((nums.length?Math.max(...nums):0)+1).padStart(3,'0');
+}
+async function loadSets(){
+  try{
+    const [ss,cf] = await Promise.all([window._db.collection('sets').get(), window._db.collection('config').doc('home').get()]);
+    setsData = {}; ss.forEach(d=>{ setsData[d.id]=d.data()||{}; });
+    featuredSet = cf.exists ? (cf.data()||{}).featuredSet ?? null : null;
+    renderSets();
+  }catch(e){ document.getElementById('setList').innerHTML = `<div class="empty">세트 불러오기 실패<br>${e.message}</div>`; }
+}
+function renderSets(){
+  const ids = Object.keys(setsData).sort((a,b)=>Number(a)-Number(b));
+  document.getElementById('setList').innerHTML = ids.length ? ids.map(i=>{
+    const x = setsData[i];
+    return `<div class="set-row">
+      <span class="set-no">${i}</span>
+      <input type="text" id="setT${i}" value="${x.topic||''}" placeholder="주제 (예: 철분제)">
+      <input type="color" id="setC${i}" value="${x.color||SET_DEF_COLORS[i]||'#191F28'}">
+      <label class="set-wk"><input type="radio" name="wk" ${String(featuredSet)===String(i)?'checked':''} onchange="setFeatured(${i})">이번 주</label>
+      <button class="set-sv" onclick="saveSet('${i}')">저장</button>
+    </div>`;}).join('') : '<div class="empty">세트가 없어요</div>';
+}
+function addSetRow(){
+  const ids = Object.keys(setsData).map(Number);
+  const n = String((ids.length?Math.max(...ids):0)+1);
+  setsData[n] = {topic:''}; renderSets();
+  document.getElementById('setT'+n).focus();
+}
+async function saveSet(i){
+  const topic = document.getElementById('setT'+i).value.trim();
+  if(!topic){ toast('주제를 입력해주세요'); return; }
+  const color = document.getElementById('setC'+i).value;
+  try{
+    await window._db.collection('sets').doc(String(i)).set({topic,color},{merge:true});
+    setsData[i] = {...setsData[i],topic,color};
+    toast(`${i}세트 저장 ✓`);
+  }catch(e){ toast('저장 실패: '+e.message); }
+}
+async function setFeatured(i){
+  try{
+    await window._db.collection('config').doc('home').set({featuredSet:Number(i)},{merge:true});
+    featuredSet = Number(i);
+    toast(`이번 주 세트: ${(setsData[i]||{}).topic||i} ✓`);
+  }catch(e){ toast('저장 실패: '+e.message); }
+}
+function fillSetSelect(){
+  const ids = Object.keys(setsData).sort((a,b)=>Number(a)-Number(b));
+  document.getElementById('fSet').innerHTML = '<option value="">없음</option>' + ids.map(i=>`<option value="${i}">${i}세트 · ${setsData[i].topic||''}</option>`).join('');
+}
+function toggleAcad(){
+  const ac = document.getElementById('fRole').value==='acad';
+  document.getElementById('acadBox').style.display = ac ? 'block' : 'none';
+  /* 학술은 학술 영상 칸을 쓰므로 일반 영상 칸은 숨김 */
+  const vf = document.getElementById('fVideo').closest('.field'); if(vf) vf.style.display = ac ? 'none' : '';
+  const vp = document.getElementById('vidPreview'); if(vp) vp.style.display = ac ? 'none' : '';
+}
+async function uploadTo(input, folder, targetId, progId){
+  const file = input.files[0]; if(!file) return;
+  const prog = document.getElementById(progId);
+  prog.textContent = '업로드 중... 0%';
+  try{
+    const ref = firebase.storage().ref(`${folder}/${Date.now()}_${file.name}`);
+    const task = ref.put(file);
+    task.on('state_changed',
+      snap=>{ prog.textContent = `업로드 중... ${Math.round(snap.bytesTransferred/snap.totalBytes*100)}%`; },
+      err=>{ prog.textContent = '업로드 실패: '+err.message; },
+      async()=>{ document.getElementById(targetId).value = await task.snapshot.ref.getDownloadURL(); prog.textContent='✓ 업로드 완료 (저장 눌러야 반영)'; });
+  }catch(e){ prog.textContent = '오류: '+e.message; }
+}
+loadSets();
+loadCases(); /* 첫 진입 시 목록 로드 (위쪽 스크립트에서는 함수가 아직 없어 실패하던 부분) */
 
 async function uploadProdImage(prodId, input) {
   const file = input.files[0];
