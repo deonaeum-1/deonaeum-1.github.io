@@ -1504,6 +1504,9 @@ body{
 .rx-hl mark{--kc:#3182F6;--kb:#E8F2FF;background:var(--kb);color:var(--kc);border-radius:4px;box-shadow:0 0 0 2px var(--kb)}
 
 .rx-chip{--kc:#3182F6;display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--kc);border-radius:999px;padding:6px 6px 6px 6px;font-size:13.5px;font-weight:800;color:var(--t);max-width:100%}
+.rx-chip{cursor:pointer;padding-left:12px!important}
+.rx-chip .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--kc)}
+.rx-tip{width:100%;font-size:12px;color:var(--t3);padding:2px 4px 0}
 .rx-chip .no{flex:none;width:20px;height:20px;border-radius:50%;background:var(--kc);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
 .rx-chip .nm{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .rx-chip .co{font-weight:600;color:var(--t3);font-size:12px;flex:none}
@@ -3184,7 +3187,7 @@ function ingFreqFromResponses(){
     if(x.nick===S.user?.nick)return; /* 본인 응답 제외 */
     (x.pairs||[]).forEach((p,idx)=>{
       if(!p.ing)return;
-      const w=idx===0?3:idx===1?2:1; /* 순위 가중치 */
+      const w=1; /* 순서 의미 없음 — 동일 가중치 */
       freq[p.ing]=(freq[p.ing]||0)+w;
     });
   });
@@ -3515,7 +3518,7 @@ function updatePrescGate(){
    ============================================================ */
 let OTC=null,_otcLoading=null;
 let _rxTags=[],_rxTok=null,_rxRes=[],_rxUse={};
-const RX_MAX=3,RX_MIN_Q=2,RX_SUG_MAX=30;
+const RX_MAX=4,RX_MIN_Q=2,RX_SUG_MAX=30;
 const RX_KIND={core:'건기식',food:'식품',otc:'일반의약품',ing:'성분'};
 function rxKindKey(t){return t.kind==='core'&&t.cat&&t.cat!=='건기식'?'food':t.kind;}
 
@@ -3690,7 +3693,7 @@ function rxOnBlur(){
 function rxPick(i){
   const r=_rxRes[i],tok=_rxTok;if(!r)return;
   if(_rxTags.some(t=>t.id===r.id)){toast('이미 태그했어요');return;}
-  if(_rxTags.length>=RX_MAX){toast('처방 제품은 최대 3개까지 태그할 수 있어요');return;}
+  if(_rxTags.length>=RX_MAX){toast('처방 제품은 최대 4개까지 태그할 수 있어요');return;}
   const ta=document.getElementById('rxText');
   if(tok){
     const v=ta.value,after=v.slice(tok.e);
@@ -3710,10 +3713,37 @@ function rxRenderTags(){
     w.innerHTML='<div class="rx-tags-empty">제품 이름을 쓰면 여기에 담겨요</div>';
     rxSyncHL();return;
   }
-  w.innerHTML=_rxTags.map((t,i)=>`<span class="rx-chip k-${rxKindKey(t)}"><span class="no">${i+1}</span><span class="nm">${esc(t.n)}</span>${t.c?`<span class="co">${esc(t.c)}</span>`:''}${i>0?`<button type="button" onclick="rxMoveUp(${i})" aria-label="순위 올리기">↑</button>`:''}<button type="button" onclick="rxRemove(${i})" aria-label="태그 삭제">×</button></span>`).join('');
+  w.innerHTML=_rxTags.map((t,i)=>`<span class="rx-chip k-${rxKindKey(t)}" onclick="rxOpenTag(${i})"><span class="dot"></span><span class="nm">${esc(t.n)}</span>${t.c?`<span class="co">${esc(t.c)}</span>`:''}<button type="button" onclick="event.stopPropagation();rxRemove(${i})" aria-label="태그 삭제">×</button></span>`).join('')
+    +'<div class="rx-tip">제품을 누르면 자세한 정보를 볼 수 있어요</div>';
   rxSyncHL();
 }
 /* 소견 글 안의 태그 제품명 표시 — 입력칸 뒤에 같은 글을 깔고 제품명만 색칠 */
+function rxOpenTag(i){
+  const t=_rxTags[i];if(!t)return;
+  document.getElementById('rxText').blur();
+  if(t.kind==='core'&&P.find(x=>x.id===t.id)){openProdDetail(t.id);return;}
+  const box=(l,v)=>`<div style="flex:1;background:var(--bg);border-radius:10px;padding:10px 12px"><div style="font-size:10px;color:var(--t3);margin-bottom:3px">${l}</div><div style="font-size:13px;font-weight:700;color:var(--t)">${v||'-'}</div></div>`;
+  let h='';
+  if(t.kind==='otc'){
+    const o=(OTC||[]).find(x=>x.id===t.id)||{n:t.n,c:t.c,g:t.ings||[]};
+    const g=(o.g||[]).map(c=>`<span class="ch">${esc(c)}</span>`).join(' ')||'<span style="font-size:12px;color:var(--t3)">성분 정보 없음</span>';
+    h=`<div class="pop-title">${esc(o.n)}</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">${box('제조사',esc(o.c||''))}${box('분류','일반의약품')}</div>
+      ${o.t?`<div style="display:flex;gap:8px;margin-bottom:14px">${box('약효 분류',esc(o.t))}</div>`:''}
+      ${o.f&&o.f!==o.n?`<div style="font-size:12px;color:var(--t2);margin-bottom:12px"><strong style="color:var(--t3)">품목명</strong> · ${esc(o.f)}</div>`:''}
+      <div style="font-size:12px;font-weight:700;color:var(--t3);margin-bottom:6px">${_DNA} 성분</div>
+      <div class="pri2">${g}</div>`;
+  }else{
+    const nq=rxNorm(t.n);
+    const ps=P.filter(p=>(p.i||[]).concat(p.cats||[]).some(g=>rxNorm(g).startsWith(nq)));
+    h=`<div class="pop-title">${esc(t.n)}</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">${box('분류','건기식 성분')}${box('함유 제품',ps.length+'개')}</div>
+      ${ps.length?`<div style="font-size:12px;font-weight:700;color:var(--t3);margin-bottom:6px">이 성분이 들어간 제품</div>
+      <div class="pri2">${ps.slice(0,12).map(p=>`<span class="ch">${esc(p.n)}</span>`).join(' ')}</div>`:''}`;
+  }
+  document.getElementById('popContent').innerHTML=h;
+  showPop();
+}
 function rxSyncHL(){
   const ta=document.getElementById('rxText'),hl=document.getElementById('rxHL');if(!ta||!hl)return;
   const cs=getComputedStyle(ta);
@@ -4411,7 +4441,7 @@ async function renderRanking(t,keep){
         const v=u.prod[p.pid]=u.prod[p.pid]||{cnt:0,nicks:new Set(),rec:0,best:null,pos:[0,0,0],co:{},score:0};
         v.cnt++;v.rec+=rec;if(r.nick)v.nicks.add(r.nick);
         v.pos[Math.min(idx,2)]++;
-        v.score+=Math.max(3-idx,1);  /* 1순위 3점 · 2순위 2점 · 3순위 1점 */
+        v.score+=1;  /* 순서 의미 없음 — 동일 가중치 */
         (r.pairs||[]).forEach(q=>{if(q.pid&&q.pid!==p.pid)v.co[q.pid]=(v.co[q.pid]||0)+1;});
         const sm=(r.summary||'').trim();
         if(sm&&(!v.best||rec>v.best.recs))v.best={recs:rec,summary:sm,nick:r.nick||'',first:idx===0};
