@@ -481,6 +481,7 @@ body{
 .pr-c.drag{transition:none}
 .pr-c p{font-size:15.5px;line-height:1.6;color:var(--t);word-break:keep-all}
 .pr-c::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(rgba(255,255,255,0),var(--card));pointer-events:none}
+.pr-c.ovf::before{content:"전체 보기 ›";position:absolute;right:12px;bottom:8px;z-index:1;font-size:13px;font-weight:800;color:var(--p);background:var(--card);padding:2px 0 2px 10px}
 .pr-c .ov{position:absolute;inset:0;display:flex;align-items:center;font-size:20px;font-weight:900;opacity:0;pointer-events:none;padding:0 22px;z-index:2}
 .pr-c .ov.yes{justify-content:flex-start;color:var(--p);background:rgba(232,242,255,.85)}
 .pr-c .ov.no{justify-content:flex-end;color:#F04438;background:rgba(254,228,226,.85)}
@@ -3949,14 +3950,38 @@ function _buildPeerQueue(){
   }
   return out;
 }
-/* 소견 안 제품명 색칠 (소견 입력 화면과 같은 색) */
+/* 소견 안 제품명 색칠 (소견 입력 화면과 같은 색)
+   1) 정식 제품명  2) 제품명의 일부 구절 ("리포좀 비타민C")  3) 그 제품으로 고른 성분 ("철분")
+   예전 방식 소견은 제품명을 줄여 쓴 경우가 많아 2·3이 필요 — 그 약사가 실제로 고른 제품에서만 뽑음 */
 function peerHL(rx){
-  let t = esc((rx.summary||'').trim());
-  (rx.pairs||[]).filter(p=>p.pnm).sort((a,b)=>b.pnm.length-a.pnm.length).forEach(p=>{
-    const k = p.kind==='otc'?'otc':p.kind==='ing'?'ing':'';
-    t = t.split(esc(p.pnm)).join(`\u0000${k}\u0001${esc(p.pnm)}\u0002`);
+  const txt=(rx.summary||'').trim(), low=txt.toLowerCase();
+  const hits=[];
+  const add=(w,k)=>{
+    if(!w||w.length<2)return;
+    const lw=w.toLowerCase();let i=low.indexOf(lw);
+    while(i>=0){hits.push({s:i,e:i+w.length,k});i=low.indexOf(lw,i+1);}
+  };
+  (rx.pairs||[]).forEach(p=>{
+    const k=p.kind==='otc'?'otc':p.kind==='ing'?'ing':'';
+    const nm=String(p.pnm||'').trim();
+    if(nm){
+      add(nm,k);
+      const ws=nm.replace(/[()\[\]]/g,' ').split(/\s+/).filter(Boolean);
+      for(let L=ws.length-1;L>=1;L--)for(let i=0;i+L<=ws.length;i++){
+        const ph=ws.slice(i,i+L).join(' ');
+        if(L===1&&(ph.length<3||/^[\d&+x.]+$/i.test(ph)))continue;
+        add(ph,k);
+      }
+    }
+    if(p.ing&&p.ing!==nm)add(String(p.ing).replace(/\(.*\)/,''),k||'');
   });
-  return t.replace(/\u0000([a-z]*)\u0001/g,'<mark class="pr-hl $1">').replace(/\u0002/g,'</mark>');
+  /* 겹치면 긴 것 우선 */
+  hits.sort((a,b)=>(b.e-b.s)-(a.e-a.s)||a.s-b.s);
+  const keep=[];hits.forEach(h=>{if(!keep.some(x=>h.s<x.e&&x.s<h.e))keep.push(h);});
+  keep.sort((a,b)=>a.s-b.s);
+  let out='',pos=0;
+  keep.forEach(h=>{out+=esc(txt.slice(pos,h.s))+`<mark class="pr-hl ${h.k}">${esc(txt.slice(h.s,h.e))}</mark>`;pos=h.e;});
+  return out+esc(txt.slice(pos));
 }
 function _peerCaps(){
   document.getElementById('prCnt').textContent = `추천 ${_peerUsed}`;
@@ -3978,7 +4003,11 @@ function drawPeerRx(){
   stage.style.display='flex'; tip.style.display='block'; empty.style.display='none';
   stage.innerHTML = PEER_DECK.map(rx =>
     `<div class="pr-c" data-rid="${rx.id}"><div class="ov yes">추천</div><div class="ov no">패스</div><p>${peerHL(rx)}</p></div>`).join('');
-  stage.querySelectorAll('.pr-c[data-rid]').forEach(el=>_bindPeerCard(el, el.dataset.rid));
+  stage.querySelectorAll('.pr-c[data-rid]').forEach(el=>{
+    _bindPeerCard(el, el.dataset.rid);
+    const p=el.querySelector('p');
+    if(p&&p.scrollHeight>el.clientHeight-20)el.classList.add('ovf');
+  });
 }
 /* 넘긴 자리에 다음 소견을 채움 */
 function _peerDecide(rid, yes){
