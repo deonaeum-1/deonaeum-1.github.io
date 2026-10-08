@@ -433,25 +433,34 @@ body{
 
 /* ── 세트 홈 (이번 주 세트 카드 3개) ── */
 .seth{padding:4px 20px 120px}
-.sh-top{display:flex;align-items:center;gap:8px;margin:6px 0 16px}
-.sh-topic{font-size:20px;font-weight:800;color:var(--t);letter-spacing:-.4px}
+.sh-top{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 0 14px}
+.sh-pick{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:4px 8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sh-pick svg{flex:none}
+.sh-topic{font-size:24px;font-weight:900;letter-spacing:-.5px}
 .sh-wk{font-size:12px;font-weight:700;color:var(--p);background:var(--pb);padding:4px 10px;border-radius:999px}
-.sh-row{display:flex;flex-direction:column;gap:20px}
+.sh-row{display:flex;flex-direction:column;gap:14px}
 .sh-col{display:flex;flex-direction:column;min-width:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.sh-ti{font-size:17px;font-weight:800;color:var(--t);line-height:1.35;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-bottom:10px;letter-spacing:-.3px}
-.sh-cd{position:relative;aspect-ratio:2/1;border-radius:18px;overflow:hidden;background:#191F28;border:2px solid transparent;transition:transform .15s}
+.sh-ti{font-size:16px;font-weight:800;color:var(--t);line-height:1.35;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-bottom:8px;letter-spacing:-.3px;text-align:center}
+.sh-cd{position:relative;aspect-ratio:2.5/1;border-radius:18px;overflow:hidden;background:#191F28;border:2px solid transparent;transition:transform .15s}
 .sh-col:active .sh-cd{transform:scale(.97)}
 .sh-cd video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.sh-cd .pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center}
+.sh-cd .pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center}
 .sh-cd .bd{position:absolute;left:12px;bottom:12px;font-size:12px;font-weight:800;color:#fff;padding:5px 11px;border-radius:999px;background:rgba(25,31,40,.6)}
 .sh-cd .bd.ok{background:#00A37A}
 .sh-cd .bd.need{background:#FF6B35}
 .sh-cd .bd.ac{background:#7C3AED}
 .sh-col.acad .sh-cd{border-color:#7C3AED}
 .sh-col.soon{cursor:default}
-.sh-col.soon .sh-cd{background:var(--bd-soft);border:2px dashed var(--bd);aspect-ratio:auto;height:64px}
+.sh-col.soon .sh-cd{background:var(--bd-soft);border:2px dashed var(--bd);aspect-ratio:auto;height:48px}
 .sh-col.soon .sh-ti{color:var(--t3)}
 .sh-cd .lk{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.ss-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
+.ss{width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
+.ss h4{font-size:15px;font-weight:800;color:var(--t2);text-align:center;margin-bottom:12px}
+.ss-it{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;border-radius:14px;padding:14px 12px;font-size:17px;font-weight:800;cursor:pointer;text-align:left}
+.ss-it.on{background:var(--bg)}
+.ss-it i{width:10px;height:10px;border-radius:50%;flex:none}
+.ss-it em{margin-left:auto;font-style:normal;font-size:12px;font-weight:700;color:var(--p);background:var(--pb);padding:3px 9px;border-radius:999px}
 .sh-col.soon .sh-cd span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--t3)}
 .dempty{
   position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
@@ -2065,7 +2074,9 @@ const _TAG='<svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentCo
 const _DNA='<svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c0 6 10 6 10 12"/><path d="M17 3c0 6-10 6-10 12"/><path d="M7 15c0 3 1.5 6 5 6s5-3 5-6"/><path d="M8 6.5h8"/><path d="M8 11.5h8"/><path d="M8.5 17.5h7"/></svg>';
 const _DOC='<svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>';
 
-let SETS={},FEATURED_SET=null;
+let SETS={},FEATURED_SET=null,SEL_SET=null;
+const SET_COLORS={1:'#E11D48',2:'#7C3AED',3:'#0EA5E9',4:'#D97706',5:'#16A34A',6:'#3182F6',7:'#F97316'};
+function setColor(n){return (SETS[String(n)]||{}).color||SET_COLORS[n]||'var(--t)';}
 async function loadData(){
   const t0=performance.now();
   const [ps,cs,rs]=await Promise.all([
@@ -2755,7 +2766,8 @@ function caseDone(id){return S.hist.some(h=>h.caseId===id)&&recDoneForCase(id);}
 function setProgress(n){const x=setCases(n);return ['case1','case2'].filter(r=>x[r]&&caseDone(x[r].id)).length;}
 function renderSetHome(){
   const el=document.getElementById('setHome');
-  const n=FEATURED_SET, x=setCases(n), done=setProgress(n);
+  if(SEL_SET==null)SEL_SET=FEATURED_SET;
+  const n=SEL_SET, x=setCases(n), done=setProgress(n);
   const topic=(SETS[String(n)]||{}).topic||'';
   const PL='<div class="pl"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></div>';
   const vid=u=>u?`<video src="${u}#t=1" muted playsinline autoplay preload="auto" onloadeddata="try{this.pause()}catch(e){}"></video>`:'';
@@ -2768,9 +2780,16 @@ function renderSetHome(){
     const bd=pres?(recDoneForCase(c.id)?'<span class="bd ok">완료</span>':'<span class="bd need">추천하기</span>'):'';
     return `<div class="sh-col" onclick="startCase('${c.id}')"><div class="sh-ti">${c.title}</div><div class="sh-cd">${vid(c.videoUrl)}${PL}${bd}</div></div>`;
   };
-  el.innerHTML=`<div class="sh-top"><span class="sh-topic">${topic}</span><span class="sh-wk">이번 주</span></div>
+  el.innerHTML=`<div class="sh-top"><button class="sh-pick" onclick="openSetPicker()"><span class="sh-topic" style="color:${setColor(n)}">${topic}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${setColor(n)}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>${String(n)===String(FEATURED_SET)?'<span class="sh-wk">이번 주</span>':''}</div>
     <div class="sh-row">${col(x.case1,'case1')}${col(x.case2,'case2')}${col(x.acad,'acad')}</div>`;
 }
+function openSetPicker(){
+  const ids=Object.keys(SETS).sort((a,b)=>Number(a)-Number(b));
+  const bg=document.createElement('div');bg.className='ss-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  bg.innerHTML=`<div class="ss"><h4>주제 선택</h4>${ids.map(i=>`<button class="ss-it ${String(i)===String(SEL_SET)?'on':''}" onclick="pickSet('${i}')"><i style="background:${setColor(i)}"></i><span style="color:${setColor(i)}">${SETS[i].topic||('세트 '+i)}</span>${String(i)===String(FEATURED_SET)?'<em>이번 주</em>':''}</button>`).join('')}</div>`;
+  document.body.appendChild(bg);
+}
+function pickSet(i){SEL_SET=i;document.querySelector('.ss-bg')?.remove();renderSetHome();}
 function openAcad(id){toast('학술 화면은 다음 단계에서 연결돼요');}
 
 function renderHome(){
