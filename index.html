@@ -3953,6 +3953,32 @@ function _buildPeerQueue(){
 /* 소견 안 제품명 색칠 (소견 입력 화면과 같은 색)
    1) 정식 제품명  2) 제품명의 일부 구절 ("리포좀 비타민C")  3) 그 제품으로 고른 성분 ("철분")
    예전 방식 소견은 제품명을 줄여 쓴 경우가 많아 2·3이 필요 — 그 약사가 실제로 고른 제품에서만 뽑음 */
+/* 성분 사전 — 같은 성분의 여러 표현을 성분으로 인식 (예: 엽산 · 활성엽산 · 활성형 엽산 · 메틸폴레이트)
+   공백은 있어도 없어도 됨, 대소문자 무시 */
+const ING_SYN=[
+  '헴\\s*철','비헴\\s*철','킬레이트\\s*철','리포좀\\s*철','철분제?',
+  '활성형?\\s*엽산','메틸\\s*폴레이트','5-?MTHF','엽산',
+  '리포좀\\s*비타민\\s*C','비타민\\s*C',
+  '비타민\\s*B\\s*12','메틸\\s*코발라민','코발라민','B\\s*12','비타민\\s*B\\s*군','B\\s*군','비타민\\s*B\\s*6','비타민\\s*B\\s*1','벤포티아민','비오틴','나이아신','판토텐산','리보플라빈',
+  '비타민\\s*D\\s*3?','비타민\\s*E','비타민\\s*K\\s*2?','비타민\\s*A',
+  '코엔자임\\s*Q\\s*10','코큐텐','Co\\s*Q\\s*10','유비퀴놀',
+  '감마\\s*리놀렌산','GLA','보라지\\s*(오일|유)','달맞이꽃\\s*종자유',
+  '오메가\\s*-?\\s*3','EPA','DHA',
+  '칼슘','마그네슘','아연','셀레늄','요오드','크롬','미네랄',
+  '유산균','프로바이오틱스','프리바이오틱스','신바이오틱스',
+  '밀크\\s*시슬','실리마린','피크노제놀','이노시톨','루테인','지아잔틴','아스타잔틴',
+  '홍삼','홍경천','테아닌','멜라토닌','콜라겐','글루타치온','알파\\s*리포산','커큐민','강황',
+  '쏘팔메토','레시[틴친]','대마\\s*종자유','종합\\s*비타민','멀티\\s*비타민'
+];
+let _ingRe=null;
+function ingRegex(){
+  if(_ingRe)return _ingRe;
+  const extra=(typeof ING_MASTER!=='undefined'?ING_MASTER:[]).map(g=>g.replace(/\(.*\)/,'').trim()).filter(g=>g.length>=2)
+    .map(g=>g.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s*'));
+  const all=[...ING_SYN,...extra].sort((a,b)=>b.length-a.length);
+  _ingRe=new RegExp('('+all.join('|')+')','gi');
+  return _ingRe;
+}
 function peerHL(rx){
   const txt=(rx.summary||'').trim(), low=txt.toLowerCase();
   const hits=[];
@@ -3975,9 +4001,11 @@ function peerHL(rx){
     }
     if(p.ing&&p.ing!==nm)add(String(p.ing).replace(/\(.*\)/,''),k||'');
   });
-  /* 겹치면 긴 것 우선 */
+  /* 겹치면 긴 것 우선 — 제품 표시가 먼저, 남는 자리에 성분 표시 */
   hits.sort((a,b)=>(b.e-b.s)-(a.e-a.s)||a.s-b.s);
   const keep=[];hits.forEach(h=>{if(!keep.some(x=>h.s<x.e&&x.s<h.e))keep.push(h);});
+  const re=ingRegex();re.lastIndex=0;let m;
+  while((m=re.exec(txt))){const h={s:m.index,e:m.index+m[0].length,k:'ing'};if(m[0].length&&!keep.some(x=>h.s<x.e&&x.s<h.e))keep.push(h);if(!m[0].length)re.lastIndex++;}
   keep.sort((a,b)=>a.s-b.s);
   let out='',pos=0;
   keep.forEach(h=>{out+=esc(txt.slice(pos,h.s))+`<mark class="pr-hl ${h.k}">${esc(txt.slice(h.s,h.e))}</mark>`;pos=h.e;});
@@ -4129,7 +4157,7 @@ function openRxDetail(id){
   document.getElementById('popContent').innerHTML=`
     <div class="pop-title" style="display:flex;align-items:center;gap:7px">${_nickAvatar(rx.nick,24)}${esc(rx.nick)} 님의 처방</div>
     ${prods}
-    ${(rx.summary||'').trim()?`<div class="rxcard-sum" style="margin-top:6px">${_MEMO} ${(rx.summary).replace(/</g,'&lt;')}</div>`:''}
+    ${(rx.summary||'').trim()?`<div class="rxcard-sum" style="margin-top:6px">${_MEMO} ${peerHL(rx)}</div>`:''}
     <div style="font-size:12px;color:var(--p);font-weight:700;margin-top:10px;text-align:right"><svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> ${rx.recs||0} 추천</div>`;
   showPop();
 }
@@ -4336,7 +4364,7 @@ async function openPharmacist(nick){
     return `<div class="cmt-box">
       <div style="font-size:11px;font-weight:700;color:var(--t3);margin-bottom:6px">케이스 ${r.caseId} <span style="float:right;color:var(--p)"><svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> ${r.recs||0}</span></div>
       ${prods}
-      ${sum?`<div class="ph-sum clamp" onclick="this.classList.toggle('clamp')">${_MEMO} ${sum.replace(/</g,'&lt;')}</div>`:''}
+      ${sum?`<div class="ph-sum clamp" onclick="this.classList.toggle('clamp')">${_MEMO} ${peerHL(r)}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -4702,7 +4730,7 @@ async function openMyDetail(caseId){
   /* 임상 종합 소견 */
   const sum=(h.summary||'').trim();
   document.getElementById('myCmtListDetail').innerHTML=sum
-    ? `<div class="rxcard-sum">${sum.replace(/</g,'&lt;')}</div>`
+    ? `<div class="rxcard-sum">${peerHL(h)}</div>`
     : '<div class="empty" style="padding:16px">작성한 종합 소견이 없어요</div>';
   /* 나를 추천한 약사 */
   const vw=document.getElementById('myRecVoters');
