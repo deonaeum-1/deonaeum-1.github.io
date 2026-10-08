@@ -501,6 +501,13 @@ body{
 .pr-zc .bt{display:flex;gap:10px;padding:12px 16px 16px;border-top:1px solid var(--bd-soft)}
 .pr-zc .bt button{flex:1;height:52px;border-radius:14px;border:none;font-size:16.5px;font-weight:800;cursor:pointer}
 .pr-zc .bt .n{background:#FEE4E2;color:#F04438}.pr-zc .bt .y{background:var(--p);color:#fff}
+.rcm{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.rcm.mine{box-shadow:inset 0 0 0 2px var(--p)}
+.rcm-h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.rcm-n{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:15px;font-weight:800;color:var(--p)}
+.rcm-n .tu{width:16px;height:16px}
+.rcm-t{font-size:15px;line-height:1.6;color:var(--t);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;word-break:keep-all}
+.rcm-by{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;font-weight:700;color:var(--t2);cursor:pointer}
 .ss-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
 .spk{width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
 .spk h4{font-size:15px;font-weight:800;color:var(--t2);text-align:center;margin-bottom:12px}
@@ -1771,7 +1778,6 @@ body{
   <div class="pr-tip" id="peerTip">소견을 누르면 크게 볼 수 있어요</div>
   <div style="padding:0 16px calc(20px + env(safe-area-inset-bottom))"><button class="btn" id="peerDoneBtn" onclick="peerFinish()">카드를 넘겨주세요</button></div>
 </div>
-<div class="pr-zoom" id="prZoom" onclick="if(event.target===this)prZoomClose()"></div>
 </div>
 
 <!-- STEP 5: 케이스 결과 (처방/추천 결과) -->
@@ -1791,8 +1797,8 @@ body{
   <div class="rl" id="rlist"></div>
 </div>
 <div class="rs">
-  <div class="rst"><svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> 다추천 처방 약사</div>
-  <div style="font-size:12px;color:var(--t2);margin-bottom:12px">처방 전체에 가장 많은 추천을 받은 약사</div>
+  <div class="rst"><svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> 추천 많은 소견</div>
+  <div style="font-size:12px;color:var(--t2);margin-bottom:12px">이 케이스에서 약사들이 가장 많이 추천한 소견</div>
   <div id="topRxList"></div>
 </div>
 <div style="padding:16px">
@@ -4236,16 +4242,24 @@ async function renderResult(){
       <div class="rr"><div class="pcn">${p.cnt}명</div><div class="pcb"><div class="pcf" style="width:${Math.min(p.pct,100)}%"></div></div><div style="font-size:9px;color:var(--t3);margin-top:2px"><svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> ${p.rec}</div></div>
     </div>`;}).join('') || '<div class="empty" style="padding:20px">아직 처방 데이터가 없어요</div>';
 
-  /* 2) 다추천 처방 약사 */
-  const topRx=[...resps].filter(r=>(r.recs||0)>0).sort((a,b)=>(b.recs||0)-(a.recs||0)).slice(0,5);
+  /* 2) 추천 많은 소견 — 소견 글이 주인공 */
+  const topRx=[...resps].filter(r=>(r.recs||0)>0&&(r.summary||'').trim()).sort((a,b)=>(b.recs||0)-(a.recs||0)).slice(0,5);
+  const TU='<svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg>';
+  _resTop=topRx;
   document.getElementById('topRxList').innerHTML=topRx.length?topRx.map((r,i)=>{
-    const prods=(r.pairs||[]).map(p=>p.pnm).filter(Boolean).join(', ');
     const me=r.nick===S.user?.nick;
-    return`<div class="rc${me?' mine':''}" style="cursor:pointer" onclick="openPharmacist('${jsArg(r.nick)}')">
-      <div class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</div>
-      <div style="flex:1;min-width:0"><div class="rpn" style="display:flex;align-items:center;gap:5px">${_nickAvatar(r.nick,18)}${esc(r.nick)}${me?'<span class="you">YOU</span>':''}</div><div class="rpm">${prods}</div></div>
-      <div class="rr"><div class="pcn"><svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg> ${r.recs||0}</div></div>
-    </div>`;}).join(''):'<div class="empty" style="padding:20px">아직 추천받은 처방이 없어요</div>';
+    return `<div class="rcm${me?' mine':''}">
+      <div class="rcm-h"><span class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</span><span class="rcm-n">${TU} ${r.recs||0}</span></div>
+      <div class="rcm-t" onclick="resZoom(${i})">${peerHL(r)}</div>
+      <div class="rcm-by" onclick="openPharmacist('${jsArg(r.nick)}')">${_nickAvatar(r.nick,18)}${esc(r.nick)}${me?'<span class="you">YOU</span>':''}</div>
+    </div>`;}).join(''):'<div class="empty" style="padding:20px">아직 추천받은 소견이 없어요</div>';
+}
+let _resTop=[];
+function resZoom(i){
+  const r=_resTop[i];if(!r)return;
+  const z=document.getElementById('prZoom');
+  z.innerHTML=`<div class="pr-zc"><div class="tx">${peerHL(r)}</div><div class="bt"><button class="y" style="background:var(--bg);color:var(--t)" onclick="prZoomClose()">닫기</button></div></div>`;
+  z.classList.add('on');
 }
 
 /* 처방 등록 제출 → 다른 약사 처방 평가로 */
@@ -4972,5 +4986,6 @@ function toast(msg){
 window.addEventListener('load',function(){tryAutoLogin().then(function(ok){if(!ok){gs('loginScreen');requestAnimationFrame(()=>requestAnimationFrame(playLogoDraw));}});});
 </script>
 <div id="rxSug" onmousedown="event.preventDefault()"><div class="rx-list" id="rxSugRow"></div></div>
+<div class="pr-zoom" id="prZoom" onclick="if(event.target===this)prZoomClose()"></div>
 </body>
 </html>
