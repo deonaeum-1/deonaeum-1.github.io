@@ -450,6 +450,7 @@ body{
 .sh-cd .bd.need{background:#FF6B35}
 .sh-cd .bd.ac{background:#7C3AED}
 .sh-col.acad .sh-cd{border-color:#7C3AED}
+.sh-col.acad .sh-ti{color:#7C3AED}
 .sh-col.soon{cursor:default}
 .sh-col.soon .sh-cd{background:var(--bd-soft);border:2px dashed var(--bd);aspect-ratio:auto;height:48px}
 .sh-col.soon .sh-ti{color:var(--t3)}
@@ -1472,8 +1473,8 @@ body{
 
 /* ===== 새 처방 입력: 소견 쓰면서 제품 태그 ===== */
 .rx-guide{font-size:12px;opacity:.92;margin-top:6px;line-height:1.65}
-.rx-tags{display:flex;flex-direction:column;gap:8px;margin:12px 0 4px}
-.rx-tags-empty{font-size:12.5px;color:var(--t3);background:var(--card);border:1px dashed var(--bd);border-radius:12px;padding:14px;text-align:center;line-height:1.6}
+.rx-tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px;min-height:34px;align-items:center}
+.rx-tags-empty{font-size:13px;color:var(--t3);padding-left:4px}
 .rx-tag{background:var(--card);border:1.5px solid var(--bd);border-radius:14px;padding:10px 12px}
 .rx-tag.need{border-color:var(--warn)}
 .rx-tag-h{display:flex;align-items:center;gap:8px}
@@ -1481,6 +1482,7 @@ body{
 .rx-tag-nm{flex:1;min-width:0;font-size:14px;font-weight:700;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rx-kind{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0}
 .rx-kind.core{background:var(--pb);color:var(--pd)}
+.rx-kind.food{background:#FFF1E6;color:#C2410C}
 .rx-kind.otc{background:var(--sec-soft);color:var(--sec)}
 .rx-kind.ing{background:var(--success-soft);color:#00996f}
 .rx-tag-btn{width:26px;height:26px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--t3);font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
@@ -1488,7 +1490,30 @@ body{
 .rx-purps{display:flex;gap:6px;overflow-x:auto;margin:8px 0 0 30px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .rx-purps::-webkit-scrollbar{display:none}
 .rx-purps .purp-chip{flex-shrink:0;padding:5px 10px;font-size:12px;margin:0}
-.rx-area{min-height:150px}
+.rx-area{min-height:260px}
+.rx-top{display:flex;align-items:center;gap:4px;padding:calc(14px + env(safe-area-inset-top)) 16px 10px 8px}
+#rxWriteScreen>.back-btn{display:none}
+.rx-bk{border:none;background:none;color:var(--t2);padding:4px;display:flex;cursor:pointer}
+.rx-ttl{font-size:18px;font-weight:800;color:var(--t);letter-spacing:-.3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rx-rv{margin-left:auto;flex:none;display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;color:var(--p);background:var(--pb);border:none;padding:6px 11px;border-radius:999px;cursor:pointer}
+.rx-wrap{position:relative}
+.rx-wrap .rx-area{position:relative;z-index:1;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:var(--t);font-size:16px;line-height:1.65;resize:none;border-radius:16px;padding:16px}
+.rx-wrap .rx-area::placeholder{color:var(--t3);-webkit-text-fill-color:var(--t3)}
+.rx-wrap .rx-area::selection{background:rgba(49,130,246,.25);-webkit-text-fill-color:var(--t)}
+.rx-hl{position:absolute;inset:0;z-index:0;background:var(--card);border-radius:16px;white-space:pre-wrap;word-wrap:break-word;overflow:hidden;color:var(--t);pointer-events:none}
+.rx-hl mark{background:var(--pb);color:var(--p);border-radius:4px;box-shadow:0 0 0 2px var(--pb)}
+.rx-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--p);border-radius:999px;padding:6px 6px 6px 6px;font-size:13.5px;font-weight:800;color:var(--t);max-width:100%}
+.rx-chip .no{flex:none;width:20px;height:20px;border-radius:50%;background:var(--p);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.rx-chip .nm{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rx-chip .co{font-weight:600;color:var(--t3);font-size:12px;flex:none}
+.rx-chip button{flex:none;border:none;background:none;color:var(--t3);font-size:15px;line-height:1;padding:0 4px;cursor:pointer}
+.rx-list{max-height:216px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.rx-li{display:flex;align-items:center;gap:10px;width:100%;padding:9px 16px;border:none;border-bottom:1px solid var(--bd-soft);background:none;text-align:left;cursor:pointer;font-family:inherit}
+.rx-li:last-child{border-bottom:none}
+.rx-li:active{background:var(--bg)}
+.rx-li .nm{font-size:15px;color:var(--t);font-weight:500;line-height:1.35}.rx-li .nm b{font-weight:800;color:var(--p)}
+.rx-li .co{font-size:12.5px;color:var(--t2);font-weight:600;margin-top:1px}
+.rx-li .rx-kind{margin-left:auto}
 .rx-count{text-align:right;font-size:11px;color:var(--t4);margin-top:4px}
 /* 키보드 바로 위에 붙는 후보 */
 #rxSug{position:fixed;left:0;right:0;bottom:0;z-index:900;background:var(--card);border-top:1px solid var(--bd);box-shadow:0 -4px 14px rgba(0,0,0,.06);display:none;padding:8px 0}
@@ -1670,21 +1695,15 @@ body{
   <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   뒤로
 </button>
-<div class="rh">
-  <div class="rcs" id="rcaseRx"></div>
-  <div class="rt">처방 소견</div>
-  <div class="rx-guide">
-    ✓ 소견을 쓰다가 제품·성분 이름을 입력하면 키보드 위에 후보가 떠요<br>
-    ✓ 탭해서 처방 제품으로 태그 (1~3개, 태그 순서가 처방 순위)
-  </div>
-</div>
-<div class="rs">
-  <textarea class="cmt-area rx-area" id="rxText" placeholder="예) 피로·수면 질 저하, 마그비 연질캡슐 저녁 1회…&#10;제품·성분 이름을 입력하면 후보가 떠요 (20자 이상)"
+<div class="rx-top"><button type="button" class="rx-bk" onclick="backFromRx()" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="rx-ttl" id="rcaseRx"></span><button type="button" class="rx-rv" onclick="backFromRx()"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>영상</button></div>
+<div class="rs" style="padding-top:4px">
+  <div class="rx-wrap"><div class="rx-hl" id="rxHL" aria-hidden="true"></div>
+  <textarea class="cmt-area rx-area" id="rxText" placeholder="어떤 제품을, 왜 권하시겠어요?"
     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-    oninput="rxOnInput()" onkeyup="rxOnCaret()" onclick="rxOnCaret()" onfocus="rxOnCaret()" onblur="rxOnBlur()"></textarea>
-  <div class="rx-count" id="rxCount">0자</div>
+    oninput="rxOnInput()" onkeyup="rxOnCaret()" onclick="rxOnCaret()" onfocus="rxOnCaret()" onblur="rxOnBlur()" onscroll="rxSyncHL()"></textarea></div>
+  <div class="rx-count" id="rxCount">0 / 20자</div>
   <div class="rx-tags" id="rxTags"></div>
-  <button class="btn" id="rxBtn" style="margin-top:10px;opacity:.5;pointer-events:none" onclick="submitRx()">처방 제품을 1개 이상 태그해주세요</button>
+  <button class="btn" id="rxBtn" style="margin-top:18px;opacity:.5;pointer-events:none" onclick="submitRx()">소견을 적어주세요</button>
 </div>
 </div>
 
@@ -3493,7 +3512,8 @@ function updatePrescGate(){
 let OTC=null,_otcLoading=null;
 let _rxTags=[],_rxTok=null,_rxRes=[],_rxUse={};
 const RX_MAX=3,RX_MIN_Q=2,RX_SUG_MAX=30;
-const RX_KIND={core:'더나음',otc:'일반약',ing:'성분'};
+const RX_KIND={core:'건기식',food:'식품',otc:'일반의약품',ing:'성분'};
+function rxKindKey(t){return t.kind==='core'&&t.cat&&t.cat!=='건기식'?'food':t.kind;}
 
 function loadOtc(){
   if(OTC)return Promise.resolve(OTC);
@@ -3518,10 +3538,10 @@ function _pnm(id){
 
 function renderRxWrite(){
   const c=S.case;
-  document.getElementById('rcaseRx').textContent=`케이스 ${c.id}`;
+  document.getElementById('rcaseRx').textContent=c.title||`케이스 ${c.id}`;
   if(S._rxCase!==c.id){_rxTags=[];S.summary='';S._rxCase=c.id;}
   document.getElementById('rxText').value=S.summary||'';
-  rxRenderTags();rxUpdateGate();
+  rxRenderTags();rxUpdateGate();rxSyncHL();
   loadOtc();
   ensureResps().then(()=>{
     _rxUse={};
@@ -3567,7 +3587,7 @@ function rxSearch(q){
   P.forEach(p=>{
     let t=nameTier(p.n);
     if(t<0&&ingHit([...(p.i||[]),...(p.cats||[])]))t=2;
-    if(t>=0)add({kind:'core',id:p.id,n:p.n,c:p.c||'',ings:p.i||[],ing:(p.cats&&p.cats[0])||(p.i&&p.i[0])||'',t});
+    if(t>=0)add({kind:'core',cat:p.cat||'',id:p.id,n:p.n,c:p.c||'',ings:p.i||[],ing:(p.cats&&p.cats[0])||(p.i&&p.i[0])||'',t});
   });
   ING_MASTER.forEach(g=>{
     const t=nameTier(g);
@@ -3594,29 +3614,23 @@ function rxRenderSug(){
   _rxRes=res;
   if(!res.length){bar.classList.remove('on');return;}
   const nq=rxNorm(tok.q);
-
-  /* 앞글자가 일치하는 제품은 입력어를 떼고 나머지만 — 칩이 짧아집니다 */
-  const lab=res.map(r=>{
-    const rest=(r.t===0&&r.kind!=='ing')?rxRest(r.n,nq):'';
-    return {r,short:!!rest,label:rest||r.n};
-  });
-  const cnt={};lab.forEach(x=>{cnt[x.label]=(cnt[x.label]||0)+1;});
-  const chip=(x,i)=>{
-    const sub=x.r.kind==='ing'?'성분':(cnt[x.label]>1?x.r.c:'');
-    return `<button type="button" class="rx-sug-chip ${x.r.kind==='otc'?'':x.r.kind}" onclick="rxPick(${i})">${esc(x.label)}${sub?`<small>${esc(sub)}</small>`:''}</button>`;
+  /* 이름에서 입력어와 같은 부분을 굵게 (공백 무시) */
+  const hl=n=>{
+    const s=String(n);let i=0,map=[];
+    for(let k=0;k<s.length;k++)if(!/\s/.test(s[k]))map.push(k);
+    const flat=map.map(k=>s[k]).join('').toLowerCase();const at=flat.indexOf(nq);
+    if(at<0)return esc(s);
+    const st=map[at],en=map[at+nq.length-1]+1;
+    return esc(s.slice(0,st))+'<b>'+esc(s.slice(st,en))+'</b>'+esc(s.slice(en));
   };
-  const idx=lab.map((x,i)=>({x,i}));
-  const ingTop=idx.filter(o=>o.x.r.kind==='ing'&&o.x.r.t===0);
-  const shortOnes=idx.filter(o=>o.x.short),others=idx.filter(o=>!o.x.short&&!ingTop.includes(o));
-  let html=ingTop.map(o=>chip(o.x,o.i)).join('')+(ingTop.length&&(shortOnes.length||others.length)?'<span class="rx-sug-sep"></span>':'');
-  if(shortOnes.length){
-    html+=`<span class="rx-sug-q">${esc(tok.q)} ›</span>`+shortOnes.map(o=>chip(o.x,o.i)).join('');
-    if(others.length)html+='<span class="rx-sug-sep"></span>';
-  }
-  html+=others.map(o=>chip(o.x,o.i)).join('');
-  row.innerHTML=html;row.scrollLeft=0;
-  bar.classList.add('on');
-  rxPlaceBar();
+  row.innerHTML=res.map((r,i)=>{
+    const via=r.t===2?(r.ings||[]).find(g=>rxNorm(g).startsWith(nq)):'';
+    const sub=[r.c,via?via+' 함유':''].filter(Boolean).join(' · ');
+    const k=rxKindKey(r);
+    return `<button type="button" class="rx-li" onclick="rxPick(${i})"><div style="min-width:0"><div class="nm">${hl(r.n)}</div>${sub?`<div class="co">${esc(sub)}</div>`:''}</div><span class="rx-kind ${k}">${RX_KIND[k]}</span></button>`;
+  }).join('');
+  row.scrollTop=0;
+  bar.classList.add('on');rxPlaceBar();
 }
 function rxPlaceBar(){
   const bar=document.getElementById('rxSug');if(!bar)return;
@@ -3632,7 +3646,7 @@ if(window.visualViewport){
 function rxOnInput(){
   const ta=document.getElementById('rxText');
   S.summary=ta.value;
-  rxUpdateGate();rxRenderSug();
+  rxUpdateGate();rxRenderSug();rxSyncHL();
 }
 function rxOnCaret(){rxRenderSug();}
 function rxOnBlur(){
@@ -3655,7 +3669,7 @@ function rxPick(i){
     const pos=tok.s+ins.length;
     ta.focus();try{ta.setSelectionRange(pos,pos);}catch(e){}
   }
-  _rxTags.push({kind:r.kind,id:r.id,n:r.n,c:r.c,ings:r.ings,ing:r.ing||r.n,purposes:[]});
+  _rxTags.push({kind:r.kind,cat:r.cat||'',id:r.id,n:r.n,c:r.c,ings:r.ings,ing:r.ing||r.n,purposes:[]});
   S.summary=ta.value;
   document.getElementById('rxSug').classList.remove('on');
   rxRenderTags();rxUpdateGate();
@@ -3663,24 +3677,28 @@ function rxPick(i){
 function rxRenderTags(){
   const w=document.getElementById('rxTags');
   if(!_rxTags.length){
-    w.innerHTML='<div class="rx-tags-empty">아직 태그한 처방 제품이 없어요<br>아래 소견에 제품·성분 이름을 입력해보세요</div>';
-    return;
+    w.innerHTML='<div class="rx-tags-empty">제품 이름을 쓰면 여기에 담겨요</div>';
+    rxSyncHL();return;
   }
-  w.innerHTML=_rxTags.map((t,i)=>{
-    const chips=PURPOSES.map(([k])=>`<button type="button" class="purp-chip${t.purposes.includes(k)?' on':''}${t.purposes.length>=2&&!t.purposes.includes(k)?' dim':''}" onclick="rxTogglePurp(${i},'${k}')">${purpIcon(k,14)} ${k}</button>`).join('');
-    const sub=[t.c,t.kind!=='ing'?(t.ings||[]).slice(0,3).join(', '):''].filter(Boolean).join(' · ');
-    return `<div class="rx-tag${t.purposes.length?'':' need'}">
-      <div class="rx-tag-h">
-        <span class="rx-tag-no">${i+1}</span>
-        <span class="rx-tag-nm">${esc(t.n)}</span>
-        <span class="rx-kind ${t.kind}">${RX_KIND[t.kind]}</span>
-        ${i>0?`<button type="button" class="rx-tag-btn" onclick="rxMoveUp(${i})" aria-label="순위 올리기">↑</button>`:''}
-        <button type="button" class="rx-tag-btn" onclick="rxRemove(${i})" aria-label="태그 삭제">×</button>
-      </div>
-      ${sub?`<div class="rx-tag-sub">${esc(sub)}</div>`:''}
-      <div class="rx-purps">${chips}</div>
-    </div>`;
-  }).join('');
+  w.innerHTML=_rxTags.map((t,i)=>`<span class="rx-chip"><span class="no">${i+1}</span><span class="nm">${esc(t.n)}</span>${t.c?`<span class="co">${esc(t.c)}</span>`:''}${i>0?`<button type="button" onclick="rxMoveUp(${i})" aria-label="순위 올리기">↑</button>`:''}<button type="button" onclick="rxRemove(${i})" aria-label="태그 삭제">×</button></span>`).join('');
+  rxSyncHL();
+}
+/* 소견 글 안의 태그 제품명 표시 — 입력칸 뒤에 같은 글을 깔고 제품명만 색칠 */
+function rxSyncHL(){
+  const ta=document.getElementById('rxText'),hl=document.getElementById('rxHL');if(!ta||!hl)return;
+  const cs=getComputedStyle(ta);
+  ['fontFamily','fontSize','fontWeight','lineHeight','letterSpacing','paddingTop','paddingRight','paddingBottom','paddingLeft','borderTopWidth','borderLeftWidth','borderRightWidth','borderBottomWidth','textIndent','wordSpacing'].forEach(k=>hl.style[k]=cs[k]);
+  hl.style.borderStyle='solid';hl.style.borderColor='transparent';
+  const v=ta.value||'';
+  const names=_rxTags.map(t=>t.n).filter(Boolean).sort((a,b)=>b.length-a.length);
+  let out='',i=0;
+  while(i<v.length){
+    const n=names.find(n=>v.startsWith(n,i));
+    if(n){out+='<mark>'+esc(n)+'</mark>';i+=n.length;}
+    else{out+=esc(v[i]);i++;}
+  }
+  hl.innerHTML=out+'\n';
+  hl.scrollTop=ta.scrollTop;
 }
 function rxTogglePurp(i,k){
   const t=_rxTags[i];if(!t)return;
@@ -3697,18 +3715,19 @@ function rxUpdateGate(){
   const btn=document.getElementById('rxBtn');if(!btn)return;
   const txt=(document.getElementById('rxText').value||'').trim();
   const cntEl=document.getElementById('rxCount');if(cntEl)cntEl.textContent=`${txt.length}자`;
+  if(cntEl)cntEl.textContent=txt.length>=20?`${txt.length}자`:`${txt.length} / 20자`;
   let msg='';
-  if(!_rxTags.length)msg='처방 제품을 1개 이상 태그해주세요';
-  else if(!_rxTags.every(t=>t.purposes.length))msg='태그한 제품마다 처방 목적을 선택해주세요';
-  else if(txt.length<20)msg=`소견을 20자 이상 입력해주세요 (${txt.length}/20)`;
+  if(!txt.length)msg='소견을 적어주세요';
+  else if(!_rxTags.length)msg='제품을 태그해주세요';
+  else if(txt.length<20)msg='소견을 조금 더 적어주세요';
   const ok=!msg;
-  btn.textContent=ok?'처방 등록 후 다음 단계로':msg;
+  btn.textContent=ok?'처방 등록':msg;
   btn.style.opacity=ok?'1':'.5';btn.style.pointerEvents=ok?'auto':'none';
 }
 async function submitRx(){
   if(!S.user?.nick){toast('로그인이 필요해요');return;}
   const txt=(document.getElementById('rxText').value||'').trim();
-  if(!_rxTags.length||!_rxTags.every(t=>t.purposes.length)||txt.length<20){rxUpdateGate();return;}
+  if(!_rxTags.length||txt.length<20){rxUpdateGate();return;}
   if(_sendLock)return;
   _sendLock=true;
   setBtnLoading('rxBtn',true,'등록 중...');
@@ -4800,6 +4819,6 @@ function toast(msg){
 
 window.addEventListener('load',function(){tryAutoLogin().then(function(ok){if(!ok){gs('loginScreen');requestAnimationFrame(()=>requestAnimationFrame(playLogoDraw));}});});
 </script>
-<div id="rxSug" onmousedown="event.preventDefault()"><div class="rx-sug-row" id="rxSugRow"></div></div>
+<div id="rxSug" onmousedown="event.preventDefault()"><div class="rx-list" id="rxSugRow"></div></div>
 </body>
 </html>
