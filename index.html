@@ -455,13 +455,21 @@ body{
 .sh-col.soon .sh-ti{color:var(--t3)}
 .sh-cd .lk{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .ss-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
-.ss{width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
-.ss h4{font-size:15px;font-weight:800;color:var(--t2);text-align:center;margin-bottom:12px}
+.spk{width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
+.spk h4{font-size:15px;font-weight:800;color:var(--t2);text-align:center;margin-bottom:12px}
 .ss-it{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;border-radius:14px;padding:14px 12px;font-size:17px;font-weight:800;cursor:pointer;text-align:left}
 .ss-it.on{background:var(--bg)}
 .ss-it i{width:10px;height:10px;border-radius:50%;flex:none}
 .ss-it em{margin-left:auto;font-style:normal;font-size:12px;font-weight:700;color:var(--p);background:var(--pb);padding:3px 9px;border-radius:999px}
 .sh-col.soon .sh-cd span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--t3)}
+.cr-g{margin:18px 0 8px;display:flex;align-items:center;gap:6px;font-size:16px;font-weight:900}
+.cr-g svg{width:18px;height:21px}
+.cr{display:flex;align-items:center;gap:12px;background:var(--card,#fff);border-radius:16px;padding:14px 16px;margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cr:active{transform:scale(.99)}
+.cr-t{font-size:15px;font-weight:800;color:var(--t);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cr-m{font-size:12px;color:var(--t3);margin-top:3px}
+.cr-s{margin-left:auto;flex:none;font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:4px}
+.cr-s.ok{color:var(--p)}.cr-s.need{color:#FF6B35}.cr-s.lock{color:var(--t3)}
 .dempty{
   position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
   text-align:center;color:var(--t3);font-size:13.5px;line-height:1.7;
@@ -1738,10 +1746,10 @@ body{
 </div>
 <div class="rp">
   <div class="st">더나음 랭킹</div>
-  <div class="ss">전국 약사 처방 집계 · 목적별 추천 순위</div>
+  <div class="ss">케이스를 풀면 약사들의 선택이 열려요</div>
   <div class="seg" id="rankSeg">
     <div class="segthumb"></div>
-    <button class="segtab on" onclick="switchRTab('purpose',this)">처방목적</button>
+    <button class="segtab on" onclick="switchRTab('case',this)">케이스</button>
     <button class="segtab" onclick="switchRTab('pharmacist',this)">약사</button>
   </div>
   <div id="rcontent"></div>
@@ -2078,9 +2086,9 @@ let SETS={},FEATURED_SET=null,SEL_SET=null;
 const SET_COLORS={1:'#E11D48',2:'#7C3AED',3:'#0EA5E9',4:'#D97706',5:'#16A34A',6:'#3182F6',7:'#F97316'};
 /* 세트 아이콘 — 주제별 그림 (없으면 생략) */
 const SET_ICONS={
-  1:c=>`<svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><defs><linearGradient id="sgDrop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF5A6E"/><stop offset="1" stop-color="${c}"/></linearGradient></defs><path d="M13 1.5C13 1.5 3 12.6 3 19.2A10 10 0 0 0 23 19.2C23 12.6 13 1.5 13 1.5Z" fill="url(#sgDrop)"/><path d="M8.2 18.6c0-2.6 1.7-5.4 3.1-7.3" stroke="#fff" stroke-opacity=".75" stroke-width="2.2" stroke-linecap="round" fill="none"/><circle cx="8.6" cy="22.4" r="1.4" fill="#fff" fill-opacity=".75"/></svg>`
+  1:(c,g)=>`<svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF5A6E"/><stop offset="1" stop-color="${c}"/></linearGradient></defs><path d="M13 1.5C13 1.5 3 12.6 3 19.2A10 10 0 0 0 23 19.2C23 12.6 13 1.5 13 1.5Z" fill="url(#${g})"/><path d="M8.2 18.6c0-2.6 1.7-5.4 3.1-7.3" stroke="#fff" stroke-opacity=".75" stroke-width="2.2" stroke-linecap="round" fill="none"/><circle cx="8.6" cy="22.4" r="1.4" fill="#fff" fill-opacity=".75"/></svg>`
 };
-function setIcon(n){const f=SET_ICONS[n];return f?f(setColor(n)):'';}
+let _sgN=0;function setIcon(n){const f=SET_ICONS[n];return f?f(setColor(n),'sg'+(++_sgN)):'';}
 function setColor(n){return (SETS[String(n)]||{}).color||SET_COLORS[n]||'var(--t)';}
 async function loadData(){
   const t0=performance.now();
@@ -2627,7 +2635,7 @@ function playLogoDraw(){
 }
 function goTab(t){
   if(t==='home'){renderHome();gs('home');}
-  else if(t==='ranking'){S.rankTab='purpose';_rankAnim=true;renderRanking('purpose');gs('ranking');refreshRespCache();}
+  else if(t==='ranking'){S.rankTab='case';_rankAnim=true;renderRanking('case');gs('ranking');refreshRespCache();}
   else if(t==='mypage'){renderMy();gs('mypage');}
   else if(t==='board'){renderBoard();gs('board');}
 }
@@ -2788,10 +2796,30 @@ function renderSetHome(){
   el.innerHTML=`<div class="sh-top"><button class="sh-pick" onclick="openSetPicker()">${setIcon(n)}<span class="sh-topic" style="color:${setColor(n)}">${topic}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${setColor(n)}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
     <div class="sh-row">${col(x.case1,'case1')}${col(x.case2,'case2')}${col(x.acad,'acad')}</div>`;
 }
+/* ── 랭킹: 케이스별 결과 (푼 케이스만 열림) ── */
+function renderCaseRank(){
+  const w=document.getElementById('rcontent');
+  const nOf=id=>new Set((RESP_CACHE||[]).filter(r=>String(r.caseId)===String(id)).map(r=>r.nick)).size;
+  const LK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  const row=c=>{
+    const pres=S.hist.some(h=>h.caseId===c.id);
+    const st=pres?(recDoneForCase(c.id)?'<span class="cr-s ok">결과 보기 ›</span>':'<span class="cr-s need">추천하고 보기 ›</span>'):`<span class="cr-s lock">${LK}풀면 열려요</span>`;
+    return `<div class="cr" onclick="startCase('${c.id}')"><div style="min-width:0"><div class="cr-t">${c.title||('케이스 '+c.id)}</div><div class="cr-m">약사 ${nOf(c.id)}명 참여</div></div>${st}</div>`;
+  };
+  let h='';
+  Object.keys(SETS).sort((a,b)=>Number(a)-Number(b)).forEach(n=>{
+    const x=setCases(n),list=[x.case1,x.case2].filter(Boolean);
+    if(!list.length)return;
+    h+=`<div class="cr-g" style="color:${setColor(n)}">${setIcon(n)}${SETS[n].topic||('세트 '+n)}</div>`+list.map(row).join('');
+  });
+  const rest=C.filter(c=>!c.set&&c.type!=='edu');
+  if(rest.length)h+=`<div class="cr-g" style="color:var(--t2)">이전 케이스</div>`+rest.map(row).join('');
+  w.innerHTML=h||'<div class="empty">아직 케이스가 없어요</div>';
+}
 function openSetPicker(){
   const ids=Object.keys(SETS).sort((a,b)=>Number(a)-Number(b));
   const bg=document.createElement('div');bg.className='ss-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
-  bg.innerHTML=`<div class="ss"><h4>주제 선택</h4>${ids.map(i=>`<button class="ss-it ${String(i)===String(SEL_SET)?'on':''}" onclick="pickSet('${i}')"><i style="background:${setColor(i)}"></i><span style="color:${setColor(i)}">${SETS[i].topic||('세트 '+i)}</span>${String(i)===String(FEATURED_SET)?'<em>이번 주</em>':''}</button>`).join('')}</div>`;
+  bg.innerHTML=`<div class="spk"><h4>주제 선택</h4>${ids.map(i=>`<button class="ss-it ${String(i)===String(SEL_SET)?'on':''}" onclick="pickSet('${i}')"><i style="background:${setColor(i)}"></i><span style="color:${setColor(i)}">${SETS[i].topic||('세트 '+i)}</span>${String(i)===String(FEATURED_SET)?'<em>이번 주</em>':''}</button>`).join('')}</div>`;
   document.body.appendChild(bg);
 }
 function pickSet(i){SEL_SET=i;document.querySelector('.ss-bg')?.remove();renderSetHome();}
@@ -4280,7 +4308,7 @@ async function refreshRespCache(){
     const fresh=[];snap.forEach(d=>fresh.push({id:d.id,...d.data()}));
     RESP_CACHE=fresh;
     const scr=document.getElementById('ranking');
-    if(scr&&scr.classList.contains('on'))renderRanking(S.rankTab||'purpose',true);
+    if(scr&&scr.classList.contains('on'))renderRanking(S.rankTab||'case',true);
   }catch(e){console.log('랭킹 캐시 갱신 실패',e);}
 }
 
@@ -4310,6 +4338,7 @@ function _pharmThumb(rank,size,nick){
 }
 
 async function renderRanking(t,keep){
+  if(t==='case'){await ensureResps();renderCaseRank();return;}
   if(!keep)_rankN[t]=10;
   const w=document.getElementById('rcontent');
   w.innerHTML='<div class="empty">로딩 중...</div>';
