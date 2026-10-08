@@ -1481,10 +1481,10 @@ body{
 .rx-tag-no{width:22px;height:22px;border-radius:7px;background:var(--p);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .rx-tag-nm{flex:1;min-width:0;font-size:14px;font-weight:700;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rx-kind{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0}
-.rx-kind.core{background:var(--pb);color:var(--pd)}
-.rx-kind.food{background:#FFF1E6;color:#C2410C}
-.rx-kind.otc{background:var(--sec-soft);color:var(--sec)}
-.rx-kind.ing{background:var(--success-soft);color:#00996f}
+.rx-kind.core{background:#E8F2FF;color:#3182F6}
+.rx-kind.food{background:#FBF1DF;color:#B7791F}
+.rx-kind.otc{background:#E0F5F1;color:#0F9D8A}
+.rx-kind.ing{background:#EEF0F3;color:#6B7684}
 .rx-tag-btn{width:26px;height:26px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--t3);font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
 .rx-tag-sub{font-size:11px;color:var(--t3);margin:3px 0 0 30px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rx-purps{display:flex;gap:6px;overflow-x:auto;margin:8px 0 0 30px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -1501,12 +1501,16 @@ body{
 .rx-wrap .rx-area::placeholder{color:var(--t3);-webkit-text-fill-color:var(--t3)}
 .rx-wrap .rx-area::selection{background:rgba(49,130,246,.25);-webkit-text-fill-color:var(--t)}
 .rx-hl{position:absolute;inset:0;z-index:0;background:var(--card);border-radius:16px;white-space:pre-wrap;word-wrap:break-word;overflow:hidden;color:var(--t);pointer-events:none}
-.rx-hl mark{background:var(--pb);color:var(--p);border-radius:4px;box-shadow:0 0 0 2px var(--pb)}
-.rx-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--p);border-radius:999px;padding:6px 6px 6px 6px;font-size:13.5px;font-weight:800;color:var(--t);max-width:100%}
-.rx-chip .no{flex:none;width:20px;height:20px;border-radius:50%;background:var(--p);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.rx-hl mark{--kc:#3182F6;--kb:#E8F2FF;background:var(--kb);color:var(--kc);border-radius:4px;box-shadow:0 0 0 2px var(--kb)}
+
+.rx-chip{--kc:#3182F6;display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--kc);border-radius:999px;padding:6px 6px 6px 6px;font-size:13.5px;font-weight:800;color:var(--t);max-width:100%}
+.rx-chip .no{flex:none;width:20px;height:20px;border-radius:50%;background:var(--kc);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
 .rx-chip .nm{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .rx-chip .co{font-weight:600;color:var(--t3);font-size:12px;flex:none}
 .rx-chip button{flex:none;border:none;background:none;color:var(--t3);font-size:15px;line-height:1;padding:0 4px;cursor:pointer}
+.rx-chip.k-otc,.rx-hl mark.k-otc{--kc:#0F9D8A;--kb:#E0F5F1}
+.rx-chip.k-food,.rx-hl mark.k-food{--kc:#B7791F;--kb:#FBF1DF}
+.rx-chip.k-ing,.rx-hl mark.k-ing{--kc:#6B7684;--kb:#EEF0F3}
 .rx-list{max-height:216px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .rx-li{display:flex;align-items:center;gap:10px;width:100%;padding:9px 16px;border:none;border-bottom:1px solid var(--bd-soft);background:none;text-align:left;cursor:pointer;font-family:inherit}
 .rx-li:last-child{border-bottom:none}
@@ -1700,7 +1704,7 @@ body{
   <div class="rx-wrap"><div class="rx-hl" id="rxHL" aria-hidden="true"></div>
   <textarea class="cmt-area rx-area" id="rxText" placeholder="어떤 제품을, 왜 권하시겠어요?"
     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-    oninput="rxOnInput()" onkeyup="rxOnCaret()" onclick="rxOnCaret()" onfocus="rxOnCaret()" onblur="rxOnBlur()" onscroll="rxSyncHL()"></textarea></div>
+    oninput="rxOnInput()" onbeforeinput="rxBeforeInput(event)" onkeyup="rxOnCaret()" onclick="rxOnCaret()" onfocus="rxOnCaret()" onblur="rxOnBlur()" onscroll="rxSyncHL()"></textarea></div>
   <div class="rx-count" id="rxCount">0 / 20자</div>
   <div class="rx-tags" id="rxTags"></div>
   <button class="btn" id="rxBtn" style="margin-top:18px;opacity:.5;pointer-events:none" onclick="submitRx()">소견을 적어주세요</button>
@@ -3646,9 +3650,35 @@ if(window.visualViewport){
 function rxOnInput(){
   const ta=document.getElementById('rxText');
   S.summary=ta.value;
+  /* 글에서 제품명이 사라지면 아래 태그도 함께 빠짐 */
+  const before=_rxTags.length;
+  _rxTags=_rxTags.filter(t=>ta.value.includes(t.n));
+  if(_rxTags.length!==before)rxRenderTags();
   rxUpdateGate();rxRenderSug();rxSyncHL();
 }
 function rxOnCaret(){rxRenderSug();}
+/* 표시된 제품명 끝에서 지우기 → 이름 전체가 한 번에 지워짐 (멘션처럼) */
+function rxBeforeInput(e){
+  if(e.inputType!=='deleteContentBackward')return;
+  const ta=e.target,p=ta.selectionStart;
+  if(p!==ta.selectionEnd||!p)return;
+  const v=ta.value;
+  for(const t of _rxTags){
+    let i=v.indexOf(t.n);
+    while(i>=0){
+      const end=i+t.n.length;
+      if(p>i&&p<=end){
+        e.preventDefault();
+        const cut=(v[end]===' '&&(i===0||v[i-1]===' '))?end+1:end;
+        ta.value=v.slice(0,i)+v.slice(cut);
+        ta.setSelectionRange(i,i);
+        rxOnInput();
+        return;
+      }
+      i=v.indexOf(t.n,i+1);
+    }
+  }
+}
 function rxOnBlur(){
   setTimeout(()=>{
     const ta=document.getElementById('rxText');
@@ -3680,7 +3710,7 @@ function rxRenderTags(){
     w.innerHTML='<div class="rx-tags-empty">제품 이름을 쓰면 여기에 담겨요</div>';
     rxSyncHL();return;
   }
-  w.innerHTML=_rxTags.map((t,i)=>`<span class="rx-chip"><span class="no">${i+1}</span><span class="nm">${esc(t.n)}</span>${t.c?`<span class="co">${esc(t.c)}</span>`:''}${i>0?`<button type="button" onclick="rxMoveUp(${i})" aria-label="순위 올리기">↑</button>`:''}<button type="button" onclick="rxRemove(${i})" aria-label="태그 삭제">×</button></span>`).join('');
+  w.innerHTML=_rxTags.map((t,i)=>`<span class="rx-chip k-${rxKindKey(t)}"><span class="no">${i+1}</span><span class="nm">${esc(t.n)}</span>${t.c?`<span class="co">${esc(t.c)}</span>`:''}${i>0?`<button type="button" onclick="rxMoveUp(${i})" aria-label="순위 올리기">↑</button>`:''}<button type="button" onclick="rxRemove(${i})" aria-label="태그 삭제">×</button></span>`).join('');
   rxSyncHL();
 }
 /* 소견 글 안의 태그 제품명 표시 — 입력칸 뒤에 같은 글을 깔고 제품명만 색칠 */
@@ -3690,11 +3720,11 @@ function rxSyncHL(){
   ['fontFamily','fontSize','fontWeight','lineHeight','letterSpacing','paddingTop','paddingRight','paddingBottom','paddingLeft','borderTopWidth','borderLeftWidth','borderRightWidth','borderBottomWidth','textIndent','wordSpacing'].forEach(k=>hl.style[k]=cs[k]);
   hl.style.borderStyle='solid';hl.style.borderColor='transparent';
   const v=ta.value||'';
-  const names=_rxTags.map(t=>t.n).filter(Boolean).sort((a,b)=>b.length-a.length);
+  const tags=_rxTags.filter(t=>t.n).sort((a,b)=>b.n.length-a.n.length);
   let out='',i=0;
   while(i<v.length){
-    const n=names.find(n=>v.startsWith(n,i));
-    if(n){out+='<mark>'+esc(n)+'</mark>';i+=n.length;}
+    const t=tags.find(t=>v.startsWith(t.n,i));
+    if(t){out+=`<mark class="k-${rxKindKey(t)}">`+esc(t.n)+'</mark>';i+=t.n.length;}
     else{out+=esc(v[i]);i++;}
   }
   hl.innerHTML=out+'\n';
