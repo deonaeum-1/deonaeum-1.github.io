@@ -455,6 +455,22 @@ body{
 .sh-col.soon .sh-cd{background:var(--bd-soft);border:2px dashed var(--bd);aspect-ratio:auto;height:48px}
 .sh-col.soon .sh-ti{color:var(--t3)}
 .sh-cd .lk{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.ac-top{display:flex;align-items:center;gap:4px;padding:calc(14px + env(safe-area-inset-top)) 16px 10px 8px}
+.ac-top b{font-size:18px;font-weight:800;color:#7C3AED;letter-spacing:-.3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ac-sec{padding:0 16px;margin-bottom:22px}
+.ac-h{font-size:15px;font-weight:800;color:var(--t);margin:0 4px 10px;display:flex;align-items:center;gap:6px}
+.ac-vid{width:100%;aspect-ratio:16/9;border-radius:16px;background:#000;display:block;object-fit:contain}
+.ac-img{width:100%;border-radius:16px;display:block;background:#fff;cursor:zoom-in}
+.ac-lock{position:relative;border-radius:18px;overflow:hidden;background:#F5F0FF;border:2px solid #E4D7FB;min-height:260px}
+.ac-lock .bl{position:absolute;inset:-10px;background:center/cover;filter:blur(12px);opacity:.45}
+.ac-lock .in{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:34px 20px;min-height:260px}
+.ac-lock .lk{width:52px;height:52px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.ac-lock b{font-size:16px;color:var(--t)}
+.ac-lock .dots{display:flex;gap:6px}.ac-lock .dots i{width:30px;height:6px;border-radius:3px;background:#DDD0F8}.ac-lock .dots i.on{background:#7C3AED}
+.ac-lock .go{margin-top:4px;border:none;background:#7C3AED;color:#fff;font-size:14.5px;font-weight:800;padding:12px 22px;border-radius:14px;cursor:pointer}
+.ac-pages img{width:100%;display:block;border-radius:12px;margin-bottom:10px;background:#fff;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;pointer-events:none}
+.ac-pages{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.ac-open{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:#00875F;background:#E0F8F1;padding:4px 10px;border-radius:999px}
 .ss-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
 .spk{width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
 .spk h4{font-size:15px;font-weight:800;color:var(--t2);text-align:center;margin-bottom:12px}
@@ -1604,6 +1620,7 @@ body{
 </div>
 
 <!-- CASE -->
+<div class="screen" id="acadScreen"><div id="acadBody"></div></div>
 <div class="screen" id="caseScreen">
 <button class="back-btn" onclick="goTab('home')">
   <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2134,7 +2151,7 @@ async function loadData(){
             papers:Array.isArray(x.papers)?x.papers:[]});
   });
   C=[];
-  if(cs){cs.forEach(d=>{const x=d.data();C.push({id:d.id,title:x.title||'',tag:(x.tags||[]).join('·'),e:x.emoji||_PERSON,videoUrl:x.videoUrl||'',pt:x.patient||{},set:x.set||null,role:x.role||'',type:x.type||'',eduVideoUrl:x.eduVideoUrl||'',eduImageUrl:x.eduImageUrl||'',eduPdfUrl:x.eduPdfUrl||''});});C.sort((a,b)=>a.id.localeCompare(b.id));}
+  if(cs){cs.forEach(d=>{const x=d.data();C.push({id:d.id,title:x.title||'',tag:(x.tags||[]).join('·'),e:x.emoji||_PERSON,videoUrl:x.videoUrl||'',pt:x.patient||{},set:x.set||null,role:x.role||'',type:x.type||'',eduVideoUrl:x.eduVideoUrl||'',eduImageUrl:x.eduImageUrl||'',eduPdfUrl:x.eduPdfUrl||'',eduPages:Array.isArray(x.eduPages)?x.eduPages:[]});});C.sort((a,b)=>a.id.localeCompare(b.id));}
   SETS={};FEATURED_SET=null;
   try{
     const [ss,cf]=await Promise.all([db.collection('sets').get(),db.collection('config').doc('home').get()]);
@@ -2803,6 +2820,8 @@ function setCases(n){
 }
 function caseDone(id){return S.hist.some(h=>h.caseId===id)&&recDoneForCase(id);}
 function setProgress(n){const x=setCases(n);return ['case1','case2'].filter(r=>x[r]&&caseDone(x[r].id)).length;}
+/* 열리는 데 필요한 케이스 수 — 아직 1개뿐인 세트는 1개 */
+function setNeed(n){const x=setCases(n);return [x.case1,x.case2].filter(Boolean).length||2;}
 function renderSetHome(){
   const el=document.getElementById('setHome');
   if(SEL_SET==null)SEL_SET=FEATURED_SET;
@@ -2813,7 +2832,7 @@ function renderSetHome(){
   const col=(c,role)=>{
     if(!c)return `<div class="sh-col soon"><div class="sh-ti">${role==='acad'?'학술':'케이스'}</div><div class="sh-cd"><span>준비 중</span></div></div>`;
     if(role==='acad'){
-      return `<div class="sh-col acad" onclick="openAcad('${c.id}')"><div class="sh-ti">${c.title}</div><div class="sh-cd">${vid(c.eduVideoUrl||c.videoUrl)}${PL}${done>=2?'':'<span class="lk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>'}</div></div>`;
+      return `<div class="sh-col acad" onclick="openAcad('${c.id}')"><div class="sh-ti">${c.title}</div><div class="sh-cd">${vid(c.eduVideoUrl||c.videoUrl)}${PL}${done>=setNeed(n)?'':'<span class="lk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>'}</div></div>`;
     }
     const pres=S.hist.some(h=>h.caseId===c.id);
     const bd=pres?(recDoneForCase(c.id)?'<span class="bd ok">완료</span>':'<span class="bd need">추천하기</span>'):'';
@@ -2849,7 +2868,33 @@ function openSetPicker(){
   document.body.appendChild(bg);
 }
 function pickSet(i){SEL_SET=i;document.querySelector('.ss-bg')?.remove();renderSetHome();}
-function openAcad(id){toast('학술 화면은 다음 단계에서 연결돼요');}
+function openAcad(id){
+  const c=C.find(x=>x.id===id);if(!c)return;
+  S.acad=c;renderAcad();gs('acadScreen');window.scrollTo(0,0);
+}
+function renderAcad(){
+  const c=S.acad;if(!c)return;
+  const x=setCases(c.set),done=setProgress(c.set),need=setNeed(c.set),open=done>=need;
+  const LK='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  const vurl=c.eduVideoUrl||c.videoUrl;
+  const next=[x.case1,x.case2].find(k=>k&&!caseDone(k.id));
+  let detail;
+  if(!open){
+    detail=`<div class="ac-lock">${c.eduImageUrl?`<div class="bl" style="background-image:url('${c.eduImageUrl}')"></div>`:''}<div class="in">
+      <div class="lk">${LK}</div><b>케이스 ${need}개를 풀면 열려요</b>
+      <div class="dots">${Array.from({length:need},(_,k)=>`<i class="${done>k?'on':''}"></i>`).join('')}</div>
+      ${next?`<button class="go" onclick="startCase('${next.id}')">케이스 풀러 가기</button>`:''}</div></div>`;
+  }else if(c.eduPages.length){
+    detail=`<div class="ac-pages" oncontextmenu="return false">${c.eduPages.map(u=>`<img src="${u}" alt="" draggable="false" loading="lazy">`).join('')}</div>`;
+  }else{
+    detail='<div class="empty" style="padding:30px 0">자세한 정보를 준비 중이에요</div>';
+  }
+  document.getElementById('acadBody').innerHTML=`
+    <div class="ac-top"><button type="button" class="rx-bk" onclick="goTab('home')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><b>${esc(c.title||'학술')}</b></div>
+    ${vurl?`<div class="ac-sec"><video class="ac-vid" src="${vurl}" controls playsinline preload="metadata"></video></div>`:''}
+    ${c.eduImageUrl?`<div class="ac-sec"><img class="ac-img" src="${c.eduImageUrl}" alt="인포그래픽" onclick="openImgZoom(this.src)"></div>`:''}
+    <div class="ac-sec" style="padding-bottom:110px"><div class="ac-h">약사를 위한 자세한 정보 ${open?'<span class="ac-open">열림</span>':''}</div>${detail}</div>`;
+}
 
 function renderHome(){
   const useSet=FEATURED_SET!=null&&C.some(c=>String(c.set)===String(FEATURED_SET));

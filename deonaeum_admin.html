@@ -68,6 +68,11 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
 .status-live{background:#E8F5E9;color:#2E7D32}
 .status-draft{background:var(--bg);color:var(--t3)}
 .up-btn{padding:10px 16px;border-radius:10px;background:#7C3AED;color:#fff;border:0;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.page-list{display:flex;flex-wrap:wrap;gap:8px}
+.page-it{position:relative;width:74px}
+.page-it img{width:74px;height:100px;object-fit:cover;object-position:top;border-radius:8px;border:1px solid var(--border);background:#fff;display:block}
+.page-it span{position:absolute;left:4px;top:4px;font-size:10px;font-weight:800;color:#fff;background:#7C3AED;border-radius:6px;padding:1px 5px}
+.page-it button{position:absolute;right:-6px;top:-6px;width:22px;height:22px;border-radius:50%;border:0;background:#191F28;color:#fff;font-size:13px;line-height:1;cursor:pointer}
 .up-prog{flex:1;display:flex;align-items:center;font-size:12px;color:var(--t2)}
 .set-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
 .set-row input[type=text]{flex:1;padding:9px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:14px;min-width:0}
@@ -209,9 +214,10 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
         <div class="field"><label>인포그래픽 이미지</label>
           <div style="display:flex;gap:8px;margin-bottom:6px"><input type="file" id="fEduImageFile" accept="image/*" style="display:none" onchange="uploadTo(this,'edu','fEduImage','pEduImage')"><button class="up-btn" onclick="document.getElementById('fEduImageFile').click()">📁 파일 선택</button><div id="pEduImage" class="up-prog"></div></div>
           <input id="fEduImage" placeholder="이미지 URL"></div>
-        <div class="field" style="margin-bottom:0"><label>약사용 자세한 정보 (PDF)</label>
-          <div style="display:flex;gap:8px;margin-bottom:6px"><input type="file" id="fEduPdfFile" accept="application/pdf" style="display:none" onchange="uploadTo(this,'edu','fEduPdf','pEduPdf')"><button class="up-btn" onclick="document.getElementById('fEduPdfFile').click()">📁 파일 선택</button><div id="pEduPdf" class="up-prog"></div></div>
-          <input id="fEduPdf" placeholder="PDF URL"></div>
+        <div class="field" style="margin-bottom:0"><label>약사용 자세한 정보 (PDF 또는 이미지)</label>
+          <div style="display:flex;gap:8px;margin-bottom:6px"><input type="file" id="fPagesFile" accept="application/pdf,image/*" multiple style="display:none" onchange="addPages(this)"><button class="up-btn" onclick="document.getElementById('fPagesFile').click()">📁 파일 선택</button><div id="pPages" class="up-prog">PDF는 페이지마다 이미지로 바뀌어요</div></div>
+          <div id="pageList" class="page-list"></div>
+          <input id="fEduPdf" type="hidden"></div>
       </div>
 
       <div class="field">
@@ -358,12 +364,14 @@ function openCaseForm(id) {
     document.getElementById('fEduVideo').value = c.eduVideoUrl||'';
     document.getElementById('fEduImage').value = c.eduImageUrl||'';
     document.getElementById('fEduPdf').value = c.eduPdfUrl||'';
+    eduPages = Array.isArray(c.eduPages)?c.eduPages.slice():[]; renderPages();
     tags = c.tags||[];
     renderTags();
     previewVideo();
     document.getElementById('delBtn').style.display = 'block';
   } else {
     document.getElementById('fSet').value='';document.getElementById('fRole').value='';
+    eduPages=[]; renderPages();
     // 추가 모드
     const nextNum = nextCaseId();
     document.getElementById('formTitleText').textContent = '새 케이스';
@@ -461,7 +469,7 @@ async function saveCase() {
     data.type = 'edu';
     data.eduVideoUrl = document.getElementById('fEduVideo').value.trim();
     data.eduImageUrl = document.getElementById('fEduImage').value.trim();
-    data.eduPdfUrl = document.getElementById('fEduPdf').value.trim();
+    data.eduPages = eduPages.slice();
   } else if ((cases.find(c=>c.id===id)||{}).type === 'edu') {
     data.type = DEL;
   }
@@ -668,6 +676,66 @@ async function uploadVideo(input) {
   }
 }
 window.uploadVideo = uploadVideo;
+
+/* ── 학술 자세한 정보: PDF → 페이지 이미지 / 이미지 그대로 ── */
+let eduPages = [];
+function renderPages(){
+  const w=document.getElementById('pageList');if(!w)return;
+  w.innerHTML=eduPages.map((u,i)=>`<div class="page-it"><img src="${u}"><span>${i+1}</span><button onclick="rmPage(${i})">×</button></div>`).join('');
+}
+function rmPage(i){eduPages.splice(i,1);renderPages();}
+let _pdfjs=null;
+function loadPdfJs(){
+  if(_pdfjs)return _pdfjs;
+  _pdfjs=new Promise((res,rej)=>{
+    const sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    sc.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res(window.pdfjsLib);};
+    sc.onerror=()=>rej(new Error('PDF 도구를 불러오지 못했어요'));
+    document.head.appendChild(sc);
+  });
+  return _pdfjs;
+}
+function canvasBlob(cv){return new Promise(r=>cv.toBlob(r,'image/jpeg',0.86));}
+async function putEdu(blob,name){
+  const ref=firebase.storage().ref(`edu/${Date.now()}_${name}`);
+  await ref.put(blob,{contentType:'image/jpeg'});
+  return await ref.getDownloadURL();
+}
+async function imgToJpeg(file){
+  const url=URL.createObjectURL(file);
+  const im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=url;});
+  const sc=Math.min(1,1400/im.naturalWidth);
+  const cv=document.createElement('canvas');cv.width=Math.round(im.naturalWidth*sc);cv.height=Math.round(im.naturalHeight*sc);
+  const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(im,0,0,cv.width,cv.height);
+  URL.revokeObjectURL(url);return canvasBlob(cv);
+}
+async function addPages(input){
+  const files=[...input.files];input.value='';if(!files.length)return;
+  const prog=document.getElementById('pPages');
+  try{
+    for(const f of files){
+      if(f.type==='application/pdf'||/\.pdf$/i.test(f.name)){
+        prog.textContent='PDF 여는 중...';
+        const lib=await loadPdfJs();
+        const pdf=await lib.getDocument({data:await f.arrayBuffer(),cMapUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',cMapPacked:true,standardFontDataUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/'}).promise;
+        for(let p=1;p<=pdf.numPages;p++){
+          prog.textContent=`페이지 변환·업로드 중... ${p}/${pdf.numPages}`;
+          const page=await pdf.getPage(p);
+          const v0=page.getViewport({scale:1});const vp=page.getViewport({scale:1400/v0.width});
+          const cv=document.createElement('canvas');cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);
+          const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);
+          await page.render({canvasContext:cx,viewport:vp}).promise;
+          eduPages.push(await putEdu(await canvasBlob(cv),`p${p}.jpg`));renderPages();
+        }
+      }else if(f.type.startsWith('image/')){
+        prog.textContent=`이미지 업로드 중... ${f.name}`;
+        eduPages.push(await putEdu(await imgToJpeg(f),'img.jpg'));renderPages();
+      }
+    }
+    prog.textContent=`✓ ${eduPages.length}장 준비됨 (저장 눌러야 반영)`;
+  }catch(e){prog.textContent='실패: '+e.message;}
+}
 
 /* ── 세트 ── */
 let setsData = {}, featuredSet = null;
