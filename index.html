@@ -203,11 +203,32 @@ body{
    ============================================ */
 .lw{
   min-height:100vh;
-  background:linear-gradient(180deg,#EBF3FF 0%,var(--bg) 70%);
-  display:flex;flex-direction:column;
-  justify-content:center;
+  background:radial-gradient(120% 60% at 50% 0%,#FBF8F3 0%,#F1EBE1 70%,#E9E0D3 100%);
+  display:flex;flex-direction:column;justify-content:center;
   padding:calc(32px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));
 }
+.lw-in{width:100%;max-width:420px;margin:0 auto}
+.dn-logo{font-family:'Black Han Sans',sans-serif;font-size:48px;line-height:1.1;color:#191F28;letter-spacing:-.01em}
+.dn-logo i{font-style:normal;color:#16A34A}
+.lw .ll p{font-size:11px;letter-spacing:.18em;color:#8B6A4E;margin-top:10px;font-weight:500}
+.lw .inp{background:#fff;border-color:#E5E8EB}
+.lw .inp:focus{border-color:#15803D}
+.lbtn{background:#15803D;margin-top:8px}
+.lbtn:active{background:#166534}
+.llinks{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:20px;font-size:14px;color:#8B95A1}
+.llinks button{background:none;border:0;font:inherit;color:#8B95A1;cursor:pointer;padding:6px 2px}
+.llinks button.b{color:#191F28;font-weight:700}
+.llinks span{color:#D1D6DB}
+.sf{align-self:stretch}
+.sf-hd{position:relative;text-align:center;font-size:16px;font-weight:700;padding:10px 0 16px}
+.sf-back{position:absolute;left:-10px;top:0;width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sf-seg{display:flex;gap:4px;padding:4px;border-radius:14px;background:#ECE6DC;margin-bottom:14px}
+.sf-seg button{flex:1;height:42px;border:0;border-radius:10px;background:transparent;font:inherit;font-size:15px;font-weight:500;color:#8B95A1;cursor:pointer}
+.sf-seg button.on{background:#fff;color:#191F28;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sf-lb{font-size:13px;font-weight:700;color:#4E5968;margin:4px 0 6px}
+.sf-auth{width:100%;height:50px;border-radius:12px;background:#fff;border:1.5px solid #15803D;color:#15803D;display:flex;align-items:center;gap:10px;padding:0 14px;font:inherit;font-size:15px;font-weight:700;margin-bottom:10px;cursor:pointer}
+.sf-auth span{flex:1;text-align:left}
+.sf-note{text-align:center;font-size:12px;color:#8B95A1;margin:10px 0 0}
 .ll{text-align:center;margin-bottom:36px}
 .logo-anim{
   width:min(180px,52vw); margin:0 auto 10px;
@@ -1624,46 +1645,51 @@ body{
 .rx-sug-chip small{font-size:9.5px;font-weight:600;color:var(--t3);margin-top:1px}
 .rx-sug-sep{width:1px;height:22px;background:var(--bd);flex-shrink:0;margin:0 2px}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <!-- LOGIN -->
 <div class="screen on" id="loginScreen">
 <div class="lw">
-  <div class="ll">
-    <div class="logo-anim" id="logoAnim">
-      <svg id="loginLogoSvg" viewBox="0 0 2760 1448" xmlns="http://www.w3.org/2000/svg" aria-label="더나음">
-        <g transform="translate(0,1160) scale(1,-1)">
-          <path class="gl" d="M85 756V133H160C328 133 439 137 564 160L551 268C445 249 350 243 218 242V650H504V756ZM459 518V410H685V-91H818V838H685V518Z" transform="translate(0,0)"/>
-          <path class="gl" d="M632 839V-87H766V378H895V488H766V839ZM69 249V138H148C285 138 433 147 587 179L573 287C444 262 318 252 201 250V750H69Z" transform="translate(920,0)"/>
-          <path class="gl" d="M459 820C255 820 124 752 124 640C124 527 255 459 459 459C664 459 795 527 795 640C795 752 664 820 459 820ZM459 718C586 718 657 692 657 640C657 587 586 562 459 562C333 562 262 587 262 640C262 692 333 718 459 718ZM138 237V-79H778V237ZM648 132V26H268V132ZM40 406V302H878V406Z" transform="translate(1840,0)"/>
-        </g>
-      </svg>
+  <div id="lf" class="lw-in">
+    <div class="ll">
+      <div class="dn-logo">더나음<i>.</i></div>
+      <p>THE BETTER CHOICES, BETTER HEALTH</p>
     </div>
-    <p>Better Choices, Better Health</p>
+    <div class="err" id="lerr"></div>
+    <input class="inp" id="lid" placeholder="아이디" autocomplete="username" autocapitalize="off">
+    <input class="inp" id="lpw" type="password" placeholder="비밀번호" autocomplete="current-password">
+    <button class="btn lbtn" id="loginBtn" onclick="doLogin()">로그인</button>
+    <div class="llinks"><button type="button" onclick="toast('준비 중이에요')">비밀번호 찾기</button><span>|</span><button type="button" class="b" onclick="switchLTab('signup')">회원가입하기</button></div>
   </div>
-  <div class="lc">
-    <div class="ltabs">
-      <button class="ltab on" onclick="switchLTab('login',this)">로그인</button>
-      <button class="ltab" onclick="switchLTab('signup',this)">회원가입</button>
-    </div>
-    <div id="lf">
-      <div class="err" id="lerr"></div>
-      <input class="inp" id="lnick" placeholder="닉네임">
-      <input class="inp" id="lpw" type="password" placeholder="비밀번호 4자리" maxlength="4" inputmode="numeric">
-      <button class="btn" id="loginBtn" onclick="doLogin()">로그인</button>
-    </div>
-    <div id="sf" style="display:none">
-      <div class="err" id="serr"></div>
-      <input class="inp" id="snick" placeholder="닉네임 (최대 20자)" maxlength="20">
-      <p class="hint">다른 사람과 겹치지 않는 닉네임을 입력해주세요</p>
-      <input class="inp" id="spw" type="password" placeholder="비밀번호 4자리 숫자" maxlength="4" inputmode="numeric">
-      <input class="inp" id="spw2" type="password" placeholder="비밀번호 확인" maxlength="4" inputmode="numeric">
-      <button class="btn" id="signupBtn" onclick="doSignup()">가입하기</button>
-    </div>
+  <div id="sf" class="lw-in sf" style="display:none">
+    <div class="sf-hd"><button type="button" class="sf-back" onclick="switchLTab('login')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span>회원가입</span></div>
+    <div class="sf-seg"><button type="button" class="on" data-role="pharm" onclick="setSignupRole('pharm')">약사</button><button type="button" data-role="member" onclick="setSignupRole('member')">일반회원</button></div>
+    <div class="err" id="serr"></div>
+    <div class="sf-lb">본인인증</div>
+    <button type="button" class="sf-auth" onclick="toast('본인인증은 준비 중이에요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg><span>휴대폰 본인인증</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="sf-lb">닉네임</div>
+    <input class="inp" id="snick" maxlength="20" placeholder="다른 약사에게 보이는 이름">
+    <div class="sf-lb">아이디</div>
+    <input class="inp" id="sid" maxlength="20" placeholder="영문, 숫자 4자 이상" autocapitalize="off" autocomplete="username">
+    <div class="sf-lb">비밀번호</div>
+    <input class="inp" id="spw" type="password" placeholder="8자 이상" autocomplete="new-password">
+    <div class="sf-lb">비밀번호 확인</div>
+    <input class="inp" id="spw2" type="password" placeholder="한 번 더 입력" autocomplete="new-password">
+    <p class="sf-note" id="sfNote">가입 후 면허 인증을 진행해요</p>
+    <button class="btn lbtn" id="signupBtn" onclick="doSignup()">가입하기</button>
   </div>
-  <div class="li"><svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3h2a1 1 0 0 1 1 1v5h5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5v5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-5H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h5V4a1 1 0 0 1 1-1z"/></svg> 약사 전용 임상 판단 플랫폼<br>가입 후 약사 면허 인증이 필요합니다</div>
 </div>
+</div>
+
+<!-- 일반회원 (준비 중) -->
+<div class="screen" id="memberScreen">
+  <div class="lw"><div class="lw-in" style="text-align:center">
+    <div class="ll"><div class="dn-logo">더나음<i>.</i></div><p>THE BETTER CHOICES, BETTER HEALTH</p></div>
+    <p style="font-size:15px;color:var(--t2);margin-bottom:24px">일반회원 화면을 준비하고 있어요</p>
+    <button class="btn lbtn" onclick="logout()">로그아웃</button>
+  </div></div>
 </div>
 
 <!-- 면허 인증 게이트 -->
@@ -2241,10 +2267,17 @@ async function loadData(){
 let S={user:null,case:null,pair:0,pairs:[],ing:null,hist:[],selTab:'ing',shownIngs:[],shownBrands:[],ingAllOpen:false,cmtProd:null,brand:null,summary:'',peerSort:'rec',votesLeft:3,bio:'',boardTab:'notice',loungeSort:'new',curPostId:null,rankPurp:null};
 
 /* LOGIN */
-function switchLTab(t,btn){
-  document.querySelectorAll('.ltab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+function switchLTab(t){
   document.getElementById('lf').style.display=t==='login'?'block':'none';
   document.getElementById('sf').style.display=t==='signup'?'block':'none';
+  window.scrollTo(0,0);
+}
+let _signupRole='pharm';
+function setSignupRole(r){
+  _signupRole=r;
+  document.querySelectorAll('.sf-seg button').forEach(b=>b.classList.toggle('on',b.dataset.role===r));
+  const n=document.getElementById('snick');if(n)n.placeholder=r==='pharm'?'다른 약사에게 보이는 이름':'다른 사람에게 보이는 이름';
+  const note=document.getElementById('sfNote');if(note)note.style.display=r==='pharm'?'block':'none';
 }
 function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
 function setBtnLoading(id,loading,text){
@@ -2278,35 +2311,52 @@ function clearLoginAttempts(nick){
 
 async function doSignup(){
   const nick=document.getElementById('snick').value.trim();
+  const id=document.getElementById('sid').value.trim().toLowerCase();
   const pw=document.getElementById('spw').value;
   const pw2=document.getElementById('spw2').value;
+  const role=_signupRole;
   document.getElementById('serr').style.display='none';
-  if(!nick){showErr('serr','닉네임을 입력해주세요');return;}
-  if(!/^[가-힣a-zA-Z0-9._-]{2,20}$/.test(nick)){showErr('serr','닉네임은 2~20자, 한글·영문·숫자·._-만 사용할 수 있어요');return;}
-  if(pw.length!==4||!/^\d+$/.test(pw)){showErr('serr','비밀번호는 숫자 4자리예요');return;}
+  if(!/^[가-힣a-zA-Z0-9._-]{2,20}$/.test(nick)){showErr('serr','닉네임은 2~20자, 한글·영문·숫자로 입력해주세요');return;}
+  if(!/^[a-z0-9]{4,20}$/.test(id)){showErr('serr','아이디는 영문·숫자 4~20자로 입력해주세요');return;}
+  if(pw.length<8){showErr('serr','비밀번호는 8자 이상이에요');return;}
   if(pw!==pw2){showErr('serr','비밀번호가 일치하지 않아요');return;}
   setBtnLoading('signupBtn',true,'가입 중...');
   try{
-    const r=await db.collection('users').doc(nick).get();
-    if(r.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
+    const r=await db.collection('users').doc(id).get();
+    if(r.exists){showErr('serr','이미 사용 중인 아이디예요');return;}
+    const dupNick=await db.collection('users').where('nick','==',nick).limit(1).get();
+    const legacy=await db.collection('users').doc(nick).get();
+    if(!dupNick.empty||legacy.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
     const pwHash=await hashPw(pw);
-    await db.collection('users').doc(nick).set({pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString()});
-    toast('가입 완료! 로그인해주세요');
-    const ln=document.getElementById('lnick');if(ln)ln.value=nick;
-    switchLTab('login',document.querySelectorAll('.ltab')[0]);
+    const d={nick,role,pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString()};
+    await db.collection('users').doc(id).set(d);
+    try{localStorage.setItem('deonaeum_nick',id);}catch(e){}
+    S.user={nick:id,name:nick,role};S.hist=[];S.bio='';
+    toast('가입을 환영해요, '+nick+'님!');
+    await afterAuth(d);
   }catch(e){showErr('serr','오류: '+e.message);}
   finally{setBtnLoading('signupBtn',false);}
 }
 
+/* 아이디로 계정 찾기 — 새 계정은 소문자 아이디, 기존 계정은 닉네임이 곧 아이디 */
+async function _findUser(raw){
+  let r=await db.collection('users').doc(raw).get();
+  if(!r.exists&&raw.toLowerCase()!==raw)r=await db.collection('users').doc(raw.toLowerCase()).get();
+  return r;
+}
+function _setUser(id,d){
+  S.user={nick:id,name:(d&&d.nick)||id,role:(d&&d.role)||'pharm'};
+  S.hist=(d&&d.hist)||[];S.bio=(d&&d.bio)||'';
+}
+
 async function doLogin(){
-  const nick=document.getElementById('lnick').value.trim();
+  const raw=document.getElementById('lid').value.trim();
   const pw=document.getElementById('lpw').value;
   document.getElementById('lerr').style.display='none';
-  if(!nick){showErr('lerr','닉네임을 입력해주세요');return;}
+  if(!raw){showErr('lerr','아이디를 입력해주세요');return;}
   if(!pw){showErr('lerr','비밀번호를 입력해주세요');return;}
 
-  // 시도 제한 확인
-  const attempts=getLoginAttempts(nick);
+  const attempts=getLoginAttempts(raw);
   if(attempts.blockedUntil>Date.now()){
     const sec=Math.ceil((attempts.blockedUntil-Date.now())/1000);
     showErr('lerr',`너무 많이 시도했어요. ${sec}초 후 다시 시도해주세요`);
@@ -2315,56 +2365,54 @@ async function doLogin(){
 
   setBtnLoading('loginBtn',true,'로그인 중...');
   try{
-    const r=await db.collection('users').doc(nick).get();
-    if(!r.exists){showErr('lerr','존재하지 않는 닉네임이에요');return;}
+    const r=await _findUser(raw);
+    if(!r.exists){showErr('lerr','아이디 또는 비밀번호를 확인해주세요');return;}
+    const id=r.id;
     const d=r.data();
     const pwHash=await hashPw(pw);
 
-    // 비번 일치 여부 — 신규(pwHash)와 레거시(pw 평문) 둘 다 지원
     let match=false;
     if(d.pwHash){
       match=(d.pwHash===pwHash);
     }else if(d.pw){
-      // 레거시 평문 비번: 일치하면 해시로 즉시 마이그레이션
       if(d.pw===pw){
         match=true;
-        try{
-          await db.collection('users').doc(nick).update({pwHash,pw:firebase.firestore.FieldValue.delete()});
-        }catch(e){console.log('migrate fail',e);}
+        try{await db.collection('users').doc(id).update({pwHash,pw:firebase.firestore.FieldValue.delete()});}
+        catch(e){console.log('migrate fail',e);}
       }
     }
 
     if(!match){
       const newCount=attempts.count+1;
       if(newCount>=LOGIN_LIMIT.max){
-        setLoginAttempts(nick,{count:newCount,blockedUntil:Date.now()+LOGIN_LIMIT.cooldownMs});
+        setLoginAttempts(raw,{count:newCount,blockedUntil:Date.now()+LOGIN_LIMIT.cooldownMs});
         showErr('lerr',`${LOGIN_LIMIT.max}회 연속 실패. ${LOGIN_LIMIT.cooldownMs/1000}초 후 다시 시도해주세요`);
       }else{
-        setLoginAttempts(nick,{count:newCount,blockedUntil:0});
-        showErr('lerr',`비밀번호가 틀렸어요 (${newCount}/${LOGIN_LIMIT.max})`);
+        setLoginAttempts(raw,{count:newCount,blockedUntil:0});
+        showErr('lerr',`아이디 또는 비밀번호를 확인해주세요 (${newCount}/${LOGIN_LIMIT.max})`);
       }
       return;
     }
 
-    clearLoginAttempts(nick);
-    try{localStorage.setItem('deonaeum_nick',nick);}catch(e){}
-    S.user={nick};S.hist=d.hist||[];S.bio=d.bio||'';
-    toast('안녕하세요, '+nick+'님!');
+    clearLoginAttempts(raw);
+    try{localStorage.setItem('deonaeum_nick',id);}catch(e){}
+    _setUser(id,d);
+    toast('안녕하세요, '+S.user.name+'님!');
     await afterAuth(d);
   }catch(e){showErr('lerr','오류: '+e.message);}
   finally{setBtnLoading('loginBtn',false);}
 }
 
-/* 자동 로그인 — 저장된 닉네임으로 재로그인 */
+/* 자동 로그인 — 저장된 아이디로 재로그인 */
 async function tryAutoLogin(){
-  let nick=null;
-  try{nick=localStorage.getItem('deonaeum_nick');}catch(e){}
-  if(!nick)return false;
+  let id=null;
+  try{id=localStorage.getItem('deonaeum_nick');}catch(e){}
+  if(!id)return false;
   try{
-    const r=await db.collection('users').doc(nick).get();
+    const r=await db.collection('users').doc(id).get();
     if(!r.exists){try{localStorage.removeItem('deonaeum_nick');}catch(e){}return false;}
     const d=r.data();
-    S.user={nick};S.hist=d.hist||[];S.bio=d.bio||'';
+    _setUser(id,d);
     await afterAuth(d);
     return true;
   }catch(e){return false;}
@@ -2396,6 +2444,7 @@ function licStatusOf(d){return (d&&d.licStatus)||'none';}
 
 /* 로그인·자동로그인 공통 분기 */
 async function afterAuth(d){
+  if(d&&d.role==='member'){gs('memberScreen');return;}
   if(licStatusOf(d)==='verified'){
     await loadData();goTab('home');maybeShowOnboarding(d);
     return;
@@ -2434,7 +2483,7 @@ function renderLicGate(){
         <div class="lg-d">제출해주신 면허증을 확인하고 있어요.<br>보통 하루 안에 완료돼요.</div>
       </div>
       <div class="lg-card">
-        <div class="lg-row"><span>닉네임</span><b>${esc(nick)}</b></div>
+        <div class="lg-row"><span>닉네임</span><b>${esc((S.user&&S.user.name)||nick)}</b></div>
         <div class="lg-row"><span>실명</span><b>${esc(d.licName||'-')}</b></div>
         <div class="lg-row"><span>면허번호</span><b>${esc(d.licNo||'-')}</b></div>
         <div class="lg-row"><span>신청일</span><b>${d.licAt?new Date(d.licAt).toLocaleDateString('ko-KR'):'-'}</b></div>
@@ -4822,7 +4871,7 @@ function moreRank(t){_rankN[t]+=10;_rankAnim=false;renderRanking(t,true);}
 /* MY */
 async function renderMy(){
   const nick=S.user?.nick||'약사';
-  document.getElementById('mynm').textContent=nick+' 님';
+  document.getElementById('mynm').textContent=(S.user?.name||nick)+' 님';
   try{await loadPhotos([nick]);_setAvatar('myAvatar',PHOTO_CACHE[nick]||'');}catch(e){}
   const bioEl=document.getElementById('myBio');
   if(bioEl){bioEl.textContent=S.bio?S.bio:'아직 자기소개가 없어요';bioEl.classList.toggle('empty-bio',!S.bio);}
@@ -5140,7 +5189,7 @@ function toast(msg){
   if(tt)clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2000);
 }
 
-window.addEventListener('load',function(){tryAutoLogin().then(function(ok){if(!ok){gs('loginScreen');requestAnimationFrame(()=>requestAnimationFrame(playLogoDraw));}});});
+window.addEventListener('load',function(){tryAutoLogin().then(function(ok){if(!ok){gs('loginScreen');}});});
 </script>
 <div id="rxSug" onmousedown="event.preventDefault()"><div class="rx-list" id="rxSugRow"></div></div>
 <div class="pr-zoom" id="prZoom" onclick="if(event.target===this)prZoomClose()"></div>
