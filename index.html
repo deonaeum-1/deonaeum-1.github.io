@@ -1801,6 +1801,7 @@ body{
       <div class="sf-phrow" id="sCodeRow" style="display:none"><input class="inp" id="sCode" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="인증번호 6자리"><button type="button" class="sf-phbt" id="sCodeBtn" onclick="phConfirm()">확인</button></div>
     </div>
     <div class="sf-phok" id="sfPhoneOk" style="display:none"></div>
+    <div id="sRecap"></div>
     <div class="sf-lb">닉네임</div>
     <input class="inp" id="snick" maxlength="20" placeholder="다른 약사에게 보이는 이름">
     <div class="sf-lb">아이디</div>
@@ -2523,7 +2524,7 @@ async function phSend(){
     const dup=await db.collection('users').where('phoneHash','==',h).limit(1).get();
     if(!dup.empty){showErr('serr','이미 이 번호로 가입된 계정이 있어요');btn.disabled=false;btn.textContent='인증번호 받기';return;}
     firebase.auth().languageCode='ko';
-    if(!_phVerifier)_phVerifier=new firebase.auth.RecaptchaVerifier('sPhoneBtn',{size:'invisible'});
+    if(!_phVerifier)_phVerifier=new firebase.auth.RecaptchaVerifier('sRecap',{size:'invisible'});
     _phConf=await firebase.auth().signInWithPhoneNumber(e,_phVerifier);
     _phConf._e=e;_phConf._h=h;
     document.getElementById('sCodeRow').style.display='flex';
@@ -2532,7 +2533,9 @@ async function phSend(){
     toast('인증번호를 보냈어요');
   }catch(err){
     console.log('phone send',err);
-    showErr('serr',err&&err.code==='auth/too-many-requests'?'잠시 후 다시 시도해주세요':'인증번호를 보내지 못했어요');
+    const MSG={'auth/too-many-requests':'잠시 후 다시 시도해주세요','auth/invalid-phone-number':'휴대폰 번호를 확인해주세요','auth/operation-not-allowed':'전화 로그인이 꺼져 있어요 (콘솔 설정)','auth/unauthorized-domain':'승인된 도메인이 아니에요 (콘솔 설정)','auth/billing-not-enabled':'결제 설정이 필요해요'};
+    const code=(err&&err.code)||'unknown';
+    showErr('serr',(MSG[code]||'인증번호를 보내지 못했어요')+' ['+code+']');
     btn.disabled=false;btn.textContent='인증번호 받기';
     try{_phVerifier&&_phVerifier.clear();}catch(x){} _phVerifier=null;
   }
