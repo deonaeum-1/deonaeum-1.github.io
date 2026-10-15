@@ -164,6 +164,7 @@ body{
   transition:color .15s;
 }
 .tab.on{color:var(--p)}
+.dn-stage .tab.on,.dn-shelfscr .tab.on{color:#191F28}
 .tab-icon{
   width:26px;height:26px;display:flex;align-items:center;justify-content:center;
   font-size:0;
@@ -1644,6 +1645,121 @@ body{
 .rx-sug-chip.ing{border-color:var(--success);color:#00996f}
 .rx-sug-chip small{font-size:9.5px;font-weight:600;color:var(--t3);margin-top:1px}
 .rx-sug-sep{width:1px;height:22px;background:var(--bd);flex-shrink:0;margin:0 2px}
+
+/* ============================================
+   더나음2 — 약국 매대 UI
+   ============================================ */
+:root{--dn-tb:calc(76px + env(safe-area-inset-bottom));--dn-st:env(safe-area-inset-top);--dn-ease:cubic-bezier(.2,.8,.2,1)}
+.dn-logo.s{font-size:29px}
+.dn-stage.screen{padding:0;height:100vh;height:100dvh;min-height:0;overflow:hidden;background:#111418;transition:background .45s var(--dn-ease)}
+.dn-stage.screen.on{animation:none}
+.dn-stage.up{background:#F7F4EF}
+.dn-vid{position:absolute;left:0;right:0;top:0;height:calc(100% - var(--dn-tb) - 36px);overflow:hidden;background:#111418;transition:all .45s var(--dn-ease);border-radius:0;touch-action:pan-y}
+.dn-vid video{width:100%;height:100%;object-fit:cover;display:block}
+.dn-vg{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 45%,rgba(0,0,0,0) 55%,rgba(0,0,0,.45) 100%);pointer-events:none}
+.dn-vt{position:absolute;left:0;right:0;top:0;height:240px;background:linear-gradient(180deg,rgba(17,20,24,.72),rgba(17,20,24,0));pointer-events:none}
+.dn-vb{position:absolute;left:0;right:0;bottom:0;height:200px;background:linear-gradient(180deg,rgba(17,20,24,0),rgba(17,20,24,.6));pointer-events:none}
+.dn-cti{position:absolute;left:16px;bottom:12px;color:#fff;display:flex;flex-direction:column;gap:2px;opacity:0;transition:opacity .3s;pointer-events:none}
+.dn-cti em{font-style:normal;font-size:12px;font-weight:700;color:#D1D6DB}
+.dn-cti b{font-size:20px;font-weight:900;letter-spacing:-.04em}
+.dn-down{position:absolute;right:10px;top:10px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;cursor:pointer}
+.dn-hd{position:absolute;left:18px;right:18px;top:calc(14px + var(--dn-st));display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;z-index:3;pointer-events:none;transition:color .45s}
+.dn-hd .dn-logo{color:inherit}
+.dn-bars{align-self:stretch;display:flex;gap:5px;transition:opacity .3s}
+.dn-bars span{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.32)}
+.dn-bars span.on{background:#fff}
+.dn-ti{position:absolute;left:20px;right:60px;top:calc(86px + var(--dn-st));display:flex;flex-direction:column;gap:4px;color:#fff;z-index:3;transition:opacity .3s;pointer-events:none}
+.dn-ti em{font-style:normal;font-size:12px;font-weight:700;color:#D1D6DB}
+.dn-ti b{font-size:30px;font-weight:900;letter-spacing:-.045em;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.dn-ti span{font-size:13px;font-weight:500;color:#E5E8EB}
+.dn-snd{position:absolute;right:14px;top:calc(84px + var(--dn-st));width:38px;height:38px;border-radius:50%;border:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:4;cursor:pointer;transition:opacity .3s}
+.dn-snd .onn{display:none}.dn-snd.on .onn{display:block}.dn-snd.on .off{display:none}
+.dn-stage.swap .dn-ti,.dn-stage.swap .dn-obj{opacity:0}
+.dn-counter{position:absolute;left:-10px;right:-10px;top:calc(100% - var(--dn-tb) - 64px);height:66px;z-index:5;transition:top .45s var(--dn-ease)}
+.dn-counter .ct-top{position:absolute;left:0;right:0;top:0;height:30px;clip-path:polygon(3% 0,97% 0,100% 100%,0 100%);background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MjAnIGhlaWdodD0nMTQwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC4wMDYgMC40MicgbnVtT2N0YXZlcz0nMycgc2VlZD0nNycvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0nMCAwIDAgMCAwLjE2ICAwIDAgMCAwIDAuMDggIDAgMCAwIDAgMC4wMyAgMC45IDAgMCAwIC0wLjMyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2cpJy8+PC9zdmc+) 0 0 / 420px 140px, url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNjAnIGhlaWdodD0nMTYwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC45JyBudW1PY3RhdmVzPScyJyBzZWVkPScyJy8+PGZlQ29sb3JNYXRyaXggdmFsdWVzPScwIDAgMCAwIDEgIDAgMCAwIDAgMSAgMCAwIDAgMCAxICAwIDAgMCAwLjA5IDAnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWx0ZXI9J3VybCgjbiknLz48L3N2Zz4=) 0 0 / 160px 160px, linear-gradient(180deg, #8C5C38 0%, #6E4528 100%)}
+.dn-counter .ct-edge{position:absolute;left:0;right:0;top:29px;height:2px;background:linear-gradient(90deg, rgba(255,222,186,0) 0%, rgba(255,222,186,0.55) 50%, rgba(255,222,186,0) 100%)}
+.dn-counter .ct-front{position:absolute;left:0;right:0;top:30px;bottom:0;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MjAnIGhlaWdodD0nMTQwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC4wMDYgMC40MicgbnVtT2N0YXZlcz0nMycgc2VlZD0nNycvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0nMCAwIDAgMCAwLjE2ICAwIDAgMCAwIDAuMDggIDAgMCAwIDAgMC4wMyAgMC45IDAgMCAwIC0wLjMyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2cpJy8+PC9zdmc+) 0 40px / 420px 140px, linear-gradient(180deg, #4B2E1C 0%, #2E1B10 100%);box-shadow:0 8px 14px rgba(74,44,22,.2)}
+.dn-obj{position:absolute;left:10px;right:10px;bottom:calc(100% - 26px);display:flex;justify-content:center;align-items:flex-end;transition:opacity .2s}
+.dn-front{position:absolute;left:0;right:0;top:30px;bottom:0;display:flex;align-items:center;justify-content:center}
+.dn-front button{background:none;border:0;color:#F3DFA6;font:inherit;font-size:15px;font-weight:900;letter-spacing:-.03em;display:flex;align-items:center;gap:6px;cursor:pointer}
+.dn-kit,.dn-leaf,.dn-podium{background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 8px 8px rgba(15,8,3,.45))}
+.dn-kit:active,.dn-leaf:active{transform:translateY(1px) scale(.98)}
+.dn-leaf{margin-bottom:-4px}
+.dn-leaf svg{width:118px;height:auto}
+.dn-wait{color:#F3DFA6;font-size:14px;font-weight:700;margin-bottom:6px;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.dn-podium{display:flex;align-items:flex-end}
+.pd-col{display:flex;flex-direction:column;align-items:center}
+.pd-bk{position:relative;width:100%;background:linear-gradient(180deg,#1C7C44,#14532D);box-shadow:inset 1px 0 0 rgba(255,255,255,.12),inset -1px 0 0 rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
+.pd-bk i{position:absolute;left:4px;right:4px;top:-6px;height:6px;background:linear-gradient(180deg,#2F8F57,#1E7A45);clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 100%,0 100%)}
+.pd-bk span{font-family:'Black Han Sans',sans-serif;color:#fff;font-size:30px;line-height:1;transform:skewX(-8deg)}
+.pd-col:nth-child(2) .pd-bk span{font-size:40px}
+.pd-col .dn-pr{margin-bottom:6px}
+/* 제품 모양 */
+.dn-shelfrow{display:flex;align-items:flex-end;gap:10px;justify-content:center}
+.dn-pr{display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative}
+.dn-pr .lb{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:9px;font-weight:900;color:#191F28;background:#fff;padding:1px 4px;border-radius:3px;letter-spacing:-.03em}
+.dn-pr.bottle .lb{top:28px}.dn-pr.tube .lb{top:9px;left:44%}.dn-pr.stick .lb{top:18px}
+.dn-pr .bx{position:relative;width:66px;height:40px}
+.dn-pr .bx .tp{position:absolute;left:0;top:-6px;width:72px;height:6px;background:#F4F6F8;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.dn-pr .bx .sd{position:absolute;left:66px;top:-6px;width:6px;height:46px;background:#CBD2DA;clip-path:polygon(0 6px,100% 0,100% calc(100% - 6px),0 100%)}
+.dn-pr .bx .fr{position:absolute;inset:0;background:linear-gradient(180deg,#fff,#EEF0F2);display:flex;flex-direction:column;overflow:hidden}
+.dn-pr .bx .bd{height:6px;background:var(--kc)}
+.dn-pr .bx span{flex:1;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:-.05em;color:#191F28;white-space:nowrap;padding:0 3px}
+.dn-slot{width:46px;height:38px;border:1.5px dashed rgba(255,255,255,.6);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:18px}
+/* 매대 올라옴 */
+.dn-panel{position:absolute;left:0;right:0;top:calc(var(--dn-st) + 62px + 200px + 18px + 76px);bottom:0;padding:0 16px calc(16px + env(safe-area-inset-bottom));overflow-y:auto;opacity:0;transform:translateY(40px);pointer-events:none;transition:all .45s var(--dn-ease)}
+.dn-stage.up .dn-panel{opacity:1;transform:none;pointer-events:auto}
+.dn-stage.up .dn-vid{left:16px;right:16px;top:calc(var(--dn-st) + 62px);height:200px;border-radius:20px}
+.dn-stage.up .dn-counter{top:calc(var(--dn-st) + 62px + 200px + 18px)}
+.dn-stage.up .dn-hd{color:#191F28}
+.dn-stage.up .dn-bars,.dn-stage.up .dn-ti,.dn-stage.up .dn-snd{opacity:0;pointer-events:none}
+.dn-stage.up .dn-cti{opacity:1}
+.dn-stage.up .dn-down{opacity:1;pointer-events:auto}
+.dn-stage.up .dn-vt{opacity:0}
+.dn-stage.up .tabbar{display:none}
+.dn-stage.up .dn-hd .dn-bars{display:none}
+.dn-wh{font-size:17px;font-weight:900;letter-spacing:-.03em;margin:4px 2px 10px}
+#dnWrite .rx-wrap{background:#fff;border-radius:14px}
+#dnWrite #rxTags{display:none}
+#dnWrite #rxBtn{background:#15803D}
+.dn-stage.rank #dnWrite,.dn-stage:not(.rank) #dnRankBox{display:none}
+.dn-rk{background:#fff;border-radius:22px;padding:16px 18px 8px}
+.dn-rkh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+.dn-rkh b{font-size:17px;font-weight:900;letter-spacing:-.03em}
+.dn-rkh span{font-size:12px;color:#8B95A1}
+.dn-rr{display:grid;grid-template-columns:28px minmax(0,1fr) 72px 36px;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F2F4F6}
+.dn-rr:last-child{border-bottom:0}
+.dn-rr .rno{font-family:'Black Han Sans',sans-serif;font-size:20px;color:#B0B8C1;text-align:center}
+.dn-rr .rno.t{color:#15803D}
+.dn-rr .rnm{min-width:0;display:flex;flex-direction:column}
+.dn-rr .rnm b{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dn-rr .rnm em{font-style:normal;font-size:11px;font-weight:600}
+.dn-rr .rbar{height:6px;border-radius:3px;background:#F2F4F6;overflow:hidden}
+.dn-rr .rbar i{display:block;height:100%;border-radius:3px;background:#B0B8C1}
+.dn-rr .rbar i.t{background:#15803D}
+.dn-rr .rct{font-size:13px;font-weight:700;text-align:right;color:#4E5968}
+/* 책장 */
+.dn-shelfscr.screen{background:radial-gradient(120% 60% at 50% 0%,#FBF8F3 0%,#F1EBE1 70%,#E9E0D3 100%);min-height:100vh}
+.dn-shd{height:calc(64px + var(--dn-st));padding-top:var(--dn-st);display:flex;align-items:center;justify-content:center}
+.dn-shelf{margin-bottom:22px}
+.dn-sl{font-size:13px;font-weight:900;color:#4E3420;padding:0 20px 8px;letter-spacing:-.02em;display:flex;align-items:center;gap:6px}
+.dn-sl i{font-style:normal;font-size:10px;font-weight:700;color:#fff;background:#15803D;padding:2px 7px;border-radius:999px}
+.dn-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 18px;position:relative;z-index:1}
+.dn-bk{position:relative;height:142px;border-radius:8px 8px 3px 3px;overflow:hidden;background:#191F28;border:0;padding:0;cursor:pointer;color:#fff;text-align:left;box-shadow:0 1px 0 rgba(255,255,255,.15) inset,0 10px 14px -6px rgba(40,20,8,.45)}
+.dn-bk video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.dn-bk .sh{position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,20,24,0),rgba(17,20,24,.8))}
+.dn-bk.locked .sh{background:linear-gradient(180deg,rgba(17,20,24,.55),rgba(17,20,24,.85))}
+.dn-bk .tx{position:absolute;left:9px;right:9px;bottom:9px;display:flex;flex-direction:column;gap:2px}
+.dn-bk .tx em{font-style:normal;font-size:10px;font-weight:700;color:#D1D6DB}
+.dn-bk .tx b{font-size:13px;font-weight:900;line-height:1.3;letter-spacing:-.03em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dn-bk .bd{position:absolute;right:7px;top:7px}
+.dn-bk .bd.ok{width:22px;height:22px;border-radius:50%;background:#16A34A;display:flex;align-items:center;justify-content:center}
+.dn-bk .bd.dot{width:9px;height:9px;border-radius:50%;background:#E11D48;box-shadow:0 0 0 2px #fff}
+.dn-bk .bd.half{width:9px;height:9px;border-radius:50%;background:#F59E0B;box-shadow:0 0 0 2px #fff}
+.dn-bk .lk{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.dn-plank{height:14px;margin-top:-2px;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MjAnIGhlaWdodD0nMTQwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC4wMDYgMC40MicgbnVtT2N0YXZlcz0nMycgc2VlZD0nNycvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0nMCAwIDAgMCAwLjE2ICAwIDAgMCAwIDAuMDggIDAgMCAwIDAgMC4wMyAgMC45IDAgMCAwIC0wLjMyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2cpJy8+PC9zdmc+) 0 0 / 420px 140px, url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNjAnIGhlaWdodD0nMTYwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC45JyBudW1PY3RhdmVzPScyJyBzZWVkPScyJy8+PGZlQ29sb3JNYXRyaXggdmFsdWVzPScwIDAgMCAwIDEgIDAgMCAwIDAgMSAgMCAwIDAgMCAxICAwIDAgMCAwLjA5IDAnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWx0ZXI9J3VybCgjbiknLz48L3N2Zz4=) 0 0 / 160px 160px, linear-gradient(180deg, #8C5C38 0%, #6E4528 100%);box-shadow:inset 0 1px 0 rgba(255,222,186,.35)}
+.dn-plank::after{content:"";display:block;height:8px;position:relative;top:14px;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MjAnIGhlaWdodD0nMTQwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC4wMDYgMC40MicgbnVtT2N0YXZlcz0nMycgc2VlZD0nNycvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0nMCAwIDAgMCAwLjE2ICAwIDAgMCAwIDAuMDggIDAgMCAwIDAgMC4wMyAgMC45IDAgMCAwIC0wLjMyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2cpJy8+PC9zdmc+) 0 40px / 420px 140px, linear-gradient(180deg, #4B2E1C 0%, #2E1B10 100%);box-shadow:0 6px 10px rgba(74,44,22,.18)}
+.dn-plank{margin-bottom:8px}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
 </head>
@@ -1690,6 +1806,33 @@ body{
     <p style="font-size:15px;color:var(--t2);margin-bottom:24px">일반회원 화면을 준비하고 있어요</p>
     <button class="btn lbtn" onclick="logout()">로그아웃</button>
   </div></div>
+</div>
+
+<!-- ===== 더나음2: 영상 전면 스테이지 ===== -->
+<div class="screen dn-stage" id="dnStage">
+  <div class="dn-vid" id="dnVidBox">
+    <video id="dnVideo" muted loop playsinline autoplay preload="auto"></video>
+    <i class="dn-vg"></i><i class="dn-vt"></i><i class="dn-vb"></i>
+    <div class="dn-cti" id="dnCardTi"></div>
+    <button type="button" class="dn-down" onclick="dnWriteClose()" aria-label="매대 내리기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+  </div>
+  <div class="dn-hd"><div class="dn-logo s">더나음<i>.</i></div><div class="dn-bars" id="dnBars"></div></div>
+  <div class="dn-ti" id="dnTi"></div>
+  <button type="button" class="dn-snd" id="dnSnd" onclick="dnSound()" aria-label="소리"><svg class="off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg><svg class="onn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
+  <div class="dn-counter" id="dnCounter">
+    <i class="ct-top"></i><i class="ct-edge"></i><i class="ct-front"></i>
+    <div class="dn-obj" id="dnObj"></div>
+    <div class="dn-front" id="dnFront"></div>
+  </div>
+  <div class="dn-panel" id="dnPanel"><div id="dnWrite"></div><div id="dnRankBox"></div></div>
+  <div class="tabbar"></div>
+</div>
+
+<!-- ===== 더나음2: 책장 ===== -->
+<div class="screen dn-shelfscr" id="dnShelf">
+  <div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div>
+  <div id="dnShelfBody"></div>
+  <div class="tabbar"></div>
 </div>
 
 <!-- 면허 인증 게이트 -->
@@ -5193,5 +5336,285 @@ window.addEventListener('load',function(){tryAutoLogin().then(function(ok){if(!o
 </script>
 <div id="rxSug" onmousedown="event.preventDefault()"><div class="rx-list" id="rxSugRow"></div></div>
 <div class="pr-zoom" id="prZoom" onclick="if(event.target===this)prZoomClose()"></div>
+<script>
+/* ============================================================
+   더나음 2 — 약국 매대 UI
+   영상 전면 스테이지 · 구급함 처방 · 매대 박스 · 책장 · 일반회원 포디움
+   ============================================================ */
+const DN_RANK_MIN=3; /* 일반회원에게 순위를 공개하는 최소 응답 약사 수 */
+let _dn={n:null,items:[],i:0,mode:'stage'};
+function dnIsMember(){return S.user&&S.user.role==='member';}
+
+/* ── 아이콘·사물 ── */
+const DN_KIT="<svg width=\"152\" height=\"90\" viewBox=\"0 0 190 112\">\n        <defs>\n          <linearGradient id=\"kFront\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#FFFFFF\"></stop><stop offset=\"0.55\" stop-color=\"#F3F4F6\"></stop><stop offset=\"1\" stop-color=\"#DCE0E5\"></stop></linearGradient>\n          <linearGradient id=\"kTop\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#E9ECEF\"></stop><stop offset=\"1\" stop-color=\"#FFFFFF\"></stop></linearGradient>\n          <linearGradient id=\"kSheen\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#FFFFFF\" stop-opacity=\"0\"></stop><stop offset=\"0.5\" stop-color=\"#FFFFFF\" stop-opacity=\"0.7\"></stop><stop offset=\"1\" stop-color=\"#FFFFFF\" stop-opacity=\"0\"></stop></linearGradient>\n          <linearGradient id=\"kHandle\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#FFFFFF\"></stop><stop offset=\"1\" stop-color=\"#D5DAE0\"></stop></linearGradient>\n        </defs>\n        <path d=\"M22 24 L168 24 Q176 24 179 30 L186 44 L4 44 L11 30 Q14 24 22 24 Z\" fill=\"url(#kTop)\"></path>\n        <ellipse cx=\"95\" cy=\"35\" rx=\"19\" ry=\"5.5\" fill=\"#D9DEE3\"></ellipse>\n        <path d=\"M75 35 C73 6, 117 6, 115 35\" stroke=\"#B9C0C8\" stroke-width=\"10\" fill=\"none\" stroke-linecap=\"round\"></path>\n        <path d=\"M75 35 C73 6, 117 6, 115 35\" stroke=\"url(#kHandle)\" stroke-width=\"7.5\" fill=\"none\" stroke-linecap=\"round\"></path>\n        <path d=\"M4 44 H186 V100 Q186 110 176 110 H14 Q4 110 4 100 Z\" fill=\"url(#kFront)\"></path>\n        <rect x=\"4\" y=\"44\" width=\"182\" height=\"1.5\" fill=\"url(#kSheen)\"></rect>\n        <rect x=\"4\" y=\"76\" width=\"182\" height=\"1\" fill=\"#C9CFD6\"></rect>\n        <rect x=\"4\" y=\"77\" width=\"182\" height=\"1\" fill=\"#FFFFFF\"></rect>\n        <rect x=\"86\" y=\"70\" width=\"18\" height=\"24\" rx=\"3\" fill=\"#F7F8F9\" stroke=\"#CDD3D9\" stroke-width=\"0.8\"></rect>\n        <text x=\"95\" y=\"90\" text-anchor=\"middle\" font-family=\"Noto Sans KR, sans-serif\" font-size=\"32\" font-weight=\"900\" letter-spacing=\"-1.5\" fill=\"#FFFFFF\" opacity=\"0.9\">\ucc98\ubc29\ud558\uae30</text>\n        <text x=\"95\" y=\"89\" text-anchor=\"middle\" font-family=\"Noto Sans KR, sans-serif\" font-size=\"32\" font-weight=\"900\" letter-spacing=\"-1.5\" fill=\"#15803D\">\ucc98\ubc29\ud558\uae30</text>\n      </svg>";
+const DN_LEAF="<svg width=\"132\" height=\"138\" viewBox=\"0 0 132 138\" aria-hidden=\"true\">\n        <defs>\n          <linearGradient id=\"acr\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#FFFFFF\" stop-opacity=\"0.35\"></stop><stop offset=\"0.5\" stop-color=\"#FFFFFF\" stop-opacity=\"0.08\"></stop><stop offset=\"1\" stop-color=\"#FFFFFF\" stop-opacity=\"0.3\"></stop></linearGradient>\n          <linearGradient id=\"paper\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#FFFFFF\"></stop><stop offset=\"1\" stop-color=\"#EEF0F2\"></stop></linearGradient>\n        </defs>\n        <path d=\"M14 10 L118 10 L122 128 L10 128 Z\" fill=\"url(#acr)\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1\"></path>\n        <g>\n          <path d=\"M22 18 L110 18 L113 118 L19 118 Z\" fill=\"url(#paper)\"></path>\n          <path d=\"M22 18 L110 18 L110.3 26 L21.7 26 Z\" fill=\"#16A34A\"></path>\n          <text x=\"66\" y=\"64\" text-anchor=\"middle\" font-family=\"Noto Sans KR, sans-serif\" font-size=\"17\" font-weight=\"900\" letter-spacing=\"-0.8\" fill=\"#191F28\">\uc804\ubb38 \uc57d\uc0ac\uc758</text>\n          <text x=\"66\" y=\"88\" text-anchor=\"middle\" font-family=\"Noto Sans KR, sans-serif\" font-size=\"17\" font-weight=\"900\" letter-spacing=\"-0.8\" fill=\"#191F28\">\uc774\uc57c\uae30 \ub4e3\uae30</text>\n          <rect x=\"54\" y=\"98\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#16A34A\"></rect>\n        </g>\n        <path d=\"M10 112 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 Z\" fill=\"rgba(255,255,255,0.22)\" stroke=\"rgba(255,255,255,0.6)\" stroke-width=\"1\"></path>\n        <rect x=\"14\" y=\"113\" width=\"104\" height=\"1.2\" fill=\"rgba(255,255,255,0.8)\"></rect>\n        <path d=\"M18 14 L24 124\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"2\" stroke-linecap=\"round\"></path>\n      </svg>";
+function dnKit(label){return DN_KIT.replace(/>처방하기<\/text>/g,'>'+label+'</text>');}
+function dnLeaf(l1,l2){return DN_LEAF.replace('>전문 약사의</text>','>'+l1+'</text>').replace('>이야기 듣기</text>','>'+l2+'</text>');}
+const DN_KC={core:'#3182F6',food:'#B7791F',otc:'#0F9D8A',ing:'#6B7684'};
+
+/* 제형 추정 — 이름 속 단어로 모양을 고릅니다 (모르면 박스) */
+function dnShape(name){
+  const n=String(name||'');
+  if(/연고|크림|겔|젤(?!리)|로션/.test(n))return 'tube';
+  if(/액|시럽|드링크|앰플|샷|현탁/.test(n))return 'bottle';
+  if(/스틱|젤리|과립|분말|산$|파우더/.test(n))return 'stick';
+  return 'box';
+}
+function dnShort(n){return String(n||'').replace(/\(.*?\)/g,'').replace(/\s*\d+(\.\d+)?\s*(mg|g|ml|mL|정|캡슐|포|병|T|C)\b.*$/i,'').trim()||String(n||'');}
+function dnProdObj(name,color,key){
+  const nm=esc(dnShort(name)),sh=dnShape(name);
+  const fs=nm.length>6?10:nm.length>4?11:12;
+  if(sh==='bottle')return `<div class="dn-pr bottle" ${key}><svg width="44" height="54" viewBox="0 0 44 50"><rect x="15" y="0" width="14" height="8" rx="2" fill="#2B2F36"/><rect x="16" y="8" width="12" height="5" fill="#8C6A3E"/><path d="M16 13 L28 13 Q38 16 38 24 L38 46 Q38 50 34 50 L10 50 Q6 50 6 46 L6 24 Q6 16 16 13 Z" fill="#6B4220"/><rect x="6" y="25" width="32" height="18" fill="#fff"/><rect x="6" y="25" width="32" height="3" fill="${color}"/><rect x="9" y="16" width="3" height="30" rx="1.5" fill="rgba(255,255,255,.22)"/></svg><span class="lb">${nm}</span></div>`;
+  if(sh==='tube')return `<div class="dn-pr tube" ${key}><svg width="70" height="30" viewBox="0 0 70 30"><path d="M4 6 L52 2 L52 28 L4 24 Z" fill="#F4F6F8" stroke="#CBD2DA"/><rect x="52" y="6" width="10" height="18" rx="2" fill="#E9ECEF" stroke="#CBD2DA"/><rect x="62" y="9" width="6" height="12" rx="1.5" fill="${color}"/><path d="M4 6 L52 2 L52 8 L4 11 Z" fill="${color}" opacity=".85"/></svg><span class="lb">${nm}</span></div>`;
+  if(sh==='stick')return `<div class="dn-pr stick" ${key}><svg width="46" height="40" viewBox="0 0 46 40"><rect x="4" y="6" width="9" height="32" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="15" y="3" width="9" height="35" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="26" y="7" width="9" height="31" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="4" y="6" width="9" height="5" rx="1" fill="${color}"/><rect x="15" y="3" width="9" height="5" rx="1" fill="${color}"/><rect x="26" y="7" width="9" height="5" rx="1" fill="${color}"/></svg><span class="lb">${nm}</span></div>`;
+  return `<div class="dn-pr box" ${key}><div class="bx" style="--kc:${color}"><i class="tp"></i><i class="sd"></i><div class="fr"><i class="bd"></i><span style="font-size:${fs}px">${nm}</span></div></div></div>`;
+}
+
+/* ── 세트 아이템 ── */
+function dnSetKeys(){
+  const ks=Object.keys(SETS).filter(n=>C.some(c=>String(c.set)===String(n)));
+  return ks.sort((a,b)=>Number(b)-Number(a));
+}
+function dnItems(n){
+  if(n!=null&&SETS[String(n)]){const x=setCases(n);return [x.case1,x.case2,x.acad].filter(Boolean);}
+  return C.filter(c=>c.type!=='edu').slice(0,3);
+}
+function dnTopic(n){return (SETS[String(n)]||{}).topic||'';}
+function dnRespN(cid){return new Set((RESP_CACHE||[]).filter(r=>String(r.caseId)===String(cid)).map(r=>r.nick)).size;}
+
+/* 일반회원 순위 — 일반의약품은 브랜드 대신 성분·제형으로 묶음 */
+function dnFormWord(n){const s=dnShape(n);return s==='bottle'?'액제':s==='tube'?'연고':s==='stick'?'과립':'정제';}
+function dnRanks(cid){
+  const by={};
+  (RESP_CACHE||[]).filter(r=>String(r.caseId)===String(cid)).forEach(r=>{
+    const seen=new Set();
+    (r.pairs||[]).forEach(p=>{
+      const otc=p.kind==='otc';
+      const key=otc?('o:'+(p.ing||p.pnm)+dnFormWord(p.pnm)):String(p.pid);
+      if(seen.has(key))return;seen.add(key);
+      const name=otc?((p.ing||'')+' '+dnFormWord(p.pnm)).trim():(p.pnm||_pnm(p.pid));
+      const kind=otc?'otc':(p.kind==='ing'?'ing':'core');
+      if(!by[key])by[key]={name,kind,n:0};
+      by[key].n++;
+    });
+  });
+  return Object.values(by).sort((a,b)=>b.n-a.n);
+}
+const DN_KLB={core:'건강기능식품',otc:'일반의약품',ing:'성분',food:'식품'};
+
+/* ── 스테이지 ── */
+function dnOpenStage(n,i){
+  if(n==null)n=FEATURED_SET!=null?FEATURED_SET:(dnSetKeys()[0]??null);
+  _dn.n=n;_dn.items=dnItems(n);_dn.i=Math.max(0,Math.min(_dn.items.length-1,i||0));
+  const st=document.getElementById('dnStage');st.classList.remove('up','rank');_dn.mode='stage';
+  gs('dnStage');dnDraw();
+}
+function dnDraw(){
+  const st=document.getElementById('dnStage');
+  const c=_dn.items[_dn.i];
+  document.getElementById('dnBars').innerHTML=_dn.items.map((_,k)=>`<span class="${k<=_dn.i?'on':''}"></span>`).join('');
+  const v=document.getElementById('dnVideo');
+  if(!c){document.getElementById('dnTi').innerHTML='<b>케이스를 준비하고 있어요</b>';document.getElementById('dnObj').innerHTML='';v.removeAttribute('src');return;}
+  const ac=c.role==='acad'||c.type==='edu';
+  const url=ac?(c.eduVideoUrl||c.videoUrl):c.videoUrl;
+  if(url){if(v.getAttribute('src')!==url){v.src=url;}v.muted=true;const pp=v.play();if(pp&&pp.catch)pp.catch(()=>{});}else v.removeAttribute('src');
+  const caseNo=_dn.items.filter(x=>x.role!=='acad'&&x.type!=='edu').indexOf(c)+1;
+  const kind=ac?'학술':'케이스 '+caseNo;
+  const topic=dnTopic(_dn.n);
+  const n=dnRespN(c.id);
+  let sub;
+  if(ac)sub='약사가 쉽게 설명해요';
+  else if(dnIsMember())sub=n>=DN_RANK_MIN?`약사 ${n}명의 선택`:'약사들이 답하고 있어요';
+  else sub=n?`약사 ${n}명이 답했어요`:'첫 번째로 답해보세요';
+  document.getElementById('dnTi').innerHTML=`<em>${esc(topic?topic+' · '+kind:kind)}</em><b>${esc(c.title||'')}</b><span>${sub}</span>`;
+  document.getElementById('dnCardTi').innerHTML=`<em>${esc(kind)}</em><b>${esc(c.title||'')}</b>`;
+  dnDrawObj();
+}
+function dnDrawObj(){
+  const o=document.getElementById('dnObj'),c=_dn.items[_dn.i];document.getElementById('dnFront').innerHTML='';if(!c){o.innerHTML='';return;}
+  const st=document.getElementById('dnStage');
+  if(st.classList.contains('up')){
+    if(st.classList.contains('rank')){o.innerHTML='';return;}
+    dnRenderBoxes();return;
+  }
+  const ac=c.role==='acad'||c.type==='edu';
+  if(ac){
+    o.innerHTML=`<button type="button" class="dn-leaf" onclick="openAcad('${c.id}')" aria-label="학술 보기">${dnIsMember()?dnLeaf('전문 약사의','이야기 듣기'):dnLeaf('학술','자세히 보기')}</button>`;
+    return;
+  }
+  if(dnIsMember()){
+    const r=dnRanks(c.id),n=dnRespN(c.id);
+    if(n<DN_RANK_MIN||!r.length){o.innerHTML='<div class="dn-wait">약사들이 답하고 있어요</div>';return;}
+    const col=(x,rank,h,w)=>x?`<div class="pd-col" style="width:${w}px">${dnProdObj(x.name,DN_KC[x.kind]||DN_KC.core,'')}<div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`:`<div class="pd-col" style="width:${w}px"><div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`;
+    o.innerHTML=`<button type="button" class="dn-podium" onclick="dnRankOpen()" aria-label="전체 순위">${col(r[1],2,46,104)}${col(r[0],1,64,112)}${col(r[2],3,36,104)}</button>`;
+    document.getElementById('dnFront').innerHTML='<button type="button" onclick="dnRankOpen()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>전체 순위</button>';
+    return;
+  }
+  const pres=S.hist.some(h=>h.caseId===c.id);
+  const label=!pres?'처방하기':(!recDoneForCase(c.id)?'추천하기':'결과 보기');
+  o.innerHTML=`<button type="button" class="dn-kit" onclick="dnKitTap()" aria-label="${label}">${dnKit(label)}</button>`;
+}
+function dnGo(d){
+  const i=_dn.i+d;if(i<0||i>=_dn.items.length)return;
+  _dn.i=i;const st=document.getElementById('dnStage');
+  st.classList.add('swap');setTimeout(()=>{dnDraw();st.classList.remove('swap');},160);
+}
+function dnSound(){
+  const v=document.getElementById('dnVideo');v.muted=!v.muted;if(!v.muted&&v.paused)v.play().catch(()=>{});
+  document.getElementById('dnSnd').classList.toggle('on',!v.muted);
+}
+
+/* 구급함 → 처방 / 추천 / 결과 */
+function dnKitTap(){
+  const c=_dn.items[_dn.i];if(!c)return;
+  const pres=S.hist.some(h=>h.caseId===c.id);
+  if(pres){startCase(c.id);return;}
+  if(S.case?.id!==c.id){S.case=c;S.pair=0;S.pairs=[];S.ing=null;S.shownIngs=[];S.peerShown=6;}
+  dnWriteOpen();
+}
+function dnWriteOpen(){
+  const st=document.getElementById('dnStage'),pn=document.getElementById('dnWrite');
+  if(!pn.dataset.ready){
+    pn.innerHTML='<div class="dn-wh">약사님의 소견을 입력해주세요</div>';
+    const wrap=document.querySelector('#rxWriteScreen .rx-wrap');
+    pn.appendChild(wrap);
+    pn.appendChild(document.getElementById('rxCount'));
+    pn.appendChild(document.getElementById('rxTags'));
+    pn.appendChild(document.getElementById('rxBtn'));
+    pn.dataset.ready='1';
+  }
+  renderRxWrite();
+  st.classList.remove('rank');st.classList.add('up');_dn.mode='write';
+  document.getElementById('dnFront').innerHTML='';
+  dnRenderBoxes();
+  setTimeout(()=>{const t=document.getElementById('rxText');if(t)t.focus({preventScroll:true});},450);
+}
+function dnWriteClose(){
+  const st=document.getElementById('dnStage');
+  const sg=document.getElementById('rxSug');if(sg)sg.classList.remove('on');
+  const t=document.getElementById('rxText');if(t){S.summary=t.value;t.blur();}
+  st.classList.remove('up','rank');_dn.mode='stage';
+  document.getElementById('dnFront').innerHTML='';
+  dnDrawObj();
+}
+function dnRenderBoxes(){
+  const st=document.getElementById('dnStage');
+  if(!st||!st.classList.contains('up')||st.classList.contains('rank'))return;
+  const o=document.getElementById('dnObj');
+  o.innerHTML=`<div class="dn-shelfrow">${_rxTags.map((t,i)=>dnProdObj(t.n,DN_KC[rxKindKey(t)]||DN_KC.core,`onclick="rxOpenTag(${i})"`)).join('')}${_rxTags.length<RX_MAX?'<div class="dn-slot">+</div>':''}</div>`;
+}
+
+/* 일반회원 — 전체 순위 */
+function dnRankOpen(){
+  const c=_dn.items[_dn.i];if(!c)return;
+  const r=dnRanks(c.id),top=r[0]?r[0].n:1;
+  const st=document.getElementById('dnStage');
+  document.getElementById('dnRankBox').innerHTML=`<div class="dn-rk"><div class="dn-rkh"><b>약사 ${dnRespN(c.id)}명의 선택</b><span>많이 고른 순</span></div>${r.slice(0,20).map((x,k)=>`<div class="dn-rr"><span class="rno ${k<3?'t':''}">${k+1}</span><div class="rnm"><b>${esc(x.name)}</b><em style="color:${DN_KC[x.kind]||DN_KC.core}">${DN_KLB[x.kind]||''}</em></div><div class="rbar"><i class="${k<3?'t':''}" style="width:${Math.round(x.n/top*100)}%"></i></div><span class="rct">${x.n}명</span></div>`).join('')}</div>`;
+  st.classList.add('up','rank');_dn.mode='rank';
+  document.getElementById('dnFront').innerHTML='';
+  dnDrawObj();
+}
+
+/* 스와이프 */
+(function(){
+  let sx=null,sy=0,dx=0,hz=null;
+  document.addEventListener('pointerdown',e=>{
+    const st=document.getElementById('dnStage');
+    if(!st||!st.classList.contains('on')||st.classList.contains('up'))return;
+    if(!e.target.closest('#dnVidBox'))return;
+    sx=e.clientX;sy=e.clientY;dx=0;hz=null;
+  });
+  document.addEventListener('pointermove',e=>{
+    if(sx===null)return;dx=e.clientX-sx;const dy=e.clientY-sy;
+    if(hz===null&&(Math.abs(dx)>10||Math.abs(dy)>10))hz=Math.abs(dx)>Math.abs(dy);
+  });
+  const end=()=>{if(sx===null)return;sx=null;if(hz&&dx<-50)dnGo(1);else if(hz&&dx>50)dnGo(-1);};
+  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
+})();
+
+/* ── 책장 ── */
+function dnShelfRender(mode){
+  const body=document.getElementById('dnShelfBody');
+  const mem=dnIsMember();
+  const LK='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  const OK='<span class="bd ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>';
+  const card=(c,n,idx,kindLb)=>{
+    const ac=c.role==='acad'||c.type==='edu';
+    const u=ac?(c.eduVideoUrl||c.videoUrl):c.videoUrl;
+    let bd='';
+    if(!mem){
+      if(ac){bd=setProgress(n)>=setNeed(n)?OK:`<span class="lk">${LK}</span>`;}
+      else{const pres=S.hist.some(h=>h.caseId===c.id);bd=pres&&recDoneForCase(c.id)?OK:(pres?'<span class="bd half"></span>':'<span class="bd dot"></span>');}
+    }
+    return `<button type="button" class="dn-bk ${ac&&!mem&&setProgress(n)<setNeed(n)?'locked':''}" onclick="dnOpenStage('${n}',${idx})">${u?`<video src="${u}#t=1" muted playsinline preload="metadata"></video>`:''}<i class="sh"></i>${bd}<div class="tx"><em>${kindLb}</em><b>${esc(c.title||'')}</b></div></button>`;
+  };
+  let h='';
+  dnSetKeys().forEach(n=>{
+    const items=dnItems(n);let k=0;
+    const cards=items.map((c,idx)=>{const ac=c.role==='acad'||c.type==='edu';if(mode==='acad'&&!ac)return '';if(!ac)k++;return card(c,n,idx,ac?'학술':'케이스 '+k);}).join('');
+    if(!cards)return;
+    h+=`<div class="dn-shelf"><div class="dn-sl">${esc(dnTopic(n)||('세트 '+n))}${String(n)===String(FEATURED_SET)?'<i>이번 주</i>':''}</div><div class="dn-row">${cards}</div><div class="dn-plank"></div></div>`;
+  });
+  body.innerHTML=h||'<div class="empty">아직 준비된 케이스가 없어요</div>';
+}
+
+/* ── 탭바 ── */
+const DN_TAB_IC={
+  shelf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M9 3v18M15 3v18"/></svg>',
+  ranking:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 20V13M12 20V8M18 20V4"/></svg>',
+  acad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/></svg>',
+  mypage:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>'
+};
+function dnTabbarHtml(active){
+  const tabs=dnIsMember()?[['shelf','홈'],['acad','학술'],['mypage','MY']]:[['shelf','홈'],['ranking','랭킹'],['acad','학술'],['mypage','MY']];
+  return tabs.map(([k,l])=>`<button class="tab ${k===active?'on':''}" onclick="goTab('${k}')"><div class="tab-icon">${DN_TAB_IC[k]}</div>${l}</button>`).join('');
+}
+const DN_SCREEN_TAB={dnStage:'shelf',dnShelf:null,ranking:'ranking',mypage:'mypage',board:null,memberScreen:null};
+
+/* ── 기존 함수 연결 ── */
+const _dnGs=gs;
+gs=function(id,restore){
+  _dnGs(id,restore);
+  const scr=document.getElementById(id);
+  const tb=scr&&scr.querySelector('.tabbar');
+  if(tb&&S.user){
+    let act=DN_SCREEN_TAB[id];
+    if(id==='dnShelf')act=_dn.shelfMode==='acad'?'acad':'shelf';
+    tb.innerHTML=dnTabbarHtml(act);
+  }
+  if(id!=='dnStage'){const v=document.getElementById('dnVideo');if(v)try{v.pause()}catch(e){}}
+};
+const _dnGoTab=goTab;
+goTab=function(t){
+  if(t==='home'){dnOpenStage(_dn.n,_dn.i);return;}
+  if(t==='shelf'||t==='acad'){_dn.shelfMode=t;dnShelfRender(t);gs('dnShelf');return;}
+  _dnGoTab(t);
+};
+const _dnRT=rxRenderTags;
+rxRenderTags=function(){_dnRT();dnRenderBoxes();};
+const _dnAA=afterAuth;
+afterAuth=async function(d){
+  if(d&&d.role==='member'){
+    await loadData();
+    dnOpenStage(null,0);
+    return;
+  }
+  if(licStatusOf(d)==='verified'){
+    await loadData();dnOpenStage(null,0);
+    return;
+  }
+  return _dnAA(d);
+};
+const _dnRA=renderAcad;
+renderAcad=function(){
+  _dnRA();
+  const bk=document.querySelector('#acadBody .ac-top .rx-bk');if(bk)bk.setAttribute('onclick','goTab(\'home\')');
+  if(dnIsMember()){const secs=document.querySelectorAll('#acadBody .ac-sec');const last=secs[secs.length-1];if(last&&last.querySelector('.ac-h'))last.remove();}
+};
+/* 처방 등록 버튼 문구 */
+const _dnUG=rxUpdateGate;
+rxUpdateGate=function(){_dnUG();const b=document.getElementById('rxBtn');if(b&&b.textContent==='처방 등록')b.textContent='처방하기';};
+
+</script>
 </body>
 </html>
