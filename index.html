@@ -230,6 +230,11 @@ body{
 .sf-lb{font-size:13px;font-weight:700;color:#4E5968;margin:4px 0 6px}
 .sf-auth{width:100%;height:50px;border-radius:12px;background:#fff;border:1.5px solid #15803D;color:#15803D;display:flex;align-items:center;gap:10px;padding:0 14px;font:inherit;font-size:15px;font-weight:700;margin-bottom:10px;cursor:pointer}
 .sf-auth span{flex:1;text-align:left}
+.sf-phrow{display:flex;gap:8px}
+.sf-phrow .inp{flex:1;min-width:0}
+.sf-phbt{flex-shrink:0;height:50px;padding:0 14px;border-radius:12px;border:1.5px solid #15803D;background:#fff;color:#15803D;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.sf-phbt:disabled{opacity:.5}
+.sf-phok{height:50px;border-radius:12px;background:#E8F5EC;color:#15803D;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:15px;font-weight:700;margin-bottom:10px}
 .sf-note{text-align:center;font-size:12px;color:#8B95A1;margin:10px 0 0}
 .sf-file{height:80px;border-radius:12px;background:#fff;border:1.5px dashed #C9CFD6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#8B95A1;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:10px}
 .sf-prev{position:relative;margin-bottom:10px}
@@ -1790,8 +1795,12 @@ body{
     <div class="sf-hd"><button type="button" class="sf-back" onclick="switchLTab('login')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span>회원가입</span></div>
     <div class="sf-seg"><button type="button" class="on" data-role="pharm" onclick="setSignupRole('pharm')">약사</button><button type="button" data-role="member" onclick="setSignupRole('member')">일반회원</button></div>
     <div class="err" id="serr"></div>
-    <div class="sf-lb">본인인증</div>
-    <button type="button" class="sf-auth" onclick="toast('본인인증은 준비 중이에요')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg><span>휴대폰 본인인증</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="sf-lb">휴대폰 인증</div>
+    <div class="sf-ph" id="sfPhone">
+      <div class="sf-phrow"><input class="inp" id="sPhone" type="tel" inputmode="numeric" maxlength="13" placeholder="휴대폰 번호 (- 없이)"><button type="button" class="sf-phbt" id="sPhoneBtn" onclick="phSend()">인증번호 받기</button></div>
+      <div class="sf-phrow" id="sCodeRow" style="display:none"><input class="inp" id="sCode" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="인증번호 6자리"><button type="button" class="sf-phbt" id="sCodeBtn" onclick="phConfirm()">확인</button></div>
+    </div>
+    <div class="sf-phok" id="sfPhoneOk" style="display:none"></div>
     <div class="sf-lb">닉네임</div>
     <input class="inp" id="snick" maxlength="20" placeholder="다른 약사에게 보이는 이름">
     <div class="sf-lb">아이디</div>
@@ -2225,6 +2234,7 @@ body{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
 firebase.initializeApp({
   apiKey:"AIzaSyDB_PFZnR_eNp9rH4Pd9avnLNDef6DlUQ8",
@@ -2498,6 +2508,53 @@ function clearLoginAttempts(nick){
   try{sessionStorage.removeItem('la:'+nick);}catch(e){}
 }
 
+
+/* ── 휴대폰 인증 (Firebase 문자 인증) ── */
+let _phConf=null,_phOk=null,_phVerifier=null;
+function _phE164(raw){const d=String(raw||'').replace(/\D/g,'');if(!/^01[016789]\d{7,8}$/.test(d))return null;return '+82'+d.slice(1);}
+async function _phHash(e164){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('dn-phone:'+e164));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function phSend(){
+  const e=_phE164(document.getElementById('sPhone').value);
+  document.getElementById('serr').style.display='none';
+  if(!e){showErr('serr','휴대폰 번호를 확인해주세요');return;}
+  const btn=document.getElementById('sPhoneBtn');btn.disabled=true;btn.textContent='보내는 중';
+  try{
+    const h=await _phHash(e);
+    const dup=await db.collection('users').where('phoneHash','==',h).limit(1).get();
+    if(!dup.empty){showErr('serr','이미 이 번호로 가입된 계정이 있어요');btn.disabled=false;btn.textContent='인증번호 받기';return;}
+    firebase.auth().languageCode='ko';
+    if(!_phVerifier)_phVerifier=new firebase.auth.RecaptchaVerifier('sPhoneBtn',{size:'invisible'});
+    _phConf=await firebase.auth().signInWithPhoneNumber(e,_phVerifier);
+    _phConf._e=e;_phConf._h=h;
+    document.getElementById('sCodeRow').style.display='flex';
+    btn.textContent='다시 받기';btn.disabled=false;
+    document.getElementById('sCode').focus();
+    toast('인증번호를 보냈어요');
+  }catch(err){
+    console.log('phone send',err);
+    showErr('serr',err&&err.code==='auth/too-many-requests'?'잠시 후 다시 시도해주세요':'인증번호를 보내지 못했어요');
+    btn.disabled=false;btn.textContent='인증번호 받기';
+    try{_phVerifier&&_phVerifier.clear();}catch(x){} _phVerifier=null;
+  }
+}
+async function phConfirm(){
+  const code=(document.getElementById('sCode').value||'').trim();
+  if(!_phConf){showErr('serr','인증번호를 먼저 받아주세요');return;}
+  if(!/^\d{6}$/.test(code)){showErr('serr','인증번호 6자리를 입력해주세요');return;}
+  const btn=document.getElementById('sCodeBtn');btn.disabled=true;
+  try{
+    await _phConf.confirm(code);
+    _phOk={e164:_phConf._e,hash:_phConf._h};
+    try{await firebase.auth().signOut();}catch(x){}
+    const d=_phOk.e164.replace('+82','0');
+    document.getElementById('sfPhone').style.display='none';
+    const ok=document.getElementById('sfPhoneOk');ok.style.display='flex';
+    ok.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'+d.slice(0,3)+'-****-'+d.slice(-4)+' 인증됐어요';
+    document.getElementById('serr').style.display='none';
+  }catch(err){
+    console.log('phone confirm',err);showErr('serr','인증번호가 맞지 않아요');
+  }finally{btn.disabled=false;}
+}
 async function doSignup(){
   const nick=document.getElementById('snick').value.trim();
   const id=document.getElementById('sid').value.trim().toLowerCase();
@@ -2509,6 +2566,7 @@ async function doSignup(){
   if(!/^[a-z0-9]{4,20}$/.test(id)){showErr('serr','아이디는 영문·숫자 4~20자로 입력해주세요');return;}
   if(pw.length<8){showErr('serr','비밀번호는 8자 이상이에요');return;}
   if(pw!==pw2){showErr('serr','비밀번호가 일치하지 않아요');return;}
+  if(!_phOk){showErr('serr','휴대폰 인증을 해주세요');return;}
   let licName='',licNo='';
   if(role==='pharm'){
     licName=(document.getElementById('sLicName').value||'').trim();
@@ -2526,7 +2584,7 @@ async function doSignup(){
     const legacy=await db.collection('users').doc(nick).get();
     if(!dupNick.empty||legacy.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
     const pwHash=await hashPw(pw);
-    const d={nick,role,pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString()};
+    const d={nick,role,pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4)};
     if(role==='pharm'){
       const dup=await db.collection('users').where('licNo','==',licNo).get();
       let taken=false;dup.forEach(x=>{const st=x.data().licStatus;if(st==='verified'||st==='pending')taken=true;});
