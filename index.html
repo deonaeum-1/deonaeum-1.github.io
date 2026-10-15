@@ -209,6 +209,7 @@ body{
   padding:calc(32px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));
 }
 .lw-in{width:100%;max-width:420px;margin:0 auto}
+#loginScreen,#memberScreen{padding-bottom:0}
 .dn-logo{font-family:'Black Han Sans',sans-serif;font-size:48px;line-height:1.1;color:#191F28;letter-spacing:-.01em}
 .dn-logo i{font-style:normal;color:#16A34A}
 .lw .ll p{font-size:11px;letter-spacing:.18em;color:#8B6A4E;margin-top:10px;font-weight:500}
@@ -230,6 +231,12 @@ body{
 .sf-auth{width:100%;height:50px;border-radius:12px;background:#fff;border:1.5px solid #15803D;color:#15803D;display:flex;align-items:center;gap:10px;padding:0 14px;font:inherit;font-size:15px;font-weight:700;margin-bottom:10px;cursor:pointer}
 .sf-auth span{flex:1;text-align:left}
 .sf-note{text-align:center;font-size:12px;color:#8B95A1;margin:10px 0 0}
+.sf-file{height:80px;border-radius:12px;background:#fff;border:1.5px dashed #C9CFD6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#8B95A1;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:10px}
+.sf-prev{position:relative;margin-bottom:10px}
+.sf-prev img{width:100%;max-height:200px;object-fit:contain;border-radius:12px;background:#fff;display:block}
+.sf-prev button{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;cursor:pointer}
+.sf-agree{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#6B7684;line-height:1.5;margin:4px 2px 0}
+.sf-agree input{margin-top:2px;accent-color:#15803D}
 .ll{text-align:center;margin-bottom:36px}
 .logo-anim{
   width:min(180px,52vw); margin:0 auto 10px;
@@ -1793,8 +1800,18 @@ body{
     <input class="inp" id="spw" type="password" placeholder="8자 이상" autocomplete="new-password">
     <div class="sf-lb">비밀번호 확인</div>
     <input class="inp" id="spw2" type="password" placeholder="한 번 더 입력" autocomplete="new-password">
-    <p class="sf-note" id="sfNote">가입 후 면허 인증을 진행해요</p>
-    <button class="btn lbtn" id="signupBtn" onclick="doSignup()">가입하기</button>
+    <div id="sfPharm">
+      <div class="sf-lb">약사 실명</div>
+      <input class="inp" id="sLicName" maxlength="20" placeholder="면허증에 적힌 이름">
+      <div class="sf-lb">약사 면허번호</div>
+      <input class="inp" id="sLicNo" maxlength="10" inputmode="numeric" placeholder="숫자만">
+      <div class="sf-lb">면허증 사진</div>
+      <div id="sLicPrev"></div>
+      <label class="sf-file" id="sLicBox"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg><span>사진 올리기</span><input type="file" accept="image/*" onchange="sOnLicPicked(this)" hidden></label>
+      <label class="sf-agree"><input type="checkbox" id="sLicAgree"><span>약사 자격 확인을 위해 실명·면허번호·면허증 사진 수집에 동의해요. 사진은 확인 후 바로 삭제돼요.</span></label>
+    </div>
+    <p class="sf-note" id="sfNote">면허 확인 후 승인돼요</p>
+    <button class="btn lbtn" id="signupBtn" onclick="doSignup()">가입 신청</button>
   </div>
 </div>
 </div>
@@ -2421,6 +2438,35 @@ function setSignupRole(r){
   document.querySelectorAll('.sf-seg button').forEach(b=>b.classList.toggle('on',b.dataset.role===r));
   const n=document.getElementById('snick');if(n)n.placeholder=r==='pharm'?'다른 약사에게 보이는 이름':'다른 사람에게 보이는 이름';
   const note=document.getElementById('sfNote');if(note)note.style.display=r==='pharm'?'block':'none';
+  const ph=document.getElementById('sfPharm');if(ph)ph.style.display=r==='pharm'?'block':'none';
+  const bt=document.getElementById('signupBtn');if(bt)bt.textContent=r==='pharm'?'가입 신청':'가입하기';
+}
+/* 가입 화면 면허증 사진 — 장변 1600px JPEG */
+function sOnLicPicked(inp){
+  const f=inp.files&&inp.files[0];inp.value='';
+  if(!f)return;
+  if(!f.type.startsWith('image/')){toast('이미지 파일을 선택해주세요');return;}
+  const img=new Image();
+  img.onload=()=>{
+    const MAX=1600,sc=Math.min(1,MAX/Math.max(img.width,img.height));
+    const cv=document.createElement('canvas');cv.width=Math.round(img.width*sc);cv.height=Math.round(img.height*sc);
+    const cx=cv.getContext('2d');cx.imageSmoothingQuality='high';cx.drawImage(img,0,0,cv.width,cv.height);
+    cv.toBlob(b=>{
+      if(!b){toast('이미지 처리에 실패했어요');return;}
+      _licBlob=b;
+      if(_licPrevUrl)URL.revokeObjectURL(_licPrevUrl);
+      _licPrevUrl=URL.createObjectURL(b);
+      document.getElementById('sLicPrev').innerHTML=`<div class="sf-prev"><img src="${_licPrevUrl}" alt="면허증"><button type="button" onclick="sClearLic()">✕</button></div>`;
+      document.getElementById('sLicBox').style.display='none';
+    },'image/jpeg',.85);
+    URL.revokeObjectURL(img.src);
+  };
+  img.onerror=()=>{toast('이미지를 읽을 수 없어요');URL.revokeObjectURL(img.src);};
+  img.src=URL.createObjectURL(f);
+}
+function sClearLic(){
+  _licBlob=null;if(_licPrevUrl){URL.revokeObjectURL(_licPrevUrl);_licPrevUrl=null;}
+  document.getElementById('sLicPrev').innerHTML='';document.getElementById('sLicBox').style.display='flex';
 }
 function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
 function setBtnLoading(id,loading,text){
@@ -2463,7 +2509,16 @@ async function doSignup(){
   if(!/^[a-z0-9]{4,20}$/.test(id)){showErr('serr','아이디는 영문·숫자 4~20자로 입력해주세요');return;}
   if(pw.length<8){showErr('serr','비밀번호는 8자 이상이에요');return;}
   if(pw!==pw2){showErr('serr','비밀번호가 일치하지 않아요');return;}
-  setBtnLoading('signupBtn',true,'가입 중...');
+  let licName='',licNo='';
+  if(role==='pharm'){
+    licName=(document.getElementById('sLicName').value||'').trim();
+    licNo=(document.getElementById('sLicNo').value||'').trim();
+    if(!/^[가-힣a-zA-Z\s]{2,20}$/.test(licName)){showErr('serr','면허증에 적힌 실명을 입력해주세요');return;}
+    if(!/^\d{2,10}$/.test(licNo)){showErr('serr','면허번호는 숫자만 입력해주세요');return;}
+    if(!_licBlob){showErr('serr','면허증 사진을 올려주세요');return;}
+    if(!document.getElementById('sLicAgree').checked){showErr('serr','개인정보 수집에 동의해주세요');return;}
+  }
+  setBtnLoading('signupBtn',true,role==='pharm'?'신청 중...':'가입 중...');
   try{
     const r=await db.collection('users').doc(id).get();
     if(r.exists){showErr('serr','이미 사용 중인 아이디예요');return;}
@@ -2472,10 +2527,21 @@ async function doSignup(){
     if(!dupNick.empty||legacy.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
     const pwHash=await hashPw(pw);
     const d={nick,role,pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString()};
+    if(role==='pharm'){
+      const dup=await db.collection('users').where('licNo','==',licNo).get();
+      let taken=false;dup.forEach(x=>{const st=x.data().licStatus;if(st==='verified'||st==='pending')taken=true;});
+      if(taken){showErr('serr','이미 이 면허번호로 가입된 계정이 있어요');return;}
+      const path=`licenses/${_uuid()}.jpg`;
+      const ref=firebase.storage().ref(path);
+      await ref.put(_licBlob,{contentType:'image/jpeg'});
+      const url=await ref.getDownloadURL();
+      Object.assign(d,{licStatus:'pending',licName,licNo,licPath:path,licUrl:url,licAt:new Date().toISOString()});
+    }
     await db.collection('users').doc(id).set(d);
+    if(role==='pharm'){_licBlob=null;if(_licPrevUrl){URL.revokeObjectURL(_licPrevUrl);_licPrevUrl=null;}}
     try{localStorage.setItem('deonaeum_nick',id);}catch(e){}
     S.user={nick:id,name:nick,role};S.hist=[];S.bio='';
-    toast('가입을 환영해요, '+nick+'님!');
+    toast(role==='pharm'?'가입 신청이 접수됐어요':'가입을 환영해요, '+nick+'님!');
     await afterAuth(d);
   }catch(e){showErr('serr','오류: '+e.message);}
   finally{setBtnLoading('signupBtn',false);}
@@ -4074,8 +4140,26 @@ if(window.visualViewport){
   visualViewport.addEventListener('scroll',rxPlaceBar);
 }
 
+/* 후보 선택 직후 키보드가 조합 중이던 글자를 뒤늦게 다시 넣는 경우 되돌림 */
+let _rxGuard=null;
+function rxGuardCheck(){
+  const g=_rxGuard,ta=document.getElementById('rxText');
+  if(!g||!ta)return false;
+  if(Date.now()>g.until){_rxGuard=null;return false;}
+  const v=ta.value;if(v===g.v)return false;
+  let a=0;while(a<v.length&&a<g.v.length&&v[a]===g.v[a])a++;
+  let b=0;while(b<v.length-a&&b<g.v.length-a&&v[v.length-1-b]===g.v[g.v.length-1-b])b++;
+  const ins=v.slice(a,v.length-b),del=g.v.slice(a,g.v.length-b);
+  const stray=ins.length>0&&ins.length<=4&&[...ins].every(ch=>g.q.includes(ch)||/\s/.test(ch));
+  if(stray&&del.replace(/\s/g,'').length===0){
+    ta.value=g.v;try{ta.setSelectionRange(g.pos,g.pos);}catch(e){}
+    S.summary=g.v;rxSyncHL();return true;
+  }
+  return false;
+}
 function rxOnInput(){
   const ta=document.getElementById('rxText');
+  if(rxGuardCheck())return;
   S.summary=ta.value;
   /* 글에서 제품명이 사라지면 아래 태그도 함께 빠짐 */
   const before=_rxTags.length;
@@ -4116,7 +4200,7 @@ function rxOnBlur(){
 /* ---------- 태그 ---------- */
 let _rxComposing=false;
 document.addEventListener('compositionstart',e=>{if(e.target&&e.target.id==='rxText')_rxComposing=true;});
-document.addEventListener('compositionend',e=>{if(e.target&&e.target.id==='rxText')_rxComposing=false;});
+document.addEventListener('compositionend',e=>{if(e.target&&e.target.id==='rxText'){_rxComposing=false;setTimeout(rxGuardCheck,0);}});
 /* 한글 조합 중(예: "하이퍼"의 "퍼")에 후보를 누르면, 키보드가 조합 중이던 글자를
    나중에 다시 넣는 문제가 있어 — 먼저 입력칸을 빠져나와 조합을 끝낸 뒤 바꿔 넣음 */
 function rxPick(i){
@@ -4148,6 +4232,7 @@ function _rxPickNow(i){
     const pos=tok.s+ins.length;
     ta.focus();try{ta.setSelectionRange(pos,pos);}catch(e){}
   }
+  if(tok){const pos=ta.selectionStart;_rxGuard={v:ta.value,pos,q:tok.q,until:Date.now()+700};[30,120,300,600].forEach(ms=>setTimeout(rxGuardCheck,ms));}
   _rxTags.push({kind:r.kind,cat:r.cat||'',id:r.id,n:r.n,c:r.c,ings:r.ings,ing:r.ing||r.n,purposes:[]});
   S.summary=ta.value;
   document.getElementById('rxSug').classList.remove('on');
@@ -5356,7 +5441,7 @@ const DN_KC={core:'#3182F6',food:'#B7791F',otc:'#0F9D8A',ing:'#6B7684'};
 function dnShape(name){
   const n=String(name||'');
   if(/연고|크림|겔|젤(?!리)|로션/.test(n))return 'tube';
-  if(/액|시럽|드링크|앰플|샷|현탁/.test(n))return 'bottle';
+  if(/(액|시럽|드링크|앰플|현탁액)(제)?(\s|$|\(|\d)|시럽|드링크|앰플/.test(n))return 'bottle';
   if(/스틱|젤리|과립|분말|산$|파우더/.test(n))return 'stick';
   return 'box';
 }
