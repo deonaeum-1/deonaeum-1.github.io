@@ -5540,7 +5540,7 @@ function dnProdObj(name,color,key){
 /* ── 세트 아이템 ── */
 function dnSetKeys(){
   const ks=Object.keys(SETS).filter(n=>C.some(c=>String(c.set)===String(n)));
-  return ks.sort((a,b)=>Number(b)-Number(a));
+  return ks.sort((a,b)=>(String(b)===String(FEATURED_SET))-(String(a)===String(FEATURED_SET))||Number(b)-Number(a));
 }
 function dnItems(n){
   if(n!=null&&SETS[String(n)]){const x=setCases(n);return [x.case1,x.case2,x.acad].filter(Boolean);}
