@@ -1706,9 +1706,9 @@ body{
 .pd-bk i{position:absolute;left:4px;right:4px;top:-6px;height:6px;background:linear-gradient(180deg,#2F8F57,#1E7A45);clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 100%,0 100%)}
 .pd-bk span{font-family:'Black Han Sans',sans-serif;color:#fff;font-size:30px;line-height:1;transform:skewX(-8deg)}
 .pd-col:nth-child(2) .pd-bk span{font-size:40px}
-.pd-col .dn-pr{margin-bottom:6px}
+.pd-col .dn-pr{margin-bottom:6px;transform:scale(1.15);transform-origin:center bottom}
 /* 제품 모양 */
-.dn-shelfrow{display:flex;align-items:flex-end;gap:10px;justify-content:center}
+.dn-shelfrow{display:flex;align-items:flex-end;gap:12px;justify-content:center;transform:scale(1.3);transform-origin:center bottom}
 .dn-pr{display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative}
 .dn-pr .lb{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:9px;font-weight:900;color:#191F28;background:#fff;padding:1px 4px;border-radius:3px;letter-spacing:-.03em}
 .dn-pr.bottle .lb{top:28px}.dn-pr.tube .lb{top:9px;left:44%}.dn-pr.stick .lb{top:18px}
@@ -1773,6 +1773,33 @@ body{
 .dn-plank{height:14px;margin-top:-2px;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MjAnIGhlaWdodD0nMTQwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC4wMDYgMC40MicgbnVtT2N0YXZlcz0nMycgc2VlZD0nNycvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0nMCAwIDAgMCAwLjE2ICAwIDAgMCAwIDAuMDggIDAgMCAwIDAgMC4wMyAgMC45IDAgMCAwIC0wLjMyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2cpJy8+PC9zdmc+) 0 0 / 420px 140px, url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNjAnIGhlaWdodD0nMTYwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC45JyBudW1PY3RhdmVzPScyJyBzZWVkPScyJy8+PGZlQ29sb3JNYXRyaXggdmFsdWVzPScwIDAgMCAwIDEgIDAgMCAwIDAgMSAgMCAwIDAgMCAxICAwIDAgMCAwLjA5IDAnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWx0ZXI9J3VybCgjbiknLz48L3N2Zz4=) 0 0 / 160px 160px, linear-gradient(180deg, #8C5C38 0%, #6E4528 100%);box-shadow:inset 0 1px 0 rgba(255,222,186,.35)}
 .dn-plank::after{content:"";display:block;height:8px;position:relative;top:14px;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MjAnIGhlaWdodD0nMTQwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC4wMDYgMC40MicgbnVtT2N0YXZlcz0nMycgc2VlZD0nNycvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0nMCAwIDAgMCAwLjE2ICAwIDAgMCAwIDAuMDggIDAgMCAwIDAgMC4wMyAgMC45IDAgMCAwIC0wLjMyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2cpJy8+PC9zdmc+) 0 40px / 420px 140px, linear-gradient(180deg, #4B2E1C 0%, #2E1B10 100%);box-shadow:0 6px 10px rgba(74,44,22,.18)}
 .dn-plank{margin-bottom:8px}
+
+/* 동료 처방 — 책상 위 처방전 */
+#peerCmtScreen .pr-guide{font-size:12px;font-weight:700;padding:0 20px 12px}
+#peerCmtScreen .pr-guide .no{color:#8B95A1}#peerCmtScreen .pr-guide .yes{color:#15803D}
+#peerCmtScreen .rx-ttl{font-size:21px;font-weight:900;letter-spacing:-.04em}
+#peerCmtScreen .pr-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;gap:16px 14px;padding:22px 16px 18px;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0MjAnIGhlaWdodD0nMTQwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC4wMDYgMC40MicgbnVtT2N0YXZlcz0nMycgc2VlZD0nNycvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0nMCAwIDAgMCAwLjE2ICAwIDAgMCAwIDAuMDggIDAgMCAwIDAgMC4wMyAgMC45IDAgMCAwIC0wLjMyJy8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI2cpJy8+PC9zdmc+) 0 0 / 420px 140px, url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNjAnIGhlaWdodD0nMTYwJz48ZmlsdGVyIGlkPSduJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC45JyBudW1PY3RhdmVzPScyJyBzZWVkPScyJy8+PGZlQ29sb3JNYXRyaXggdmFsdWVzPScwIDAgMCAwIDEgIDAgMCAwIDAgMSAgMCAwIDAgMCAxICAwIDAgMCAwLjA5IDAnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWx0ZXI9J3VybCgjbiknLz48L3N2Zz4=) 0 0 / 160px 160px, linear-gradient(180deg, #7A4E2E 0%, #5E3A20 100%);box-shadow:inset 0 10px 18px -8px rgba(0,0,0,.45),inset 0 -10px 18px -8px rgba(0,0,0,.35)}
+#peerCmtScreen .pr-c{background:linear-gradient(180deg,#FFFEFB,#F6F2EA);border-radius:3px;padding:12px 12px 10px;box-shadow:0 14px 18px -8px rgba(20,10,4,.55),0 2px 4px rgba(20,10,4,.25);overflow:visible;display:flex;flex-direction:column}
+#peerCmtScreen .pr-c:nth-child(1){transform:rotate(-1.4deg)}#peerCmtScreen .pr-c:nth-child(2){transform:rotate(1.1deg)}#peerCmtScreen .pr-c:nth-child(3){transform:rotate(.9deg)}#peerCmtScreen .pr-c:nth-child(4){transform:rotate(-1deg)}
+#peerCmtScreen .pr-c.drag{transform:none}
+#peerCmtScreen .pr-c::before{content:"";position:absolute;left:0;right:0;top:-5px;height:10px;background:radial-gradient(circle at 5px 0,transparent 4px,#FFFEFB 4.5px) 0 0/10px 10px repeat-x}
+#peerCmtScreen .pr-c.ovf::before{content:"";}
+#peerCmtScreen .pr-c::after{background:linear-gradient(rgba(246,242,234,0),#F6F2EA);border-radius:0 0 3px 3px}
+#peerCmtScreen .pr-c p{font-size:13.5px;line-height:1.65;color:#333D4B;flex:1;min-height:0;overflow:hidden}
+.pr-hd{font-size:11px;font-weight:700;color:#8B6A4E;border-bottom:1.5px solid #E7DFD2;padding-bottom:6px;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-hd b{font-size:16px;font-weight:900;color:#15803D;letter-spacing:-.03em}
+#peerCmtScreen .pr-c .ov{background:none;padding:0}
+#peerCmtScreen .pr-c .ov.no{display:none}
+#peerCmtScreen .pr-c .ov.yes{inset:auto 10px 12px auto;width:74px;height:74px;border-radius:50%;border:3px solid rgba(21,128,61,.85);justify-content:center;transform:rotate(-14deg);color:rgba(21,128,61,.9);font-family:'Black Han Sans',sans-serif;font-size:22px;box-shadow:inset 0 0 0 3px rgba(255,255,255,.6),inset 0 0 0 5px rgba(21,128,61,.6)}
+#peerCmtScreen .pr-c.stamped .ov.yes{opacity:1!important;animation:dnStamp .32s cubic-bezier(.3,1.6,.5,1)}
+@keyframes dnStamp{0%{transform:rotate(-14deg) scale(2.2);opacity:0}100%{transform:rotate(-14deg) scale(1);opacity:1}}
+#peerCmtScreen .pr-tip{display:none!important}
+#peerCmtScreen .pr-wrap > div:last-child{padding-top:14px!important}
+#peerCmtScreen .rx-top{position:relative;justify-content:center}
+#peerCmtScreen .rx-top .rx-bk{position:absolute;left:8px}
+#peerCmtScreen .rx-top .pr-cnt{display:none}
+#peerCmtScreen .rx-ttl{text-align:center;flex:none}
+.pr-n{font-size:12px;font-weight:700;background:rgba(255,255,255,.22);padding:2px 9px;border-radius:999px;margin-left:6px}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
 </head>
@@ -2014,7 +2041,7 @@ body{
 <div class="screen" id="peerCmtScreen">
 <div class="pr-wrap">
   <div class="rx-top"><button type="button" class="rx-bk" onclick="goTab('home')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="rx-ttl" id="rcaseP"></span><span class="pr-cnt" id="prCnt"></span></div>
-  <div class="pr-guide"><span class="no">← 패스</span><span class="yes">추천 →</span></div>
+  <div class="pr-guide"><span class="no">← 다른 소견은 왼쪽으로</span><span class="yes">추천은 오른쪽으로 →</span></div>
   <div class="pr-list" id="peerStage"></div>
   <div class="peer-empty" id="peerEmpty" style="display:none"></div>
   <div class="pr-tip" id="peerTip">소견을 누르면 크게 볼 수 있어요</div>
@@ -3978,7 +4005,7 @@ async function saveResp(){
   const createdAt=new Date().toISOString();
   const entry={caseId:S.case.id,caseTitle:S.case.title,pairs,summary:S.summary||'',date};
   S.hist=S.hist.filter(h=>h.caseId!==S.case.id);S.hist.unshift(entry);
-  const doc={caseId:S.case.id,nick:S.user.nick,date,createdAt,pairs,summary:S.summary||'',recs:0,recVoters:[]};
+  const doc={caseId:S.case.id,nick:S.user.nick,nm:S.user.name||S.user.nick,date,createdAt,pairs,summary:S.summary||'',recs:0,recVoters:[]};
   try{
     await db.collection('users').doc(S.user.nick).set({hist:S.hist},{merge:true});
     const ref=await db.collection('responses').add(doc);
@@ -4410,7 +4437,7 @@ let _peerMax = 3;        /* 케이스당 추천권 */
 let _peerQ = [];         /* 아직 안 보여준 후보 (순서대로) */
 async function renderPeerCmt(){
   const c = S.case;
-  document.getElementById('rcaseP').textContent = c.title || `케이스 ${c.id}`;
+  document.getElementById('rcaseP').textContent = '동료 약사의 처방';
   const stage = document.getElementById('peerStage');
   stage.innerHTML = '<div class="empty" style="padding:24px">로딩 중...</div>';
   await ensureResps();
@@ -4505,10 +4532,10 @@ function peerHL(rx){
   return out+esc(txt.slice(pos));
 }
 function _peerCaps(){
-  document.getElementById('prCnt').textContent = `추천 ${_peerUsed}`;
+  document.getElementById('prCnt').textContent = '';
   const btn = document.getElementById('peerDoneBtn');
   const ok = _peerUsed > 0 || !PEER_RX.length;
-  btn.textContent = ok ? '결과 보기' : '1개 이상 추천해주세요';
+  btn.innerHTML = ok ? `결과 보기 <span class="pr-n">추천 ${Math.min(_peerUsed,3)}/3</span>` : `1개 이상 추천해주세요 <span class="pr-n">추천 0/3</span>`;
   btn.style.opacity = ok ? '1' : '.45'; btn.style.pointerEvents = ok ? 'auto' : 'none';
 }
 function drawPeerRx(){
@@ -4521,9 +4548,9 @@ function drawPeerRx(){
     if(PEER_RX.length && !_peerUsed){const btn=document.getElementById('peerDoneBtn');btn.textContent='결과 보기';btn.style.opacity='1';btn.style.pointerEvents='auto';}
     return;
   }
-  stage.style.display='flex'; tip.style.display='block'; empty.style.display='none';
+  stage.style.display='grid'; tip.style.display='block'; empty.style.display='none';
   stage.innerHTML = PEER_DECK.map(rx =>
-    `<div class="pr-c" data-rid="${rx.id}"><div class="ov yes">추천</div><div class="ov no">패스</div><p>${peerHL(rx)}</p></div>`).join('');
+    `<div class="pr-c" data-rid="${rx.id}"><div class="ov yes">추천</div><div class="ov no">패스</div><div class="pr-hd"><b>${esc(rx.nm||rx.nick||'약사')}</b> 의 처방전</div><p>${peerHL(rx)}</p></div>`).join('');
   stage.querySelectorAll('.pr-c[data-rid]').forEach(el=>{
     _bindPeerCard(el, el.dataset.rid);
     const p=el.querySelector('p');
@@ -4532,6 +4559,7 @@ function drawPeerRx(){
 }
 /* 넘긴 자리에 다음 소견을 채움 */
 function _peerDecide(rid, yes){
+  if(yes && _peerUsed>=3){ toast('추천은 3개까지예요'); prZoomClose(); return; }
   if(yes){ recommendRx(rid, true); _peerUsed++; }
   const i = PEER_DECK.findIndex(r => r.id === rid);
   if(i >= 0){ const nx = _peerQ.shift(); if(nx) PEER_DECK[i] = nx; else PEER_DECK.splice(i,1); }
@@ -4551,12 +4579,13 @@ function _bindPeerCard(el, rid){
     if(!horiz) return;
     moved=true;
     el.style.transform=`translateX(${dx}px)`;
-    yes.style.opacity=Math.min(Math.max(dx,0)/90,1); no.style.opacity=Math.min(Math.max(-dx,0)/90,1);
+    yes.style.opacity=Math.min(Math.max(dx,0)/90,1)*.5; no.style.opacity=0;
   });
   const end = e => {
     if(sx===null) return;
     const dx=e.clientX-sx; sx=null; el.classList.remove('drag');
-    if(horiz && dx>90){ el.style.transition='transform .22s'; el.style.transform='translateX(110%)'; setTimeout(()=>_peerDecide(rid,true),200); return; }
+    if(horiz && dx>90 && _peerUsed>=3){ el.style.transform=''; yes.style.opacity=0; toast('추천은 3개까지예요'); return; }
+    if(horiz && dx>90){ el.style.transition='transform .2s'; el.style.transform=''; el.classList.add('stamped'); setTimeout(()=>{el.style.transition='transform .25s, opacity .25s';el.style.transform='translateX(110%)';el.style.opacity='0';},650); setTimeout(()=>_peerDecide(rid,true),880); return; }
     if(horiz && dx<-90){ el.style.transition='transform .22s'; el.style.transform='translateX(-110%)'; setTimeout(()=>_peerDecide(rid,false),200); return; }
     el.style.transform=''; yes.style.opacity=0; no.style.opacity=0;
     if(!moved && e.type==='pointerup') prZoomOpen(rid);
@@ -4567,7 +4596,7 @@ function _bindPeerCard(el, rid){
 function prZoomOpen(rid){
   const rx=PEER_DECK.find(r=>r.id===rid); if(!rx) return;
   const z=document.getElementById('prZoom');
-  z.innerHTML=`<div class="pr-zc"><div class="tx">${peerHL(rx)}</div><div class="bt"><button class="n" onclick="_peerDecide('${rid}',false)">← 패스</button><button class="y" onclick="_peerDecide('${rid}',true)">추천 →</button></div></div>`;
+  z.innerHTML=`<div class="pr-zc"><div class="tx">${peerHL(rx)}</div><div class="bt"><button class="n" onclick="_peerDecide('${rid}',false)">← 다른 소견</button><button class="y" onclick="_peerDecide('${rid}',true)">추천 →</button></div></div>`;
   z.classList.add('on');
 }
 function prZoomClose(){ const z=document.getElementById('prZoom'); if(z) z.classList.remove('on'); }
