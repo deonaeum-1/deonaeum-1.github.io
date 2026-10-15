@@ -1094,7 +1094,7 @@ async function loadLicenses(){
     const want = _licShowVerified ? 'verified' : 'pending';
     const snap = await db.collection('users').where('licStatus','==',want).get();
     const rows = [];
-    snap.forEach(d => rows.push({ nick:d.id, ...d.data() }));
+    snap.forEach(d => { const x=d.data(); rows.push({ ...x, nick:d.id, dispNick:x.nick||d.id }); });
     rows.sort((a,b) => String(b.licAt||'').localeCompare(String(a.licAt||'')));
 
     /* 대기 건수 배지 — 다른 탭에 있을 때도 보이게 */
@@ -1135,7 +1135,7 @@ async function loadLicenses(){
       return `<div class="form-wrap">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
           <div style="font-size:16px;font-weight:700">${r.licName||'(이름 없음)'}
-            <span style="font-size:12px;font-weight:500;color:var(--t3)">· ${r.nick}</span>
+            <span style="font-size:12px;font-weight:500;color:var(--t3)">· ${r.dispNick}${r.dispNick!==r.nick?' (@'+r.nick+')':''}</span>
           </div>
           <div style="font-size:12px;color:var(--t3)">${when}</div>
         </div>
