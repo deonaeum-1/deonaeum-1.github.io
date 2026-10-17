@@ -1705,7 +1705,7 @@ body{
 .pd-col{display:flex;flex-direction:column;align-items:center}
 .pd-bk{position:relative;width:100%;background:linear-gradient(180deg,#6E8F73,#4E6B53);box-shadow:inset 1px 0 0 rgba(255,255,255,.12),inset -1px 0 0 rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
 .pd-bk i{position:absolute;left:4px;right:4px;top:-6px;height:6px;background:linear-gradient(180deg,#8AA88D,#7A9A7E);clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 100%,0 100%)}
-.pd-bk span{font-family:'Black Han Sans',sans-serif;color:#fff;font-size:30px;line-height:1;transform:skewX(-8deg)}
+.pd-bk span{font-family:'Black Han Sans',sans-serif;color:#fff;font-size:30px;line-height:1;transform:skewX(-8deg);-webkit-text-stroke:1px #1A1A17;paint-order:stroke fill;text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .pd-col:nth-child(2) .pd-bk span{font-size:40px;color:#E2B33C}
 .pd-col:nth-child(1) .pd-bk span{color:#D3D7DC}
 .pd-col:nth-child(3) .pd-bk span{color:#D08A57}
@@ -1812,10 +1812,125 @@ body{
 @media (prefers-reduced-motion:reduce){.dn-glow{animation:none;opacity:.5}}
 .dn-kit,.dn-leaf{position:relative}
 .dn-kit>svg,.dn-leaf>svg{display:block}
-.dn-trace{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.dn-trace{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 2.5px rgba(255,215,140,.7))}
 .dn-trace path{fill:none;stroke:rgba(255,238,200,.95);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:16 84;animation:dnTrace 4.5s linear infinite;filter:drop-shadow(0 0 3px rgba(255,226,160,.8))}
 @keyframes dnTrace{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
 @media (prefers-reduced-motion:reduce){.dn-trace path{animation:none;stroke-dasharray:none;opacity:.35}}
+/* ===== 더나음3 ===== */
+.dn-trace path{fill:none;stroke-linecap:butt;stroke-linejoin:round;animation:dnTrace 4.5s linear infinite;filter:none}
+.dn-trace path.h{stroke-linecap:round;stroke:#FFF6DC!important;stroke-width:3.6!important;filter:drop-shadow(0 0 3px rgba(255,200,90,1)) drop-shadow(0 0 7px rgba(240,180,70,.8))}
+@media (prefers-reduced-motion:reduce){.dn-trace path{animation:none;stroke-dasharray:none;opacity:.25}.dn-trace path:not(.h){display:none}}
+.dn3 .dn3b{padding:4px 18px 110px}
+.dn-av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;font-weight:800;object-fit:cover;flex:none;box-shadow:0 0 0 2px #fff}
+.dn-seg{display:flex;background:#EAE3D8;border-radius:12px;padding:4px;gap:2px}
+.dn-seg button{flex:1;border:0;background:none;padding:9px 0;border-radius:9px;font:700 14px/1 inherit;color:#8B8478;position:relative}
+.dn-seg button.on{background:#fff;color:#191F28;box-shadow:0 1px 3px rgba(60,40,20,.12)}
+.dn-seg button i{font-style:normal;display:inline-block;min-width:16px;height:16px;line-height:16px;border-radius:8px;background:#5E7D63;color:#fff;font-size:10px;margin-left:4px;vertical-align:1px}
+.dn-card{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(60,40,20,.08);overflow:hidden;margin-top:12px}
+.dn-rh{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 4px}
+.dn-rh b{font-size:19px;color:#191F28}.dn-rh span{font-size:13px;color:#5E7D63;font-weight:700}
+.dn-podwrap{margin:6px -4px 0}
+.dn-pods{display:flex;justify-content:center;align-items:flex-end;gap:4px}
+.dn-pp{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:3px;font:inherit}
+.dn-pp b{font-size:13px;font-weight:900;letter-spacing:-.03em;color:#191F28;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px}
+.dn-pp em{font-style:normal;font-size:11px;font-weight:600;color:#8B6A4E;margin-bottom:8px}
+.dn-pp.r1 b{font-size:14px}
+.dn-pp.r1 .pd-bk span{font-size:40px}
+.dn-pp .dn-av{border:2.5px solid #fff;box-shadow:0 4px 10px rgba(60,40,20,.25)}
+.dn-plank2{height:14px;margin:0 -4px;background:linear-gradient(#C9A57A,#A8835A 45%,#7E5D3E 46%,#5E432B);border-radius:2px;box-shadow:0 6px 10px rgba(60,40,20,.25)}
+.dn-rrow{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:12px 16px;font:inherit;text-align:left;border-top:1px solid #F1ECE4}
+.dn-rrow:first-child{border-top:0}
+.dn-rrow .n{width:22px;font-family:'Black Han Sans',sans-serif;font-size:17px;color:#191F28;text-align:center}
+.dn-rrow b{flex:1;font-size:15px;color:#191F28}.dn-rrow em{font-style:normal;font-size:13px;color:#5E7D63;font-weight:700}
+.dn-dmc{font-style:normal;font-size:10px;font-weight:800;color:#fff;background:#5E7D63;border-radius:8px;padding:2px 6px;margin-left:6px;vertical-align:2px}
+.dn-minfo{display:flex;flex-direction:column;gap:4px;margin-top:4px}.dn-minfo b{font-size:19px;color:#191F28}.dn-minfo span{font-size:13px;color:#8B8478;line-height:1.5}.dn-minfo i{font-style:normal;font-size:10px;font-weight:800;color:#fff;background:#5E7D63;border-radius:8px;padding:2px 6px}
+.dn-mybar{position:sticky;bottom:84px;margin-top:14px;background:#2E3B30;color:#fff;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:10px}
+.dn-mybar span{font-size:13px;opacity:.7}.dn-mybar b{font-size:16px}.dn-mybar em{font-style:normal;margin-left:auto;font-size:12px;opacity:.85}
+.dn-cr{display:block;width:100%;border:0;background:none;text-align:left;padding:14px 16px;border-top:1px solid #F1ECE4;font:inherit}
+.dn-cr:first-child{border-top:0}
+.dn-cr .t{display:flex;justify-content:space-between;align-items:baseline}.dn-cr .t b{font-size:15px;color:#191F28}.dn-cr .t span{font-size:12px;color:#8B8478}
+.dn-cr .p{display:flex;gap:12px;margin-top:8px;font-size:13px;color:#4E5968;flex-wrap:wrap}.dn-cr .p i{font-style:normal;font-family:'Black Han Sans',sans-serif;margin-right:4px}
+.dn-cr .p.lk{color:#B0A898}
+/* 프로필 */
+.dn-back{border:0;background:none;padding:6px;margin:0 0 0 -8px;color:#191F28}
+.dn-edit{float:right;border:0;background:#EAE3D8;border-radius:16px;padding:7px 14px;font:700 13px inherit;color:#4E5968}
+.dn-ph{display:flex;gap:16px;align-items:center;margin:10px 0 18px;clear:both}
+.dn-ph .nmr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dn-ph .nm{font-size:24px;color:#5E7D63;font-weight:800}
+.dn-ph p{margin:4px 0 0;font-size:14px;color:#6B6458}
+.dn-badge{font-size:11px;font-weight:800;color:#8A6A10;background:#F7EBC6;border-radius:10px;padding:3px 8px}
+.dn-stat{display:flex;background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(60,40,20,.08)}
+.dn-stat div{flex:1;text-align:center;padding:14px 0;display:flex;flex-direction:column;gap:4px}
+.dn-stat div+div{border-left:1px solid #F1ECE4}
+.dn-stat b{font-size:20px;color:#191F28}.dn-stat span{font-size:12px;color:#8B8478}
+.dn-kv{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #F1ECE4}
+.dn-kv:first-child{border-top:0}
+.dn-kv span{width:72px;font-size:13px;color:#8B8478;flex:none}.dn-kv b{font-size:15px;color:#191F28;font-weight:600;display:flex;gap:6px;flex-wrap:wrap}
+.dn-kv .lnk{border:0;background:none;padding:0;font:700 14px inherit;color:#5E7D63}
+.dn-chip{font-style:normal;font-size:12px;background:#EEF2EC;color:#4E6B53;border-radius:10px;padding:4px 9px;font-weight:700}
+.dn-sh{margin:22px 2px 0}.dn-sh b{font-size:16px;color:#191F28}
+.dn-desk{background:linear-gradient(#B08A60,#937049);border-radius:14px;padding:12px;margin-top:10px;display:flex;flex-direction:column;gap:10px}
+.dn-slip{background:#FFFDF8;border-radius:6px;padding:12px 14px;box-shadow:0 2px 4px rgba(40,25,10,.25)}
+.dn-slip span{font-size:12px;color:#5E7D63;font-weight:700}.dn-slip p{margin:6px 0;font-size:14px;color:#333D4B;line-height:1.5}
+.dn-slip em{font-style:normal;font-size:12px;color:#C27A47;font-weight:800}
+.dn-tg{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;gap:10px}
+.dn-tg>div{display:flex;flex-direction:column;gap:3px}.dn-tg b{font-size:15px;color:#191F28}.dn-tg span{font-size:12px;color:#8B8478}
+.dn-sw{width:48px;height:28px;border-radius:14px;border:0;background:#D8D2C8;position:relative;flex:none;transition:.2s}
+.dn-sw i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.dn-sw.on{background:#5E7D63}.dn-sw.on i{left:23px}.dn-sw:disabled{opacity:.5}
+.dn-set{display:flex;justify-content:center;gap:10px;margin:26px 0 0;color:#B0A898;font-size:13px}
+.dn-set button{border:0;background:none;color:#8B8478;font:inherit;padding:4px}
+.dn-sheet-bg{position:fixed;inset:0;background:rgba(20,15,10,.45);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
+.dn-sheet{background:#FBF8F3;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;animation:dnUp .25s ease}
+.dn-sheet .t{font-size:18px;color:#191F28;margin-bottom:6px}.dn-sheet label{font-size:13px;color:#8B8478;margin-top:4px}
+.dn-sheet textarea,.dn-askw textarea{resize:none;font:inherit;line-height:1.5}
+@keyframes dnUp{from{transform:translateY(40px);opacity:0}}
+/* 커뮤니티 */
+.dn-post{display:block;width:100%;border:0;background:none;text-align:left;padding:14px 16px;border-top:1px solid #F1ECE4;font:inherit}
+.dn-post:first-child{border-top:0}
+.dn-post .m0,.dn-thp .m0{font-size:12px;color:#8B8478;margin-bottom:4px}
+.dn-post b{font-size:15px;color:#191F28;display:block;line-height:1.45}.dn-post b.cl{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:600}.dn-post p{margin:4px 0 0;font-size:13px;color:#6B6458;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dn-post .m,.dn-thp .m{display:flex;gap:8px;margin-top:8px;font-size:12px;color:#B0A898}
+.m .nk{color:#5E7D63;font-weight:700}.m .r{margin-left:auto;color:#5E7D63;font-weight:700}.m .r.w{color:#C27A47}
+.dn-chips{display:flex;gap:8px;margin-top:14px;overflow-x:auto}
+.dn-chips button{border:1px solid #E1D8CA;background:#fff;border-radius:16px;padding:7px 13px;font:600 13px inherit;color:#6B6458;white-space:nowrap}
+.dn-chips button.on{background:#2E3B30;border-color:#2E3B30;color:#fff}
+.dn-askw{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.dn-askw>b{font-size:20px;color:#191F28}.dn-askw>span{font-size:13px;color:#8B8478;margin-bottom:6px}
+.dn-askw .dn-card{margin-top:0}
+.dn-note{font-size:12px;color:#8B8478;line-height:1.5;margin:8px 2px;text-align:center}
+.dn-ctrow{display:flex;gap:10px;overflow-x:auto;margin:10px -18px 0;padding:0 18px 4px;scroll-snap-type:x mandatory}
+.dn-ct{position:relative;flex:none;width:150px;height:110px;border-radius:14px;overflow:hidden;border:0;padding:0;background:#5E432B;scroll-snap-align:start;font:inherit;text-align:left}
+.dn-ct video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dn-ct .sh{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(20,15,10,.75))}
+.dn-ct.lk video{filter:blur(3px) grayscale(.6)}.dn-ct.lk .sh{background:rgba(30,25,20,.55)}
+.dn-ct .bd{position:absolute;top:8px;left:8px;font-size:11px;font-weight:700;background:rgba(255,255,255,.9);color:#4E6B53;border-radius:8px;padding:3px 7px}
+.dn-ct.lk .bd{color:#6B6458}
+.dn-ct .tx{position:absolute;left:10px;right:10px;bottom:9px;color:#fff;display:flex;flex-direction:column}
+.dn-ct .tx b{font-size:14px}.dn-ct .tx em{font-style:normal;font-size:11px;opacity:.8}
+.dn-fab{position:fixed;right:calc(50% - min(50vw,240px) + 18px);bottom:96px;border:0;background:#5E7D63;color:#fff;border-radius:24px;padding:13px 18px;font:800 14px inherit;box-shadow:0 4px 12px rgba(40,60,40,.3);z-index:50}
+.dn-info{background:#EEF2EC;border-radius:14px;padding:13px 16px;margin-top:14px;font-size:14px;font-weight:700;color:#4E6B53;display:flex;flex-direction:column;gap:4px}
+.dn-info span{font-size:12px;font-weight:500;color:#6B7F6E}
+.dn-dm{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:13px 16px;border-top:1px solid #F1ECE4;font:inherit;text-align:left;position:relative}
+.dn-dm:first-child{border-top:0}
+.dn-dm>div{flex:1;min-width:0}.dn-dm b{font-size:15px;color:#191F28}
+.dn-dm p{margin:3px 0 0;font-size:13px;color:#8B8478;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dn-dm p.u{color:#191F28;font-weight:600}
+.dn-dm>span{font-size:11px;color:#B0A898;align-self:flex-start;margin-top:3px}
+.dn-dm>i{position:absolute;right:16px;bottom:16px;width:8px;height:8px;border-radius:50%;background:#5E7D63}
+.dn-thtop{display:flex;align-items:center;gap:6px;height:52px;margin-top:var(--dn-st)}.dn-thtop b{font-size:17px;color:#191F28}
+.dn-thc{position:relative;height:150px;border-radius:16px;overflow:hidden;background:#5E432B;margin-top:4px}
+.dn-thc video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dn-thc>i{position:absolute;inset:0;background:linear-gradient(transparent 20%,rgba(20,15,10,.8))}
+.dn-thc>div{position:absolute;left:16px;right:16px;bottom:14px;color:#fff;display:flex;flex-direction:column;gap:2px}
+.dn-thc em{font-style:normal;font-size:12px;opacity:.8}.dn-thc b{font-size:19px}.dn-thc span{font-size:12px;opacity:.75}
+.dn-thp{padding:16px}.dn-thp .tt{font-size:17px;color:#191F28;display:block;margin-bottom:6px}.dn-thp p{margin:0;font-size:15px;line-height:1.6;color:#333D4B;white-space:pre-wrap}
+.dn-cm{display:flex;gap:10px;padding:13px 16px;border-top:1px solid #F1ECE4}.dn-cm:first-child{border-top:0}
+.dn-cm>div{flex:1;min-width:0}.dn-cm .h{display:flex;gap:8px;align-items:baseline}.dn-cm .h b{font-size:14px;color:#5E7D63}.dn-cm .h span{font-size:11px;color:#B0A898}
+.dn-cm p{margin:4px 0 0;font-size:14px;line-height:1.55;color:#333D4B;white-space:pre-wrap;word-break:break-word}
+.dn-inbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#FBF8F3;border-top:1px solid #E6DED2;z-index:60}
+.dn-inbar .inp{flex:1;margin:0}.dn-inbar button{border:0;background:#5E7D63;color:#fff;border-radius:12px;padding:0 16px;font:800 14px inherit}
+#dnThread .dn3b{padding-bottom:90px}
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
 </head>
@@ -1905,6 +2020,13 @@ body{
   <div id="dnShelfBody"></div>
   <div class="tabbar"></div>
 </div>
+
+
+<!-- ===== 더나음3 ===== -->
+<div class="screen dn-shelfscr dn3" id="dnRank"><div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div><div class="dn3b" id="dnRankBody"></div><div class="tabbar"></div></div>
+<div class="screen dn-shelfscr dn3" id="dnProfile"><div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div><div class="dn3b" id="dnProfBody"></div><div class="tabbar"></div></div>
+<div class="screen dn-shelfscr dn3" id="dnComm"><div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div><div class="dn3b" id="dnCommBody"></div><div class="tabbar"></div></div>
+<div class="screen dn-shelfscr dn3" id="dnThread"><div class="dn3b" id="dnThBody"></div></div>
 
 <!-- 면허 인증 게이트 -->
 <div class="screen" id="licScreen">
@@ -5622,7 +5744,7 @@ function dnDrawObj(){
   }
   const ac=c.role==='acad'||c.type==='edu';
   if(ac){
-    o.innerHTML=`<button type="button" class="dn-leaf" onclick="openAcad('${c.id}')" aria-label="학술 보기">${dnIsMember()?dnLeaf('전문 약사의','이야기 듣기'):dnLeaf('학술','자세히 보기')}<svg class="dn-trace" viewBox="0 0 132 138" aria-hidden="true"><path d="M14 10 L118 10 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 L10 112 Z" pathLength="100"/></svg></button>`;
+    o.innerHTML=`<button type="button" class="dn-leaf" onclick="openAcad('${c.id}')" aria-label="학술 보기">${dnIsMember()?dnLeaf('전문 약사의','이야기 듣기'):dnLeaf('학술','자세히 보기')}${dnTrace('0 0 132 138','M14 10 L118 10 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 L10 112 Z')}</button>`;
     return;
   }
   if(dnIsMember()){
@@ -5635,7 +5757,7 @@ function dnDrawObj(){
   }
   const pres=S.hist.some(h=>h.caseId===c.id);
   const label=!pres?'처방하기':(!recDoneForCase(c.id)?'추천하기':'결과 보기');
-  o.innerHTML=`<button type="button" class="dn-kit" onclick="dnKitTap()" aria-label="${label}">${dnKit(label)}<svg class="dn-trace" viewBox="0 0 190 112" aria-hidden="true"><path d="M11 30 Q14 24 22 24 L72 24 C70 1 120 1 118 24 L168 24 Q176 24 179 30 L186 44 L186 100 Q186 110 176 110 L14 110 Q4 110 4 100 L4 44 Z" pathLength="100"/></svg></button>`;
+  o.innerHTML=`<button type="button" class="dn-kit" onclick="dnKitTap()" aria-label="${label}">${dnKit(label)}${dnTrace('0 0 190 112','M11 30 Q14 24 22 24 L72 24 C70 1 120 1 118 24 L168 24 Q176 24 179 30 L186 44 L186 100 Q186 110 176 110 L14 110 Q4 110 4 100 L4 44 Z')}</button>`;
 }
 function dnGo(d){
   const i=_dn.i+d;if(i<0||i>=_dn.items.length)return;
@@ -5797,6 +5919,277 @@ renderAcad=function(){
 /* 처방 등록 버튼 문구 */
 const _dnUG=rxUpdateGate;
 rxUpdateGate=function(){_dnUG();const b=document.getElementById('rxBtn');if(b&&b.textContent==='처방 등록')b.textContent='처방하기';};
+
+
+function dnTrace(vb,d){let h='';const N=16,T=30;for(let k=0;k<N;k++){const L=T*(N-k)/N;h+=`<path d="${d}" pathLength="100" style="stroke-dasharray:${L.toFixed(2)} ${(100-L).toFixed(2)};stroke:rgba(255,236,196,.13);stroke-width:2.4;animation-delay:${(-1+L*0.045).toFixed(3)}s"/>`;}return `<svg class="dn-trace" viewBox="${vb}" aria-hidden="true">${h}</svg>`;}
+/* ============================================================
+   더나음 3 — 랭킹 · 프로필(MY) · 커뮤니티(공지·고민 상담·토론·쪽지)
+   데이터: responses(추천) · users(프로필) · posts(type: talk|case|ask|dm) · notices
+   ============================================================ */
+const DN_GSB=['#D4A017','#A7ADB4','#C27A47'];
+const DN_AVC=['#B08A60','#7A9A7E','#A7ADB4','#C27A47','#6E8F73','#8B6A4E','#5E7D63','#D4A017'];
+let POSTS3=null,_dnUsers={};
+function dnNm(id){const u=_dnUsers[id];return (u&&u.nick)||((RESP_CACHE||[]).find(r=>r.nick===id&&r.nm)||{}).nm||id;}
+function dnAv(id,sz,nm){
+  const ph=PHOTO_CACHE&&PHOTO_CACHE[id];
+  const n=(_dnUsers[id]&&_dnUsers[id].nick)||nm||dnNm(id),c=DN_AVC[[...String(id)].reduce((a,ch)=>a+ch.charCodeAt(0),0)%DN_AVC.length];
+  return ph?`<img class="dn-av" src="${ph}" style="width:${sz}px;height:${sz}px" alt="">`:`<span class="dn-av" style="width:${sz}px;height:${sz}px;background:${c};font-size:${Math.round(sz*.4)}px">${esc(n.charAt(0))}</span>`;
+}
+function dnAgo(iso){if(!iso)return '';const s=(Date.now()-new Date(iso))/1000;if(s<60)return '방금';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';if(s<86400*7)return Math.floor(s/86400)+'일 전';return fmtDate(iso);}
+async function dnLoadPosts(force){
+  if(POSTS3&&!force)return POSTS3;
+  try{const sn=await db.collection('posts').get();POSTS3=[];sn.forEach(d=>POSTS3.push({id:d.id,...d.data()}));}catch(e){POSTS3=POSTS3||[];}
+  return POSTS3;
+}
+async function dnLoadUsers(ids){
+  const need=[...new Set(ids)].filter(i=>i&&!_dnUsers[i]);
+  await Promise.all(need.map(i=>db.collection('users').doc(i).get().then(d=>{_dnUsers[i]=d.exists?d.data():{};}).catch(()=>{_dnUsers[i]={};})));
+}
+
+/* ── 월간 랭킹 ── */
+function dnMonthKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function dnMonthRank(key){
+  const sc={};
+  (RESP_CACHE||[]).forEach(r=>{
+    if(!r.nick||!r.createdAt)return;
+    if(dnMonthKey(new Date(r.createdAt))!==key)return;
+    sc[r.nick]=(sc[r.nick]||0)+(r.recs||0);
+  });
+  return Object.entries(sc).map(([id,s])=>({id,s})).sort((a,b)=>b.s-a.s);
+}
+function dnPrevKey(){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-1);return dnMonthKey(d);}
+function dnIsCounselor(id){return dnMonthRank(dnPrevKey()).filter(x=>x.s>0).slice(0,10).some(x=>x.id===id);}
+
+let _dnRankSeg='pharm';
+async function dnRankRender(){
+  const el=document.getElementById('dnRankBody');
+  await ensureResps();
+  const key=dnMonthKey(),list=dnMonthRank(key).filter(x=>x.s>0);
+  await dnLoadUsers(list.slice(0,10).map(x=>x.id));
+  try{await loadPhotos(list.slice(0,10).map(x=>x.id));}catch(e){}
+  const now=new Date(),end=new Date(now.getFullYear(),now.getMonth()+1,0),left=end.getDate()-now.getDate();
+  const mem=dnIsMember();
+  const seg=`<div class="dn-seg"><button class="${_dnRankSeg==='pharm'?'on':''}" onclick="_dnRankSeg='pharm';dnRankRender()">약사</button><button class="${_dnRankSeg==='case'?'on':''}" onclick="_dnRankSeg='case';dnRankRender()">케이스</button></div>`;
+  if(_dnRankSeg==='case'){
+    const rows=C.filter(c=>c.role!=='acad'&&c.type!=='edu').map(c=>{
+      const r=dnRanks(c.id).slice(0,3),pres=mem||S.hist.some(h=>h.caseId===c.id);
+      return `<button class="dn-cr" onclick="dnCaseGo('${c.id}')"><div class="t"><b>${esc(c.title||'')}</b><span>약사 ${dnRespN(c.id)}명</span></div>${pres?`<div class="p">${r.map((x,k)=>`<span><i style="color:${DN_GSB[k]}">${k+1}</i>${esc(x.name)}</span>`).join('')}</div>`:'<div class="p lk">풀면 열려요</div>'}</button>`;
+    }).join('');
+    el.innerHTML=seg+`<div class="dn-card" style="margin-top:14px">${rows||'<div class="empty">케이스가 없어요</div>'}</div>`;
+    return;
+  }
+  const top=list.slice(0,10);
+  const pd=(x,rank,h,w,av)=>x?`<button class="dn-pp r${rank}" style="width:${w}px" onclick="dnProfileOpen('${jsArg(x.id)}')">${dnAv(x.id,av)}<b>${esc(dnNm(x.id))}</b><em>추천 ${x.s}${dnDmChip(x.id)}</em><div class="pd-bk" style="height:${h}px"><i></i><span style="color:${['#E2B33C','#D3D7DC','#D08A57'][rank-1]}">${rank}</span></div></button>`:`<div class="dn-pp" style="width:${w}px"><div class="pd-bk" style="height:${h}px;opacity:.35"><i></i><span>${rank}</span></div></div>`;
+  const me=list.findIndex(x=>x.id===S.user.nick),mine=me>=0?list[me].s:0,need=top.length>=10?Math.max(0,top[9].s-mine+1):1;
+  el.innerHTML=seg+`
+    <div class="dn-rh"><b>${now.getMonth()+1}월 Top 10</b><span>${left}일 남음</span></div>
+    <div class="dn-podwrap"><div class="dn-pods">${pd(top[1],2,46,108,48)}${pd(top[0],1,66,116,58)}${pd(top[2],3,34,108,48)}</div><div class="dn-plank2"></div></div>
+    ${top.length>3?`<div class="dn-card">${top.slice(3).map((x,k)=>`<button class="dn-rrow" onclick="dnProfileOpen('${jsArg(x.id)}')"><span class="n">${k+4}</span>${dnAv(x.id,32)}<b>${esc(dnNm(x.id))}${dnDmChip(x.id)}</b><em>추천 ${x.s}</em></button>`).join('')}</div>`:''}
+    ${!top.length?'<div class="empty">이번 달 추천이 아직 없어요<br>동료 소견을 추천하면 순위가 생겨요</div>':''}
+    ${mem?'':`<div class="dn-mybar"><span>내 순위</span><b>${me>=0?(me+1)+'위':'-'}</b><em>${me>=0&&me<10?`추천 ${mine} · Top 10 안이에요`:`추천 ${mine} · Top 10까지 ${need}개`}</em></div>`}`;
+}
+
+/* ── 프로필 / MY ── */
+let _dnProf=null;
+async function dnProfileOpen(id){_dnProf=id;gs('dnProfile');if(id!==S.user.nick){const tb=document.querySelector('#dnProfile .tabbar');if(tb)tb.innerHTML=dnTabbarHtml('ranking');}await dnProfileRender();}
+async function dnProfileRender(){
+  const id=_dnProf||S.user.nick,own=id===S.user.nick,el=document.getElementById('dnProfBody');
+  el.innerHTML='<div class="empty">불러오는 중…</div>';
+  await ensureResps();
+  try{const d=await db.collection('users').doc(id).get();_dnUsers[id]=d.exists?d.data():{};}catch(e){}
+  try{await loadPhotos([id]);}catch(e){}
+  const u=_dnUsers[id]||{},member=u.role==='member';
+  const back=own?'':`<button class="dn-back" onclick="goTab('ranking')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>`;
+  if(member){
+    const mine=(await dnLoadPosts(true)).filter(p=>p.type==='ask'&&p.nick===id);
+    el.innerHTML=`${back}<div class="dn-ph">${dnAv(id,72)}<div><b class="nm">${esc(u.nick||id)}</b><p>일반회원</p></div></div>
+      <div class="dn-card"><div class="dn-kv"><span>올린 고민</span><b>${mine.length}</b></div><div class="dn-kv"><span>받은 답변</span><b>${mine.reduce((a,p)=>a+(p.commentCount||0),0)}</b></div></div>
+      ${own?dnSettingsHtml():''}`;
+    return;
+  }
+  const resp=(RESP_CACHE||[]).filter(r=>r.nick===id);
+  const recs=resp.reduce((a,r)=>a+(r.recs||0),0);
+  const mr=dnMonthRank(dnMonthKey()).filter(x=>x.s>0),ri=mr.findIndex(x=>x.id===id);
+  const badge=dnIsCounselor(id);
+  const best=resp.filter(r=>(r.summary||'').trim()).sort((a,b)=>(b.recs||0)-(a.recs||0)).slice(0,2);
+  const ints=Array.isArray(u.interests)?u.interests:[];
+  const row=(k,v,empty)=>v||own?`<div class="dn-kv"><span>${k}</span>${v?`<b>${v}</b>`:`<button class="lnk" onclick="dnEditProfile()">${empty}</button>`}</div>`:'';
+  el.innerHTML=`${back}${own?'<button class="dn-edit" onclick="dnEditProfile()">편집</button>':''}
+    <div class="dn-ph">${dnAv(id,72)}<div><div class="nmr"><b class="nm">${esc(u.nick||id)}</b>${badge?'<span class="dn-badge">★ 상담 약사</span>':''}</div><p>${esc(u.bio||(own?'한 줄 소개를 적어보세요':''))}</p></div></div>
+    <div class="dn-stat"><div><b style="${ri>=0&&ri<3?'color:'+DN_GSB[ri]:''}">${ri>=0?(ri+1)+'위':'-'}</b><span>${new Date().getMonth()+1}월 순위</span></div><div><b>${recs}</b><span>받은 추천</span></div><div><b>${resp.length}</b><span>푼 케이스</span></div></div>
+    ${(u.pharmacy||u.career||ints.length||own)?`<div class="dn-card">${row('약국',esc(u.pharmacy||''),'+ 약국 등록하기')}${row('경력',u.career?esc(u.career)+'년 차':'','+ 경력 입력')}${row('관심 분야',ints.map(x=>`<i class="dn-chip">${esc(x)}</i>`).join(''),'+ 관심 분야')}</div>`:''}
+    ${best.length?`<div class="dn-sh"><b>추천 많이 받은 소견</b></div><div class="dn-desk">${best.map(r=>{const c=C.find(x=>x.id===r.caseId);return `<div class="dn-slip"><span>${esc(c?c.title:'')}</span><p>${peerHL(r)}</p><em>추천 ${r.recs||0}</em></div>`;}).join('')}</div>`:''}
+    ${own?`<div class="dn-card dn-tg"><div><b>1:1 문의 받기</b><span>${badge?'상담 약사 · 이번 달 말까지':'지난달 Top 10 약사만 켤 수 있어요'}</span></div><button class="dn-sw ${u.dmOpen&&badge?'on':''}" ${badge?'':'disabled'} onclick="dnToggleDm()"><i></i></button></div>${dnSettingsHtml()}`
+      :(badge&&u.dmOpen&&dnIsMember()?`<button class="btn lbtn" style="margin-top:14px" onclick="dnDmCompose('${jsArg(id)}')">1:1 문의하기</button>`:'')}`;
+}
+function dnCaseGo(cid){for(const n of dnSetKeys()){const it=dnItems(n),i=it.findIndex(c=>String(c.id)===String(cid));if(i>=0){dnOpenStage(n,i);if(dnIsMember()||S.hist.some(h=>h.caseId===cid))setTimeout(dnRankOpen,350);return;}}startCase(cid);}
+function dnDmChip(id){const u=_dnUsers[id]||{};return u.dmOpen&&dnIsCounselor(id)?'<i class="dn-dmc">1:1</i>':'';}
+function dnSettingsHtml(){return `<div class="dn-set"><button onclick="logout()">로그아웃</button><span>|</span><button onclick="deleteAccount()">계정 삭제</button></div>`;}
+function dnEditProfile(){
+  const u=_dnUsers[S.user.nick]||{};
+  const bg=document.createElement('div');bg.className='dn-sheet-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  bg.innerHTML=`<div class="dn-sheet"><b class="t">프로필 편집</b>
+    <label>한 줄 소개</label><input class="inp" id="peBio" maxlength="40" value="${esc(u.bio||'')}">
+    <label>약국</label><input class="inp" id="pePh" maxlength="30" placeholder="약국 이름" value="${esc(u.pharmacy||'')}">
+    <label>경력 (년)</label><input class="inp" id="peCa" inputmode="numeric" maxlength="2" value="${esc(u.career||'')}">
+    <label>관심 분야 (쉼표로 구분, 3개까지)</label><input class="inp" id="peIn" maxlength="30" placeholder="영양제, 소아, 피로" value="${esc((u.interests||[]).join(', '))}">
+    <button class="btn lbtn" onclick="dnSaveProfile()">저장</button></div>`;
+  document.body.appendChild(bg);
+}
+async function dnSaveProfile(){
+  const v=id=>(document.getElementById(id).value||'').trim();
+  const d={bio:v('peBio'),pharmacy:v('pePh'),career:v('peCa').replace(/\D/g,''),interests:v('peIn').split(',').map(x=>x.trim()).filter(Boolean).slice(0,3)};
+  try{await db.collection('users').doc(S.user.nick).set(d,{merge:true});Object.assign(_dnUsers[S.user.nick]=_dnUsers[S.user.nick]||{},d);S.bio=d.bio;toast('저장했어요');}catch(e){toast('저장에 실패했어요');}
+  document.querySelector('.dn-sheet-bg')?.remove();dnProfileRender();
+}
+async function dnToggleDm(){
+  const u=_dnUsers[S.user.nick]||{},on=!u.dmOpen;
+  try{await db.collection('users').doc(S.user.nick).set({dmOpen:on},{merge:true});u.dmOpen=on;toast(on?'1:1 문의를 받아요':'1:1 문의를 껐어요');}catch(e){toast('변경에 실패했어요');}
+  dnProfileRender();
+}
+
+/* ── 커뮤니티 ── */
+let _dnCommSeg='ask',_dnAskF='wait';
+function dnCommTabs(){return dnIsMember()?[['notice','공지'],['ask','고민 상담'],['dm','쪽지']]:[['notice','공지'],['ask','고민 상담'],['talk','토론'],['dm','쪽지']];}
+async function dnCommRender(){
+  const el=document.getElementById('dnCommBody');
+  const posts=await dnLoadPosts(true);
+  const me=S.user.nick,mem=dnIsMember();
+  const askWait=posts.filter(p=>p.type==='ask'&&!(p.commentCount>0)).length;
+  const dmN=posts.filter(p=>p.type==='dm'&&(mem?p.nick===me&&p.unreadFrom:p.to===me&&!p.read)).length;
+  const badge=k=>k==='ask'&&!mem&&askWait?`<i>${askWait}</i>`:(k==='dm'&&dmN?`<i>${dmN}</i>`:'');
+  const seg=`<div class="dn-seg">${dnCommTabs().map(([k,l])=>`<button class="${_dnCommSeg===k?'on':''}" onclick="_dnCommSeg='${k}';dnCommRender()">${l}${badge(k)}</button>`).join('')}</div>`;
+  let h='';
+  if(_dnCommSeg==='notice'){
+    try{if(!NOTICE_CACHE)await loadNotices();}catch(e){}
+    const ns=[...(NOTICE_CACHE||[])].filter(n=>n.type!=='banner').sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    h=`<div class="dn-card">${ns.map(n=>`<button class="dn-post" onclick="openNotice('${n.id}')"><b>${esc(n.title||'')}</b><p>${esc((n.body||'').slice(0,60))}</p><div class="m"><span>${fmtDate(n.createdAt)}</span></div></button>`).join('')||'<div class="empty">공지가 없어요</div>'}</div>`;
+  }else if(_dnCommSeg==='ask'){
+    if(mem){
+      const mine=posts.filter(p=>p.type==='ask'&&p.nick===me).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+      h=`<div class="dn-askw"><b>어떤 고민이 있으세요?</b><span>인증된 약사들이 답해드려요</span>
+        <textarea class="inp" id="askTx" rows="5" maxlength="600" placeholder="나이, 복용 중인 약을 적어주면 더 정확해요"></textarea>
+        <div class="dn-card dn-tg"><div><b>비밀 글</b><span>약사만 볼 수 있어요</span></div><button class="dn-sw on" id="askSec" onclick="this.classList.toggle('on')"><i></i></button></div>
+        <p class="dn-note">약사 답변은 일반적인 안내예요. 약 선택과 복용은 가까운 약국에서 상담받으세요.</p>
+        <button class="btn lbtn" id="askBtn" onclick="dnAskSubmit()">고민 올리기</button></div>
+        ${mine.length?`<div class="dn-sh"><b>내 고민</b></div><div class="dn-card">${mine.map(dnPostRow).join('')}</div>`:''}`;
+    }else{
+      let list=posts.filter(p=>p.type==='ask');
+      if(_dnAskF==='wait')list=list.filter(p=>!(p.commentCount>0));
+      if(_dnAskF==='mine')list=list.filter(p=>(p.answerers||[]).includes(me));
+      list.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+      h=`<div class="dn-chips">${[['wait',`답변 대기 ${askWait}`],['all','전체'],['mine','내가 답한 글']].map(([k,l])=>`<button class="${_dnAskF===k?'on':''}" onclick="_dnAskF='${k}';dnCommRender()">${l}</button>`).join('')}</div>
+        <div class="dn-card">${list.map(dnPostRow).join('')||'<div class="empty">글이 없어요</div>'}</div>`;
+    }
+  }else if(_dnCommSeg==='talk'){
+    const cs=C.filter(c=>c.role!=='acad'&&c.type!=='edu');
+    const cards=cs.map(c=>{const solved=S.hist.some(x=>x.caseId===c.id);const tp=posts.find(p=>p.id==='case_'+c.id);
+      return `<button class="dn-ct ${solved?'':'lk'}" onclick="${solved?`dnCaseThread('${c.id}')`:"toast('케이스를 풀면 열려요')"}">${c.videoUrl?`<video src="${c.videoUrl}#t=1" muted playsinline preload="metadata"></video>`:''}<i class="sh"></i><span class="bd">${solved?(tp&&tp.commentCount?`댓글 ${tp.commentCount}`:'열림'):'풀면 열려요'}</span><div class="tx"><b>${esc(c.title||'')}</b><em>약사 ${dnRespN(c.id)}명</em></div></button>`;}).join('');
+    const talks=posts.filter(p=>!p.type||p.type==='talk').sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+    h=`<div class="dn-sh"><b>케이스 토론방</b></div><div class="dn-ctrow">${cards}</div>
+      <div class="dn-sh"><b>자유 토론</b></div><div class="dn-card">${talks.map(dnPostRow).join('')||'<div class="empty">첫 글을 남겨보세요</div>'}</div>
+      <button class="dn-fab" onclick="dnTalkCompose()">+ 글쓰기</button>`;
+  }else{
+    const list=posts.filter(p=>p.type==='dm'&&(mem?p.nick===me:p.to===me)).sort((a,b)=>String(b.lastAt||b.createdAt).localeCompare(String(a.lastAt||a.createdAt)));
+    await dnLoadUsers(list.map(p=>mem?p.to:p.nick));
+    const counsel=!mem&&dnIsCounselor(me);
+    h=`${!mem?`<div class="dn-info">${counsel?'★ 상담 약사 · 이번 달 문의를 받을 수 있어요':'지난달 Top 10 약사가 1:1 문의를 받아요'}<span>약 선택과 복용은 약국 방문 상담으로 안내해 주세요</span></div>`:''}
+      <div class="dn-card">${list.map(p=>{const other=mem?p.to:p.nick;const unread=mem?p.unreadFrom:!p.read;return `<button class="dn-dm" onclick="dnThreadOpen('${p.id}')">${dnAv(other,40,mem?'':p.nm)}<div><b>${esc(mem?dnNm(other):(p.nm||dnNm(other)))}</b><p class="${unread?'u':''}">${esc((p.lastBody||p.body||'').slice(0,40))}</p></div><span>${dnAgo(p.lastAt||p.createdAt)}</span>${unread?'<i></i>':''}</button>`;}).join('')||`<div class="empty">${mem?'약사 프로필에서 1:1 문의를 보낼 수 있어요':'받은 문의가 없어요'}</div>`}</div>`;
+    await dnLoadUsers(list.map(p=>mem?p.to:p.nick));
+  }
+  el.innerHTML=seg+h;
+}
+function dnPostRow(p){
+  const ask=p.type==='ask',n=p.commentCount||0;
+  return `<button class="dn-post" onclick="dnThreadOpen('${p.id}')">${ask?`<div class="m0">${p.secret?'🔒 비밀':'공개'}</div>`:''}<b class="${p.title?'':'cl'}">${esc(p.title||p.body||'')}</b>${p.title?`<p>${esc((p.body||'').slice(0,60))}</p>`:''}<div class="m"><span class="nk">${esc(p.nm||dnNm(p.nick))}</span><span>${dnAgo(p.createdAt)}</span><span class="r ${ask&&!n?'w':''}">${ask?(n?`약사 답변 ${n}`:'답변 기다리는 중'):`댓글 ${n} · 추천 ${p.likes||0}`}</span></div></button>`;
+}
+async function dnAskSubmit(){
+  const tx=(document.getElementById('askTx').value||'').trim();
+  if(tx.length<10){toast('고민을 조금 더 적어주세요');return;}
+  if(_sendLock)return;_sendLock=true;
+  try{await db.collection('posts').add({type:'ask',body:tx,secret:document.getElementById('askSec').classList.contains('on'),nick:S.user.nick,nm:S.user.name||S.user.nick,likes:0,likers:[],commentCount:0,createdAt:new Date().toISOString()});toast('고민을 올렸어요');}
+  catch(e){toast('올리지 못했어요');}
+  _sendLock=false;dnCommRender();
+}
+function dnTalkCompose(){
+  const bg=document.createElement('div');bg.className='dn-sheet-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  bg.innerHTML=`<div class="dn-sheet"><b class="t">자유 토론 글쓰기</b><input class="inp" id="tkT" maxlength="40" placeholder="제목"><textarea class="inp" id="tkB" rows="6" maxlength="1000" placeholder="내용"></textarea><button class="btn lbtn" onclick="dnTalkSubmit()">올리기</button></div>`;
+  document.body.appendChild(bg);
+}
+async function dnTalkSubmit(){
+  const t=(document.getElementById('tkT').value||'').trim(),b=(document.getElementById('tkB').value||'').trim();
+  if(!t||!b){toast('제목과 내용을 적어주세요');return;}
+  try{await db.collection('posts').add({type:'talk',title:t,body:b,nick:S.user.nick,nm:S.user.name||S.user.nick,likes:0,likers:[],commentCount:0,createdAt:new Date().toISOString()});toast('글을 올렸어요');}catch(e){toast('올리지 못했어요');}
+  document.querySelector('.dn-sheet-bg')?.remove();dnCommRender();
+}
+function dnDmCompose(to){
+  const bg=document.createElement('div');bg.className='dn-sheet-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  bg.innerHTML=`<div class="dn-sheet"><b class="t">${esc(dnNm(to))} 약사에게 문의</b><p class="dn-note" style="text-align:left">개인 간 대화예요. 약 선택과 복용은 약국에서 직접 상담받으세요.</p><textarea class="inp" id="dmB" rows="6" maxlength="600" placeholder="궁금한 점을 적어주세요"></textarea><button class="btn lbtn" onclick="dnDmSubmit('${jsArg(to)}')">보내기</button></div>`;
+  document.body.appendChild(bg);
+}
+async function dnDmSubmit(to){
+  const b=(document.getElementById('dmB').value||'').trim();if(!b){toast('내용을 적어주세요');return;}
+  const now=new Date().toISOString();
+  try{const ref=await db.collection('posts').add({type:'dm',to,body:b,nick:S.user.nick,nm:S.user.name||S.user.nick,read:false,lastBody:b,lastAt:now,commentCount:0,createdAt:now});
+    document.querySelector('.dn-sheet-bg')?.remove();toast('문의를 보냈어요');POSTS3=null;_dnCommSeg='dm';goTab('comm');}
+  catch(e){toast('보내지 못했어요');}
+}
+async function dnCaseThread(caseId){
+  const id='case_'+caseId,c=C.find(x=>x.id===caseId);
+  try{const d=await db.collection('posts').doc(id).get();if(!d.exists)await db.collection('posts').doc(id).set({type:'case',caseId,title:c?c.title:'',nick:'admin',commentCount:0,likes:0,likers:[],createdAt:new Date().toISOString()});}catch(e){}
+  POSTS3=null;await dnLoadPosts(true);dnThreadOpen(id);
+}
+
+/* ── 글 상세 (토론·고민·쪽지 공통) ── */
+let _dnTh=null;
+async function dnThreadOpen(id){_dnTh=id;gs('dnThread');await dnThreadRender();}
+async function dnThreadRender(){
+  const el=document.getElementById('dnThBody'),p=(POSTS3||[]).find(x=>x.id===_dnTh);
+  if(!p){el.innerHTML='<div class="empty">글을 찾을 수 없어요</div>';return;}
+  let cm=[];try{const sn=await db.collection('posts').doc(p.id).collection('comments').get();sn.forEach(d=>cm.push({id:d.id,...d.data()}));}catch(e){}
+  cm.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+  await dnLoadUsers([p.nick,p.to,...cm.map(c=>c.nick)].filter(Boolean));
+  const me=S.user.nick,mem=dnIsMember();
+  if(p.type==='dm'){const upd=mem?{unreadFrom:false}:{read:true};if(mem?p.unreadFrom:!p.read){db.collection('posts').doc(p.id).update(upd).catch(()=>{});Object.assign(p,upd);}}
+  const canWrite=p.type==='ask'?(!mem||p.nick===me):p.type==='dm'?(p.nick===me||p.to===me):!mem;
+  const c=p.type==='case'?C.find(x=>x.id===p.caseId):null;
+  const head=p.type==='case'?`<div class="dn-thc">${c&&c.videoUrl?`<video src="${c.videoUrl}#t=1" muted playsinline preload="metadata"></video>`:''}<i></i><div><em>케이스 토론방</em><b>${esc(p.title||'')}</b><span>이 케이스를 푼 약사만 볼 수 있어요</span></div></div>`
+    :`<div class="dn-card dn-thp">${p.type==='ask'?`<div class="m0">${p.secret?'🔒 비밀 글 · 약사만 볼 수 있어요':'공개 글'}</div>`:''}${p.title?`<b class="tt">${esc(p.title)}</b>`:''}<p>${esc(p.body||'')}</p><div class="m"><span class="nk">${esc(p.nm||dnNm(p.nick))}</span><span>${dnAgo(p.createdAt)}</span></div></div>`;
+  el.innerHTML=`<div class="dn-thtop"><button class="dn-back" onclick="goTab('comm')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><b>${p.type==='ask'?'고민 상담':p.type==='dm'?esc(dnNm(mem?p.to:p.nick)):p.type==='case'?'케이스 토론':'자유 토론'}</b></div>
+    ${head}
+    <div class="dn-card dn-cms">${cm.map(x=>`<div class="dn-cm">${dnAv(x.nick,32,x.nm)}<div><div class="h"><b>${esc(x.nm||dnNm(x.nick))}</b><span>${dnAgo(x.createdAt)}</span></div><p>${esc(x.body||'')}</p></div></div>`).join('')||`<div class="empty" style="padding:20px">${p.type==='ask'?'약사님의 답변을 기다리고 있어요':'첫 의견을 남겨보세요'}</div>`}</div>
+    ${p.type==='ask'&&!mem?'<p class="dn-note">일반적인 안내 위주로 답해주세요. 구체적인 약 선택은 약국 방문을 권해주세요.</p>':''}
+    ${canWrite?`<div class="dn-inbar"><input class="inp" id="thIn" maxlength="500" placeholder="${p.type==='ask'&&!mem?'답변 남기기':'의견 남기기'}"><button onclick="dnThreadSend()">등록</button></div>`:''}`;
+}
+async function dnThreadSend(){
+  const inp=document.getElementById('thIn'),b=(inp.value||'').trim();if(!b)return;
+  if(_sendLock)return;_sendLock=true;
+  const p=(POSTS3||[]).find(x=>x.id===_dnTh),now=new Date().toISOString();
+  try{
+    await db.collection('posts').doc(p.id).collection('comments').add({nick:S.user.nick,nm:S.user.name||S.user.nick,body:b,createdAt:now});
+    const up={commentCount:firebase.firestore.FieldValue.increment(1)};
+    if(p.type==='ask'&&!dnIsMember())up.answerers=firebase.firestore.FieldValue.arrayUnion(S.user.nick);
+    if(p.type==='dm'){up.lastBody=b;up.lastAt=now;if(S.user.nick===p.to)up.unreadFrom=true;else up.read=false;}
+    await db.collection('posts').doc(p.id).update(up);
+    p.commentCount=(p.commentCount||0)+1;inp.value='';
+  }catch(e){toast('등록하지 못했어요');}
+  _sendLock=false;dnThreadRender();
+}
+
+/* ── 탭 연결 ── */
+const DN3_IC={comm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M17 9h3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1v2l-3-2h-4"/></svg>'};
+dnTabbarHtml=function(active){
+  const tabs=[['shelf','홈'],['ranking','랭킹'],['comm','커뮤니티'],['mypage','MY']];
+  return tabs.map(([k,l])=>`<button class="tab ${k===active?'on':''}" onclick="goTab('${k}')"><div class="tab-icon">${DN_TAB_IC[k]||DN3_IC[k]}</div>${l}</button>`).join('');
+};
+Object.assign(DN_SCREEN_TAB,{dnRank:'ranking',dnProfile:'mypage',dnComm:'comm',dnThread:'comm'});
+const _dn3GoTab=goTab;
+goTab=function(t){
+  if(t==='ranking'){gs('dnRank');dnRankRender();return;}
+  if(t==='mypage'){_dnProf=S.user.nick;gs('dnProfile');dnProfileRender();return;}
+  if(t==='comm'||t==='board'){gs('dnComm');dnCommRender();return;}
+  _dn3GoTab(t);
+};
 
 </script>
 </body>
