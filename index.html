@@ -4398,7 +4398,7 @@ function rxRenderSug(){
     const via=r.t===2?(r.ings||[]).find(g=>rxNorm(g).startsWith(nq)):'';
     const sub=[r.c,via?via+' 함유':''].filter(Boolean).join(' · ');
     const k=rxKindKey(r);
-    return `<button type="button" class="rx-li" onmousedown="event.preventDefault()" onclick="rxPick(${i})"><div style="min-width:0"><div class="nm">${hl(r.n)}</div>${sub?`<div class="co">${esc(sub)}</div>`:''}</div><span class="rx-kind ${k}">${RX_KIND[k]}</span></button>`;
+    return `<button type="button" class="rx-li" onmousedown="event.preventDefault()" ontouchend="if(Date.now()-_rxLastPick<800)event.preventDefault()" onpointerdown="rxPickDown(event,${i})" onpointerup="rxPickUp(event,${i})" onclick="rxPickClick(${i})"><div style="min-width:0"><div class="nm">${hl(r.n)}</div>${sub?`<div class="co">${esc(sub)}</div>`:''}</div><span class="rx-kind ${k}">${RX_KIND[k]}</span></button>`;
   }).join('');
   row.scrollTop=0;
   bar.classList.add('on');rxPlaceBar();
@@ -4471,6 +4471,7 @@ function rxBeforeInput(e){
 function rxOnBlur(){
   setTimeout(()=>{
     const ta=document.getElementById('rxText');
+    if(_rxPD)return;
     if(document.activeElement!==ta){const sg=document.getElementById('rxSug');if(sg)sg.classList.remove('on');}
   },150);
 }
@@ -4481,6 +4482,22 @@ document.addEventListener('compositionstart',e=>{if(e.target&&e.target.id==='rxT
 document.addEventListener('compositionend',e=>{if(e.target&&e.target.id==='rxText'){_rxComposing=false;setTimeout(rxGuardCheck,0);}});
 /* 한글 조합 중(예: "하이퍼"의 "퍼")에 후보를 누르면, 키보드가 조합 중이던 글자를
    나중에 다시 넣는 문제가 있어 — 먼저 입력칸을 빠져나와 조합을 끝낸 뒤 바꿔 넣음 */
+/* 아이폰 한글 키보드: 조합 중("헤모"의 "모")에 글자를 바꾸면 다음 타자 때 "모"를 다시 넣음.
+   후보를 누르는 순간(손가락이 닿을 때) 입력칸을 빠져나와 조합을 먼저 끝내고,
+   손을 뗄 때 제품명으로 바꾼 뒤 다시 입력칸으로 돌아감 */
+let _rxPD=null,_rxLastPick=0;
+function rxPickDown(e,i){
+  _rxPD={i,t:Date.now()};
+  const ta=document.getElementById('rxText');
+  if(e.pointerType!=='mouse'&&document.activeElement===ta)ta.blur();
+  else e.preventDefault();
+}
+function rxPickUp(e,i){
+  if(!_rxPD||_rxPD.i!==i){_rxPD=null;return;}
+  _rxPD=null;e.preventDefault();_rxLastPick=Date.now();
+  rxPick(i);
+}
+function rxPickClick(i){if(Date.now()-_rxLastPick<800)return;rxPick(i);}
 function rxPick(i){
   const r=_rxRes[i];let tok=_rxTok;if(!r)return;
   if(_rxTags.some(t=>t.id===r.id)){toast('이미 태그했어요');return;}
@@ -4495,13 +4512,14 @@ function rxPick(i){
     const ins=r.n+(/^\s/.test(after)?'':' ');
     /* 키보드가 조합 중인 글자("헤모"의 "모")까지 편집기 경로로 바꿔 넣어야
        아이폰 키보드가 조합을 끝냄 — value 를 직접 바꾸면 다음 타자 때 "모"가 다시 들어옴 */
-    if(document.activeElement!==ta)ta.focus();
     let ok=false;
-    try{ta.setSelectionRange(tok.s,tok.e);ok=document.execCommand('insertText',false,ins);}catch(e){}
+    if(document.activeElement===ta){try{ta.setSelectionRange(tok.s,tok.e);ok=document.execCommand('insertText',false,ins);}catch(e){}}
     if(!ok||ta.value.slice(tok.s,tok.s+ins.length)!==ins){
       const v=ta.value;ta.value=v.slice(0,tok.s)+ins+v.slice(tok.e);
-      const pos=tok.s+ins.length;try{ta.setSelectionRange(pos,pos);}catch(e){}
     }
+    const pos=tok.s+ins.length;
+    if(document.activeElement!==ta)ta.focus({preventScroll:true});
+    try{ta.setSelectionRange(pos,pos);}catch(e){}
   }
   _rxComposing=false;_rxGuard=null;
   _rxTags.push({kind:r.kind,cat:r.cat||'',id:r.id,n:r.n,c:r.c,ings:r.ings,ing:r.ing||r.n,purposes:[]});
