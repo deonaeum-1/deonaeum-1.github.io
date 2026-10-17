@@ -1680,8 +1680,8 @@ body{
 .dn-hd{position:absolute;left:18px;right:18px;top:calc(14px + var(--dn-st));display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;z-index:3;pointer-events:none;transition:color .45s}
 .dn-hd .dn-logo{color:inherit}
 .dn-bars{align-self:stretch;display:flex;gap:5px;transition:opacity .3s}
-.dn-bars span{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.32)}
-.dn-bars span.on{background:#fff}
+.dn-bars span{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.32);position:relative;overflow:hidden}
+.dn-bars span i{position:absolute;left:0;top:0;bottom:0;background:#fff;border-radius:2px}
 .dn-ti{position:absolute;left:20px;right:60px;top:calc(86px + var(--dn-st));display:flex;flex-direction:column;gap:4px;color:#fff;z-index:3;transition:opacity .3s;pointer-events:none}
 .dn-ti em{font-style:normal;font-size:12px;font-weight:700;color:#D1D6DB}
 .dn-ti b{font-size:30px;font-weight:900;letter-spacing:-.045em;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.35)}
@@ -1701,7 +1701,7 @@ body{
 .dn-leaf{margin-bottom:-4px}
 .dn-leaf svg{width:118px;height:auto}
 .dn-wait{color:#F3DFA6;font-size:14px;font-weight:700;margin-bottom:6px;text-shadow:0 1px 2px rgba(0,0,0,.5)}
-.dn-podium{display:flex;align-items:flex-end}
+.dn-podium{display:flex;align-items:flex-end;position:relative}
 .pd-col{display:flex;flex-direction:column;align-items:center}
 .pd-bk{position:relative;width:100%;background:linear-gradient(180deg,#6E8F73,#4E6B53);box-shadow:inset 1px 0 0 rgba(255,255,255,.12),inset -1px 0 0 rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
 .pd-bk i{position:absolute;left:4px;right:4px;top:-6px;height:6px;background:linear-gradient(180deg,#8AA88D,#7A9A7E);clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 100%,0 100%)}
@@ -1716,12 +1716,13 @@ body{
 .dn-pr{display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative}
 .dn-pr .lb{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:9px;font-weight:900;color:#191F28;background:#fff;padding:1px 4px;border-radius:3px;letter-spacing:-.03em}
 .dn-pr.bottle .lb{top:28px}.dn-pr.tube .lb{top:9px;left:44%}.dn-pr.stick .lb{top:18px}
-.dn-pr .bx{position:relative;width:66px;height:40px}
-.dn-pr .bx .tp{position:absolute;left:0;top:-6px;width:72px;height:6px;background:#F4F6F8;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
-.dn-pr .bx .sd{position:absolute;left:66px;top:-6px;width:6px;height:46px;background:#CBD2DA;clip-path:polygon(0 6px,100% 0,100% calc(100% - 6px),0 100%)}
+.dn-pr .bx{position:relative;width:78px;height:42px}
+#dnObj.many .dn-pr{transform:scale(.82);transform-origin:center bottom;margin:0 -6px}
+.dn-pr .bx .tp{position:absolute;left:0;top:-6px;width:84px;height:6px;background:#F4F6F8;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.dn-pr .bx .sd{position:absolute;left:78px;top:-6px;width:6px;height:48px;background:#CBD2DA;clip-path:polygon(0 6px,100% 0,100% calc(100% - 6px),0 100%)}
 .dn-pr .bx .fr{position:absolute;inset:0;background:linear-gradient(180deg,#fff,#EEF0F2);display:flex;flex-direction:column;overflow:hidden}
 .dn-pr .bx .bd{height:6px;background:var(--kc)}
-.dn-pr .bx span{flex:1;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:-.05em;color:#191F28;white-space:nowrap;padding:0 3px}
+.dn-pr .bx span{flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;align-self:center;margin:auto 0;font-weight:900;letter-spacing:-.04em;color:#191F28;white-space:normal;word-break:keep-all;line-height:1.12;padding:0 3px}
 .dn-slot{width:46px;height:38px;border:1.5px dashed rgba(255,255,255,.6);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:18px}
 /* 매대 올라옴 */
 .dn-panel{position:absolute;left:0;right:0;top:calc(var(--dn-st) + 62px + 200px + 18px + 76px);bottom:0;padding:0 16px calc(16px + env(safe-area-inset-bottom));overflow-y:auto;opacity:0;transform:translateY(40px);pointer-events:none;transition:all .45s var(--dn-ease)}
@@ -2052,7 +2053,7 @@ body{
 <!-- ===== 더나음2: 영상 전면 스테이지 ===== -->
 <div class="screen dn-stage" id="dnStage">
   <div class="dn-vid" id="dnVidBox">
-    <video id="dnVideo" muted loop playsinline autoplay preload="auto"></video>
+    <video id="dnVideo" muted playsinline autoplay preload="auto"></video>
     <i class="dn-vg"></i><i class="dn-vt"></i><i class="dn-vb"></i>
     <div class="dn-cti" id="dnCardTi"></div>
     <button type="button" class="dn-down" onclick="dnWriteClose()" aria-label="매대 내리기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -3455,7 +3456,7 @@ function renderCaseRank(){
   const row=c=>{
     const pres=S.hist.some(h=>h.caseId===c.id);
     const st=pres?(recDoneForCase(c.id)?'<span class="cr-s ok">결과 보기 ›</span>':'<span class="cr-s need">추천하고 보기 ›</span>'):`<span class="cr-s lock">${LK}풀면 열려요</span>`;
-    return `<div class="cr" onclick="startCase('${c.id}')"><div style="min-width:0"><div class="cr-t">${c.title||('케이스 '+c.id)}</div><div class="cr-m">약사 ${nOf(c.id)}명 참여</div></div>${st}</div>`;
+    return `<div class="cr" onclick="dnCaseGo('${c.id}')"><div style="min-width:0"><div class="cr-t">${c.title||('케이스 '+c.id)}</div><div class="cr-m">약사 ${nOf(c.id)}명 참여</div></div>${st}</div>`;
   };
   let h='';
   Object.keys(SETS).sort((a,b)=>Number(a)-Number(b)).forEach(n=>{
@@ -3600,7 +3601,7 @@ function renderAcad(){
     detail=`<div class="ac-lock">${c.eduImageUrl?`<div class="bl" style="background-image:url('${c.eduImageUrl}')"></div>`:''}<div class="in">
       <div class="lk">${LK}</div><b>케이스 ${need}개를 풀면 열려요</b>
       <div class="dots">${Array.from({length:need},(_,k)=>`<i class="${done>k?'on':''}"></i>`).join('')}</div>
-      ${next?`<button class="go" onclick="startCase('${next.id}')">케이스 풀러 가기</button>`:''}</div></div>`;
+      ${next?`<button class="go" onclick="dnCaseGo('${next.id}')">케이스 풀러 가기</button>`:''}</div></div>`;
   }else if(c.eduPages.length){
     detail=`<div class="ac-pages" oncontextmenu="return false">${c.eduPages.map(u=>`<img src="${u}" alt="" draggable="false" loading="lazy">`).join('')}</div>`;
   }else{
@@ -4397,7 +4398,7 @@ function rxRenderSug(){
     const via=r.t===2?(r.ings||[]).find(g=>rxNorm(g).startsWith(nq)):'';
     const sub=[r.c,via?via+' 함유':''].filter(Boolean).join(' · ');
     const k=rxKindKey(r);
-    return `<button type="button" class="rx-li" onclick="rxPick(${i})"><div style="min-width:0"><div class="nm">${hl(r.n)}</div>${sub?`<div class="co">${esc(sub)}</div>`:''}</div><span class="rx-kind ${k}">${RX_KIND[k]}</span></button>`;
+    return `<button type="button" class="rx-li" onmousedown="event.preventDefault()" onclick="rxPick(${i})"><div style="min-width:0"><div class="nm">${hl(r.n)}</div>${sub?`<div class="co">${esc(sub)}</div>`:''}</div><span class="rx-kind ${k}">${RX_KIND[k]}</span></button>`;
   }).join('');
   row.scrollTop=0;
   bar.classList.add('on');rxPlaceBar();
@@ -4423,12 +4424,16 @@ function rxGuardCheck(){
   let a=0;while(a<v.length&&a<g.v.length&&v[a]===g.v[a])a++;
   let b=0;while(b<v.length-a&&b<g.v.length-a&&v[v.length-1-b]===g.v[g.v.length-1-b])b++;
   const ins=v.slice(a,v.length-b),del=g.v.slice(a,g.v.length-b);
-  const stray=ins.length>0&&ins.length<=4&&[...ins].every(ch=>g.q.includes(ch)||/\s/.test(ch));
-  if(stray&&del.replace(/\s/g,'').length===0){
-    ta.value=g.v;try{ta.setSelectionRange(g.pos,g.pos);}catch(e){}
-    S.summary=g.v;rxSyncHL();return true;
-  }
-  return false;
+  _rxGuard=null;
+  if(del.replace(/\s/g,'').length!==0||!ins)return false;
+  /* 입력어의 끝 글자(예: "헤모"의 "모")가 다음 타자와 함께 다시 들어온 경우 그 부분만 제거 */
+  let cut=0;for(let k=Math.min(g.q.length,ins.length);k>=1;k--){if(ins.startsWith(g.q.slice(-k))){cut=k;break;}}
+  if(!cut&&!(ins.length<=4&&[...ins].every(ch=>g.q.includes(ch)||/\s/.test(ch))))return false;
+  const keep=cut?ins.slice(cut):'';
+  if(!cut)cut=ins.length;
+  ta.value=v.slice(0,a)+keep+v.slice(a+ins.length);
+  const np=a+keep.length;try{ta.setSelectionRange(np,np);}catch(e){}
+  S.summary=ta.value;rxSyncHL();return !keep;
 }
 function rxOnInput(){
   const ta=document.getElementById('rxText');
@@ -4477,39 +4482,32 @@ document.addEventListener('compositionend',e=>{if(e.target&&e.target.id==='rxTex
 /* 한글 조합 중(예: "하이퍼"의 "퍼")에 후보를 누르면, 키보드가 조합 중이던 글자를
    나중에 다시 넣는 문제가 있어 — 먼저 입력칸을 빠져나와 조합을 끝낸 뒤 바꿔 넣음 */
 function rxPick(i){
-  const ta=document.getElementById('rxText');
-  if(_rxComposing||document.activeElement===ta){
-    const r=_rxRes[i],tok=_rxTok;
-    ta.blur();
-    /* blur 시점에 조합이 즉시 확정됨 — 같은 탭 안에서 다시 focus 해야 키보드가 유지됨 */
-    _rxComposing=false;_rxRes=[r];_rxTok=tok;_rxPickNow(0);
-    return;
-  }
-  _rxPickNow(i);
-}
-function _rxPickNow(i){
   const r=_rxRes[i];let tok=_rxTok;if(!r)return;
-  {const ta=document.getElementById('rxText');
-   if(tok&&ta.value.slice(tok.s,tok.e)!==tok.q){
-     /* 조합이 끝나며 글자가 바뀐 경우 — 커서 근처에서 입력어를 다시 찾음 */
-     const at=ta.value.lastIndexOf(tok.q,tok.e+2);
-     tok=at>=0?{s:at,e:at+tok.q.length,q:tok.q}:null;
-   }}
   if(_rxTags.some(t=>t.id===r.id)){toast('이미 태그했어요');return;}
   if(_rxTags.length>=RX_MAX){toast('처방 제품은 최대 4개까지 태그할 수 있어요');return;}
   const ta=document.getElementById('rxText');
-  if(tok){
-    const v=ta.value,after=v.slice(tok.e);
-    const ins=r.n+(/^\s/.test(after)?'':' ');
-    ta.value=v.slice(0,tok.s)+ins+after;
-    const pos=tok.s+ins.length;
-    ta.focus();try{ta.setSelectionRange(pos,pos);}catch(e){}
+  if(tok&&ta.value.slice(tok.s,tok.e)!==tok.q){
+    const at=ta.value.lastIndexOf(tok.q,tok.e+2);
+    tok=at>=0?{s:at,e:at+tok.q.length,q:tok.q}:null;
   }
-  if(tok){const pos=ta.selectionStart;_rxGuard={v:ta.value,pos,q:tok.q,until:Date.now()+700};[30,120,300,600].forEach(ms=>setTimeout(rxGuardCheck,ms));}
+  if(tok){
+    const after=ta.value.slice(tok.e);
+    const ins=r.n+(/^\s/.test(after)?'':' ');
+    /* 키보드가 조합 중인 글자("헤모"의 "모")까지 편집기 경로로 바꿔 넣어야
+       아이폰 키보드가 조합을 끝냄 — value 를 직접 바꾸면 다음 타자 때 "모"가 다시 들어옴 */
+    if(document.activeElement!==ta)ta.focus();
+    let ok=false;
+    try{ta.setSelectionRange(tok.s,tok.e);ok=document.execCommand('insertText',false,ins);}catch(e){}
+    if(!ok||ta.value.slice(tok.s,tok.s+ins.length)!==ins){
+      const v=ta.value;ta.value=v.slice(0,tok.s)+ins+v.slice(tok.e);
+      const pos=tok.s+ins.length;try{ta.setSelectionRange(pos,pos);}catch(e){}
+    }
+  }
+  _rxComposing=false;_rxGuard=null;
   _rxTags.push({kind:r.kind,cat:r.cat||'',id:r.id,n:r.n,c:r.c,ings:r.ings,ing:r.ing||r.n,purposes:[]});
   S.summary=ta.value;
   document.getElementById('rxSug').classList.remove('on');
-  rxRenderTags();rxUpdateGate();
+  rxRenderTags();rxUpdateGate();rxSyncHL();
 }
 function rxRenderTags(){
   const w=document.getElementById('rxTags');
@@ -4903,6 +4901,7 @@ function showMatchFlash(){
 
 /* STEP 5: 케이스 현시점 결과 — 다추천 제품 / 성분조합 / 약사 */
 async function renderResult(){
+  if(typeof _dn!=='undefined'&&S.case){const it=_dn.items||[];const k=it.findIndex(x=>x.id===S.case.id);if(k>=0&&k<it.length-1)_dn.advTo=k+1;}
   const c=S.case;
   document.getElementById('rcase').textContent=c.title||`케이스 ${c.id}`;
   document.getElementById('mpicks').innerHTML=S.pairs.map((p,i)=>`
@@ -5501,7 +5500,7 @@ function safeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:'';}
 function drawNotices(){
   const w=document.getElementById('boardNotice');
   const all=[...(NOTICE_CACHE||[])];
-  const texts=all.filter(n=>n.type!=='banner').sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+  const texts=all.filter(n=>n.type!=='banner').sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||_dnTs(b.createdAt)-_dnTs(a.createdAt));
   const banners=all.filter(n=>n.type==='banner').sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
   if(!texts.length&&!banners.length){w.innerHTML='<div class="empty" style="padding:30px">등록된 소식이 없어요</div>';return;}
   let html=texts.map(n=>`
@@ -5572,7 +5571,7 @@ function setLoungeSort(t){
 function drawPosts(){
   const w=document.getElementById('loungeList');
   let list=[...(POST_CACHE||[])];
-  if(S.loungeSort==='hot')list.sort((a,b)=>(b.likes||0)-(a.likes||0)||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+  if(S.loungeSort==='hot')list.sort((a,b)=>(b.likes||0)-(a.likes||0)||_dnTs(b.createdAt)-_dnTs(a.createdAt));
   else list.sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
   if(!list.length){w.innerHTML='<div class="empty" style="padding:30px">첫 글을 남겨보세요</div>';return;}
   w.innerHTML=list.map(p=>`
@@ -5723,7 +5722,7 @@ function dnShape(name){
 function dnShort(n){return String(n||'').replace(/\(.*?\)/g,'').replace(/\s*\d+(\.\d+)?\s*(mg|g|ml|mL|정|캡슐|포|병|T|C)\b.*$/i,'').trim()||String(n||'');}
 function dnProdObj(name,color,key){
   const nm=esc(dnShort(name)),sh=dnShape(name);
-  const fs=nm.length>6?10:nm.length>4?11:12;
+  const fs=nm.length>10?9.5:nm.length>6?10.5:nm.length>4?11.5:12.5;
   if(sh==='bottle')return `<div class="dn-pr bottle" ${key}><svg width="44" height="54" viewBox="0 0 44 50"><rect x="15" y="0" width="14" height="8" rx="2" fill="#2B2F36"/><rect x="16" y="8" width="12" height="5" fill="#8C6A3E"/><path d="M16 13 L28 13 Q38 16 38 24 L38 46 Q38 50 34 50 L10 50 Q6 50 6 46 L6 24 Q6 16 16 13 Z" fill="#6B4220"/><rect x="6" y="25" width="32" height="18" fill="#fff"/><rect x="6" y="25" width="32" height="3" fill="${color}"/><rect x="9" y="16" width="3" height="30" rx="1.5" fill="rgba(255,255,255,.22)"/></svg><span class="lb">${nm}</span></div>`;
   if(sh==='tube')return `<div class="dn-pr tube" ${key}><svg width="70" height="30" viewBox="0 0 70 30"><path d="M4 6 L52 2 L52 28 L4 24 Z" fill="#F4F6F8" stroke="#CBD2DA"/><rect x="52" y="6" width="10" height="18" rx="2" fill="#E9ECEF" stroke="#CBD2DA"/><rect x="62" y="9" width="6" height="12" rx="1.5" fill="${color}"/><path d="M4 6 L52 2 L52 8 L4 11 Z" fill="${color}" opacity=".85"/></svg><span class="lb">${nm}</span></div>`;
   if(sh==='stick')return `<div class="dn-pr stick" ${key}><svg width="46" height="40" viewBox="0 0 46 40"><rect x="4" y="6" width="9" height="32" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="15" y="3" width="9" height="35" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="26" y="7" width="9" height="31" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="4" y="6" width="9" height="5" rx="1" fill="${color}"/><rect x="15" y="3" width="9" height="5" rx="1" fill="${color}"/><rect x="26" y="7" width="9" height="5" rx="1" fill="${color}"/></svg><span class="lb">${nm}</span></div>`;
@@ -5764,6 +5763,7 @@ const DN_KLB={core:'건강기능식품',otc:'일반의약품',ing:'성분',food:
 
 /* ── 스테이지 ── */
 function dnOpenStage(n,i){
+  if(_dn.advTo!=null){if(n==null||String(n)===String(_dn.n))i=_dn.advTo;_dn.advTo=null;}
   if(n==null)n=FEATURED_SET!=null?FEATURED_SET:(dnSetKeys()[0]??null);
   _dn.n=n;_dn.items=dnItems(n);_dn.i=Math.max(0,Math.min(_dn.items.length-1,i||0));
   const st=document.getElementById('dnStage');st.classList.remove('up','rank');_dn.mode='stage';
@@ -5772,14 +5772,14 @@ function dnOpenStage(n,i){
 function dnDraw(){
   const st=document.getElementById('dnStage');
   const c=_dn.items[_dn.i];
-  document.getElementById('dnBars').innerHTML=_dn.items.map((_,k)=>`<span class="${k<=_dn.i?'on':''}"></span>`).join('');
+  document.getElementById('dnBars').innerHTML=_dn.items.map((_,k)=>`<span class="${k<_dn.i?'on':''}"><i style="width:${k<_dn.i?100:0}%"></i></span>`).join('');
   const v=document.getElementById('dnVideo');
   if(!c){document.getElementById('dnTi').innerHTML='<b>케이스를 준비하고 있어요</b>';document.getElementById('dnObj').innerHTML='';v.removeAttribute('src');return;}
   const ac=c.role==='acad'||c.type==='edu';
   const url=ac?(c.eduVideoUrl||c.videoUrl):c.videoUrl;
-  if(url){if(v.getAttribute('src')!==url){v.src=url;}v.muted=true;const pp=v.play();if(pp&&pp.catch)pp.catch(()=>{});}else v.removeAttribute('src');
+  if(url){if(v.getAttribute('src')!==url){v.src=url;}else if(_dn.shown!==_dn.n+'|'+_dn.i){try{v.currentTime=0;}catch(e){}}_dn.shown=_dn.n+'|'+_dn.i;v.muted=true;const pp=v.play();if(pp&&pp.catch)pp.catch(()=>{});}else v.removeAttribute('src');
   const caseNo=_dn.items.filter(x=>x.role!=='acad'&&x.type!=='edu').indexOf(c)+1;
-  const kind=ac?'학술':'케이스 '+caseNo;
+  const kind=ac?'전문 약사의 이야기':'케이스 '+caseNo;
   const topic=dnTopic(_dn.n);
   const n=dnRespN(c.id);
   let sub;
@@ -5791,7 +5791,7 @@ function dnDraw(){
   dnDrawObj();
 }
 function dnDrawObj(){
-  const o=document.getElementById('dnObj'),c=_dn.items[_dn.i];document.getElementById('dnFront').innerHTML='';if(!c){o.innerHTML='';return;}
+  const o=document.getElementById('dnObj'),c=_dn.items[_dn.i];o.classList.remove('many');document.getElementById('dnFront').innerHTML='';if(!c){o.innerHTML='';return;}
   const st=document.getElementById('dnStage');
   if(st.classList.contains('up')){
     if(st.classList.contains('rank')){o.innerHTML='';return;}
@@ -5799,7 +5799,7 @@ function dnDrawObj(){
   }
   const ac=c.role==='acad'||c.type==='edu';
   if(ac){
-    o.innerHTML=`<button type="button" class="dn-leaf" onclick="openAcad('${c.id}')" aria-label="학술 보기">${dnIsMember()?dnLeaf('전문 약사의','이야기 듣기'):dnLeaf('학술','자세히 보기')}${dnTrace('0 0 132 138','M14 10 L118 10 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 L10 112 Z')}</button>`;
+    o.innerHTML=`<button type="button" class="dn-leaf" onclick="openAcad('${c.id}')" aria-label="전문 약사의 이야기 듣기">${dnLeaf('전문 약사의','이야기 듣기')}${dnTrace('0 0 132 138','M14 10 L118 10 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 L10 112 Z')}</button>`;
     return;
   }
   if(dnIsMember()){
@@ -5807,7 +5807,7 @@ function dnDrawObj(){
     if(n<DN_RANK_MIN||!r.length){o.innerHTML='<div class="dn-wait">약사들이 답하고 있어요</div>';return;}
     const col=(x,rank,h,w)=>x?`<div class="pd-col" style="width:${w}px">${dnProdObj(x.name,DN_KC[x.kind]||DN_KC.core,'')}<div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`:`<div class="pd-col" style="width:${w}px"><div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`;
     o.innerHTML=`<button type="button" class="dn-podium" onclick="dnRankOpen()" aria-label="전체 순위">${col(r[1],2,46,104)}${col(r[0],1,64,112)}${col(r[2],3,36,104)}</button>`;
-    document.getElementById('dnFront').innerHTML='<button type="button" onclick="dnRankOpen()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>전체 순위</button>';
+    requestAnimationFrame(dnPodGlow);
     return;
   }
   const pres=S.hist.some(h=>h.caseId===c.id);
@@ -5844,15 +5844,22 @@ function dnWriteOpen(){
     pn.dataset.ready='1';
   }
   renderRxWrite();
+  {const t=document.getElementById('rxText');const v=t?t.value:'';if(_rxTags.some(x=>!v.includes(x.n))){_rxTags=_rxTags.filter(x=>v.includes(x.n));rxRenderTags();rxUpdateGate();}}
   st.classList.remove('rank');st.classList.add('up');_dn.mode='write';
   document.getElementById('dnFront').innerHTML='';
   dnRenderBoxes();
   setTimeout(()=>{const t=document.getElementById('rxText');if(t)t.focus({preventScroll:true});},450);
 }
+function dnRxReset(){
+  _rxTags=[];S.summary='';_rxGuard=null;_rxComposing=false;
+  const t=document.getElementById('rxText');if(t){t.value='';t.blur();}
+  try{rxRenderTags();rxUpdateGate();rxSyncHL();}catch(e){}
+}
 function dnWriteClose(){
   const st=document.getElementById('dnStage');
   const sg=document.getElementById('rxSug');if(sg)sg.classList.remove('on');
-  const t=document.getElementById('rxText');if(t){S.summary=t.value;t.blur();}
+  /* 처방 도중 나오면 입력과 매대 제품을 함께 비움 */
+  if(st.classList.contains('up')&&!st.classList.contains('rank'))dnRxReset();
   st.classList.remove('up','rank');_dn.mode='stage';
   document.getElementById('dnFront').innerHTML='';
   dnDrawObj();
@@ -5861,7 +5868,8 @@ function dnRenderBoxes(){
   const st=document.getElementById('dnStage');
   if(!st||!st.classList.contains('up')||st.classList.contains('rank'))return;
   const o=document.getElementById('dnObj');
-  o.innerHTML=`<div class="dn-shelfrow">${_rxTags.map((t,i)=>dnProdObj(t.n,DN_KC[rxKindKey(t)]||DN_KC.core,`onclick="rxOpenTag(${i})"`)).join('')}${_rxTags.length<RX_MAX?'<div class="dn-slot">+</div>':''}</div>`;
+  o.classList.toggle('many',_rxTags.length>=3);
+  o.innerHTML=`<div class="dn-shelfrow">${_rxTags.map((t,i)=>dnProdObj(t.n,DN_KC[rxKindKey(t)]||DN_KC.core,`onclick="rxOpenTag(${i})"`)).join('')}${!_rxTags.length?'<div class="dn-slot">+</div>':''}</div>`;
 }
 
 /* 일반회원 — 전체 순위 */
@@ -5888,7 +5896,8 @@ function dnRankOpen(){
     if(sx===null)return;dx=e.clientX-sx;const dy=e.clientY-sy;
     if(hz===null&&(Math.abs(dx)>10||Math.abs(dy)>10))hz=Math.abs(dx)>Math.abs(dy);
   });
-  const end=()=>{if(sx===null)return;sx=null;if(hz&&dx<-50)dnGo(1);else if(hz&&dx>50)dnGo(-1);};
+  const end=e=>{if(sx===null)return;const x0=sx;sx=null;if(hz&&dx<-50)dnGo(1);else if(hz&&dx>50)dnGo(-1);
+    else if(hz===null&&e&&e.type==='pointerup'){const w=document.getElementById('dnStage').clientWidth||innerWidth;if(x0<w*.3)dnGo(-1);else if(x0>w*.7)dnGo(1);}};
   document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
 })();
 
@@ -5911,7 +5920,7 @@ function dnShelfRender(mode){
   let h='';
   dnSetKeys().forEach(n=>{
     const items=dnItems(n);let k=0;
-    const cards=items.map((c,idx)=>{const ac=c.role==='acad'||c.type==='edu';if(mode==='acad'&&!ac)return '';if(!ac)k++;return card(c,n,idx,ac?'학술':'케이스 '+k);}).join('');
+    const cards=items.map((c,idx)=>{const ac=c.role==='acad'||c.type==='edu';if(mode==='acad'&&!ac)return '';if(!ac)k++;return card(c,n,idx,ac?'전문 약사':'케이스 '+k);}).join('');
     if(!cards)return;
     h+=`<div class="dn-shelf"><div class="dn-sl">${esc(dnTopic(n)||('세트 '+n))}${String(n)===String(FEATURED_SET)?'<i>이번 주</i>':''}</div><div class="dn-row">${cards}</div><div class="dn-plank"></div></div>`;
   });
@@ -5943,6 +5952,7 @@ gs=function(id,restore){
     tb.innerHTML=dnTabbarHtml(act);
   }
   if(id!=='dnStage'){const v=document.getElementById('dnVideo');if(v)try{v.pause()}catch(e){}}
+  if(id!=='dnStage'&&id!=='peerCmtScreen'){const st=document.getElementById('dnStage');if(st&&st.classList.contains('up')){if(!st.classList.contains('rank'))dnRxReset();st.classList.remove('up','rank');_dn.mode='stage';}}
 };
 const _dnGoTab=goTab;
 goTab=function(t){
@@ -5990,6 +6000,7 @@ function dnAv(id,sz,nm){
   const n=(_dnUsers[id]&&_dnUsers[id].nick)||nm||dnNm(id),c=DN_AVC[[...String(id)].reduce((a,ch)=>a+ch.charCodeAt(0),0)%DN_AVC.length];
   return ph?`<img class="dn-av" src="${ph}" style="width:${sz}px;height:${sz}px" alt="">`:`<span class="dn-av" style="width:${sz}px;height:${sz}px;background:${c};font-size:${Math.round(sz*.4)}px">${esc(n.charAt(0))}</span>`;
 }
+function _dnTs(v){if(!v)return 0;if(v.toDate)return v.toDate().getTime();if(v.seconds)return v.seconds*1000;const t=new Date(v).getTime();return isNaN(t)?0:t;}
 function dnAgo(iso){if(!iso)return '';const s=(Date.now()-new Date(iso))/1000;if(s<60)return '방금';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';if(s<86400*7)return Math.floor(s/86400)+'일 전';return fmtDate(iso);}
 async function dnLoadPosts(force){
   if(POSTS3&&!force)return POSTS3;
@@ -6117,7 +6128,7 @@ async function dnCommRender(){
   let h='';
   if(_dnCommSeg==='notice'){
     try{if(!NOTICE_CACHE)await loadNotices();}catch(e){}
-    const ns=[...(NOTICE_CACHE||[])].filter(n=>n.type!=='banner').sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    const ns=[...(NOTICE_CACHE||[])].filter(n=>n.type!=='banner').sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||_dnTs(b.createdAt)-_dnTs(a.createdAt));
     h=`<div class="dn-card">${ns.map(n=>`<button class="dn-post" onclick="openNotice('${n.id}')"><b>${esc(n.title||'')}</b><p>${esc((n.body||'').slice(0,60))}</p><div class="m"><span>${fmtDate(n.createdAt)}</span></div></button>`).join('')||'<div class="empty">공지가 없어요</div>'}</div>`;
   }else if(_dnCommSeg==='ask'){
     if(mem){
@@ -6198,12 +6209,14 @@ async function dnCaseThread(caseId){
 /* ── 글 상세 (토론·고민·쪽지 공통) ── */
 let _dnTh=null;
 async function dnThreadOpen(id){_dnTh=id;gs('dnThread');await dnThreadRender();}
-async function dnThreadRender(){
+async function dnThreadRender(quick){
   const el=document.getElementById('dnThBody'),p=(POSTS3||[]).find(x=>x.id===_dnTh);
   if(!p){el.innerHTML='<div class="empty">글을 찾을 수 없어요</div>';return;}
-  let cm=[];try{const sn=await db.collection('posts').doc(p.id).collection('comments').get();sn.forEach(d=>cm.push({id:d.id,...d.data()}));}catch(e){}
+  if(!quick)dnThreadRender(true);
+  let cm=[];
+  if(!quick){try{const sn=await db.collection('posts').doc(p.id).collection('comments').get();sn.forEach(d=>cm.push({id:d.id,...d.data()}));}catch(e){}
   cm.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
-  await dnLoadUsers([p.nick,p.to,...cm.map(c=>c.nick)].filter(Boolean));
+  await dnLoadUsers([p.nick,p.to,...cm.map(c=>c.nick)].filter(Boolean));}
   const me=S.user.nick,mem=dnIsMember();
   if(p.type==='dm'){const upd=mem?{unreadFrom:false}:{read:true};if(mem?p.unreadFrom:!p.read){db.collection('posts').doc(p.id).update(upd).catch(()=>{});Object.assign(p,upd);}}
   const canWrite=p.type==='ask'?(!mem||p.nick===me):p.type==='dm'?(p.nick===me||p.to===me):!mem;
@@ -6212,7 +6225,7 @@ async function dnThreadRender(){
     :`<div class="dn-card dn-thp">${p.type==='ask'?`<div class="m0">${p.secret?'🔒 비밀 글 · 약사만 볼 수 있어요':'공개 글'}</div>`:''}${p.title?`<b class="tt">${esc(p.title)}</b>`:''}<p>${esc(p.body||'')}</p><div class="m"><span class="nk">${esc(p.nm||dnNm(p.nick))}</span><span>${dnAgo(p.createdAt)}</span></div></div>`;
   el.innerHTML=`<div class="dn-thtop"><button class="dn-back" onclick="goTab('comm')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><b>${p.type==='ask'?'고민 상담':p.type==='dm'?esc(dnNm(mem?p.to:p.nick)):p.type==='case'?'케이스 토론':'자유 토론'}</b></div>
     ${head}
-    <div class="dn-card dn-cms">${cm.map(x=>`<div class="dn-cm">${dnAv(x.nick,32,x.nm)}<div><div class="h"><b>${esc(x.nm||dnNm(x.nick))}</b><span>${dnAgo(x.createdAt)}</span></div><p>${esc(x.body||'')}</p></div></div>`).join('')||`<div class="empty" style="padding:20px">${p.type==='ask'?'약사님의 답변을 기다리고 있어요':'첫 의견을 남겨보세요'}</div>`}</div>
+    <div class="dn-card dn-cms">${quick?'<div class="empty" style="padding:20px">댓글 불러오는 중…</div>':''}${cm.map(x=>`<div class="dn-cm">${dnAv(x.nick,32,x.nm)}<div><div class="h"><b>${esc(x.nm||dnNm(x.nick))}</b><span>${dnAgo(x.createdAt)}</span></div><p>${esc(x.body||'')}</p></div></div>`).join('')||(quick?'':`<div class="empty" style="padding:20px">${p.type==='ask'?'약사님의 답변을 기다리고 있어요':'첫 의견을 남겨보세요'}</div>`)}</div>
     ${p.type==='ask'&&!mem?'<p class="dn-note">일반적인 안내 위주로 답해주세요. 구체적인 약 선택은 약국 방문을 권해주세요.</p>':''}
     ${canWrite?`<div class="dn-inbar"><input class="inp" id="thIn" maxlength="500" placeholder="${p.type==='ask'&&!mem?'답변 남기기':'의견 남기기'}"><button onclick="dnThreadSend()">등록</button></div>`:''}`;
 }
@@ -6246,6 +6259,39 @@ goTab=function(t){
   _dn3GoTab(t);
 };
 
+
+function dnPodGlow(){
+  const b=document.querySelector('#dnObj .dn-podium');if(!b)return;
+  b.querySelector('.dn-trace')?.remove();
+  const br=b.getBoundingClientRect(),ks=[...b.querySelectorAll('.pd-bk')].map(e=>e.getBoundingClientRect());if(ks.length<3||!br.width)return;
+  const X=v=>(v-br.left).toFixed(1),Y=v=>(v-br.top).toFixed(1),bt=Y(ks[0].bottom);
+  const [l,m,r]=ks,t=k=>k.top-6;
+  const d=`M${X(l.left)} ${bt} L${X(l.left)} ${Y(t(l))} L${X(l.right)} ${Y(t(l))} L${X(m.left)} ${Y(t(m))} L${X(m.right)} ${Y(t(m))} L${X(r.left)} ${Y(t(r))} L${X(r.right)} ${Y(t(r))} L${X(r.right)} ${bt} Z`;
+  b.insertAdjacentHTML('beforeend',dnTrace(`0 0 ${br.width.toFixed(1)} ${br.height.toFixed(1)}`,d));
+}
+
+/* ── 스토리: 진행바 · 영상 끝나면 다음으로 ── */
+(function(){
+  const v=document.getElementById('dnVideo');if(!v)return;
+  v.loop=false;
+  v.addEventListener('timeupdate',()=>{
+    if(!v.duration)return;
+    const b=document.querySelectorAll('#dnBars span')[_dn.i];
+    const f=b&&b.querySelector('i');if(f)f.style.width=Math.min(100,v.currentTime/v.duration*100)+'%';
+  });
+  v.addEventListener('ended',()=>{
+    const st=document.getElementById('dnStage'),c=_dn.items[_dn.i];
+    const again=()=>{v.currentTime=0;const pp=v.play();if(pp&&pp.catch)pp.catch(()=>{});};
+    if(!st||!st.classList.contains('on')||!c)return;
+    if(st.classList.contains('up'))return again();
+    const ac=c.role==='acad'||c.type==='edu';
+    /* 약사가 아직 안 푼 케이스 — 넘어가지 않고 구급함이 기다림 */
+    if(!dnIsMember()&&!ac&&!S.hist.some(h=>h.caseId===c.id))return;
+    /* 마지막 화면 — 처음으로 돌지 않고 멈춤 */
+    if(_dn.i>=_dn.items.length-1)return;
+    dnGo(1);
+  });
+})();
 </script>
 </body>
 </html>
