@@ -6073,7 +6073,7 @@ async function dnProfileRender(){
     <div class="dn-ph">${dnAv(id,72)}<div><div class="nmr"><b class="nm">${esc(u.nick||id)}</b>${badge?'<span class="dn-badge">★ 상담 약사</span>':''}</div><p>${esc(u.bio||(own?'한 줄 소개를 적어보세요':''))}</p></div></div>
     <div class="dn-stat"><div><b style="${ri>=0&&ri<3?'color:'+DN_GSB[ri]:''}">${ri>=0?(ri+1)+'위':'-'}</b><span>${new Date().getMonth()+1}월 순위</span></div><div><b>${recs}</b><span>받은 추천</span></div><div><b>${new Set(resp.map(r=>r.caseId)).size}</b><span>푼 케이스</span></div></div>
     ${(u.pharmacy||u.career||ints.length||own)?`<div class="dn-card">${row('약국',esc(u.pharmacy||''),'+ 약국 등록하기')}${row('경력',u.career?esc(u.career)+'년 차':'','+ 경력 입력')}${row('관심 분야',ints.map(x=>`<i class="dn-chip">${esc(x)}</i>`).join(''),'+ 관심 분야')}</div>`:''}
-    ${best.length?`<div class="dn-sh"><b>추천 많이 받은 소견</b></div><div class="dn-desk">${best.map(r=>{const c=C.find(x=>x.id===r.caseId);return `<div class="dn-slip"><span>${esc(c?c.title:'')}</span><p>${peerHL(r)}</p><em>추천 ${r.recs||0}</em></div>`;}).join('')}</div>`:''}
+    ${best.length&&!dnIsMember()?`<div class="dn-sh"><b>추천 많이 받은 소견</b></div><div class="dn-desk">${best.map(r=>{const c=C.find(x=>x.id===r.caseId);return `<div class="dn-slip"><span>${esc(c?c.title:'')}</span><p>${peerHL(r)}</p><em>추천 ${r.recs||0}</em></div>`;}).join('')}</div>`:''}
     ${own?`<div class="dn-card dn-tg"><div><b>1:1 문의 받기</b><span>${badge?'상담 약사 · 이번 달 말까지':'지난달 Top 10 약사만 켤 수 있어요'}</span></div><button class="dn-sw ${u.dmOpen&&badge?'on':''}" ${badge?'':'disabled'} onclick="dnToggleDm()"><i></i></button></div>${dnSettingsHtml()}`
       :(badge&&u.dmOpen&&dnIsMember()?`<button class="btn lbtn" style="margin-top:14px" onclick="dnDmCompose('${jsArg(id)}')">1:1 문의하기</button>`:'')}`;
 }
