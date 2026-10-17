@@ -1811,6 +1811,11 @@ body{
 @keyframes dnGlow{to{--dng:360deg}}
 @media (prefers-reduced-motion:reduce){.dn-glow{animation:none;opacity:.5}}
 .dn-kit,.dn-leaf{position:relative}
+.dn-kit>svg,.dn-leaf>svg{display:block}
+.dn-trace{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.dn-trace path{fill:none;stroke:rgba(255,238,200,.95);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:16 84;animation:dnTrace 4.5s linear infinite;filter:drop-shadow(0 0 3px rgba(255,226,160,.8))}
+@keyframes dnTrace{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
+@media (prefers-reduced-motion:reduce){.dn-trace path{animation:none;stroke-dasharray:none;opacity:.35}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
 </head>
@@ -5617,7 +5622,7 @@ function dnDrawObj(){
   }
   const ac=c.role==='acad'||c.type==='edu';
   if(ac){
-    o.innerHTML=`<button type="button" class="dn-leaf" onclick="openAcad('${c.id}')" aria-label="학술 보기">${dnIsMember()?dnLeaf('전문 약사의','이야기 듣기'):dnLeaf('학술','자세히 보기')}<i class="dn-glow" style="left:15px;top:14px;width:88px;height:93px;--r:3px"></i></button>`;
+    o.innerHTML=`<button type="button" class="dn-leaf" onclick="openAcad('${c.id}')" aria-label="학술 보기">${dnIsMember()?dnLeaf('전문 약사의','이야기 듣기'):dnLeaf('학술','자세히 보기')}<svg class="dn-trace" viewBox="0 0 132 138" aria-hidden="true"><path d="M14 10 L118 10 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 L10 112 Z" pathLength="100"/></svg></button>`;
     return;
   }
   if(dnIsMember()){
@@ -5630,7 +5635,7 @@ function dnDrawObj(){
   }
   const pres=S.hist.some(h=>h.caseId===c.id);
   const label=!pres?'처방하기':(!recDoneForCase(c.id)?'추천하기':'결과 보기');
-  o.innerHTML=`<button type="button" class="dn-kit" onclick="dnKitTap()" aria-label="${label}">${dnKit(label)}<i class="dn-glow" style="left:1px;top:33px;width:150px;height:57px;--r:7px"></i></button>`;
+  o.innerHTML=`<button type="button" class="dn-kit" onclick="dnKitTap()" aria-label="${label}">${dnKit(label)}<svg class="dn-trace" viewBox="0 0 190 112" aria-hidden="true"><path d="M11 30 Q14 24 22 24 L72 24 C70 1 120 1 118 24 L168 24 Q176 24 179 30 L186 44 L186 100 Q186 110 176 110 L14 110 Q4 110 4 100 L4 44 Z" pathLength="100"/></svg></button>`;
 }
 function dnGo(d){
   const i=_dn.i+d;if(i<0||i>=_dn.items.length)return;
