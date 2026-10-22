@@ -1990,9 +1990,10 @@ body{
 .pr-chips{display:flex;gap:7px;overflow-x:auto;margin:14px -18px 0;padding:0 18px 2px;scrollbar-width:none}
 .pr-chips::-webkit-scrollbar{display:none}
 .pr-chips button{flex:none;border:1px solid #E1D8CA;background:#fff;border-radius:18px;padding:8px 14px;font-family:inherit;font-weight:700;font-size:14px;color:#4E5968;white-space:nowrap}
-.pr-chips button.on{background:#2E3B30;border-color:#2E3B30;color:#fff}
+.pr-chips button{display:inline-flex;align-items:center;gap:6px}.pr-chips button i{width:8px;height:8px;border-radius:50%;background:var(--pc);flex:none}
+.pr-chips button.on{background:var(--pc);border-color:var(--pc);color:#fff}.pr-chips button.on i{background:#fff}
 .pr-chips button.off{opacity:.4}
-.pr-cap{margin:16px 2px 0;font-size:13px;color:#8B8478;font-weight:600}
+.pr-cap{margin:16px 2px 0;font-size:13px;color:#8B8478;font-weight:600;display:flex;align-items:center;gap:6px}.pr-cap i{width:8px;height:8px;border-radius:50%;background:var(--pc)}
 .pr-card{margin-top:8px}
 .pr-row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:14px 16px;border-top:1px solid #F1ECE4;font-family:inherit;text-align:left;animation:prIn .35s ease both}
 .pr-row:first-child{border-top:0}
@@ -2002,7 +2003,7 @@ body{
 .pr-tx b{font-size:16px;color:#191F28;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pr-tx em{font-style:normal;font-size:12.5px;color:#8B8478}
 .pr-bar{display:block;height:5px;border-radius:3px;background:#F1ECE4;margin-top:6px;overflow:hidden}
-.pr-bar i{display:block;height:100%;width:var(--w);background:#7A9A7E;border-radius:3px;animation:prBar .7s cubic-bezier(.2,.8,.2,1) both}
+.pr-bar i{display:block;height:100%;width:var(--w);background:var(--pc,#7A9A7E);border-radius:3px;animation:prBar .7s cubic-bezier(.2,.8,.2,1) both}
 @keyframes prBar{from{width:0}}
 .pr-n{flex:none;font-size:13px;color:#6B6458;white-space:nowrap}.pr-n b{color:#4E6B53;font-size:15px}
 .pr-sheet{max-height:86vh;overflow-y:auto}
@@ -5748,7 +5749,7 @@ window.addEventListener('load',function(){tryAutoLogin().then(function(ok){if(!o
    영상 전면 스테이지 · 구급함 처방 · 매대 박스 · 책장 · 일반회원 포디움
    ============================================================ */
 const DN_RANK_MIN=3; /* 일반회원에게 순위를 공개하는 최소 응답 약사 수 */
-let _dn={n:null,items:[],i:0,mode:'stage'};
+let _dn={n:null,items:[],i:0,mode:'stage'};let _dnCurScr='';
 function dnIsMember(){return S.user&&S.user.role==='member';}
 
 /* ── 아이콘·사물 ── */
@@ -5996,7 +5997,7 @@ gs=function(id,restore){
   if(tb&&S.user){
     let act=DN_SCREEN_TAB[id];
     if(id==='dnShelf')act=_dn.shelfMode==='acad'?'acad':'shelf';
-    tb.innerHTML=dnTabbarHtml(act);
+    _dnCurScr=id;tb.innerHTML=dnTabbarHtml(act);
   }
   if(id!=='dnStage'){const v=document.getElementById('dnVideo');if(v)try{v.pause()}catch(e){}}
   if(id!=='dnStage'&&id!=='peerCmtScreen'){const st=document.getElementById('dnStage');if(st&&st.classList.contains('up')){if(!st.classList.contains('rank'))dnRxReset();st.classList.remove('up','rank');_dn.mode='stage';}}
@@ -6287,9 +6288,18 @@ async function dnThreadSend(){
 
 /* ── 탭 연결 ── */
 const DN3_IC={comm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M17 9h3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1v2l-3-2h-4"/></svg>'};
+/* 첫 탭: 책장 화면에서는 "약국", 영상·그 밖에서는 "홈"
+   — 같은 탭을 다시 누르면 영상 ↔ 책장 전환, 다른 탭에서 누르면 영상으로 */
+const DN3_PLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M10.5 9.2v5.6l4.4-2.8z" fill="currentColor"/></svg>';
+const DN3_SHELF_LB='모아보기';
+function dnHomeTab(){const st=document.getElementById('dnStage');if(st&&st.classList.contains('on'))goTab('shelf');else goTab('home');}
 dnTabbarHtml=function(active){
-  const tabs=[['shelf','홈'],['ranking','랭킹'],['comm','커뮤니티'],['mypage','MY']];
-  return tabs.map(([k,l])=>`<button class="tab ${k===active?'on':''}" onclick="goTab('${k}')"><div class="tab-icon">${DN_TAB_IC[k]||DN3_IC[k]}</div>${l}</button>`).join('');
+  /* 첫 탭은 "누르면 갈 곳"을 보여줌 — 영상 화면에선 책장(홈), 그 밖에선 영상(약국) */
+  const onStage=_dnCurScr==='dnStage',hl=active==='shelf'?'on':'';
+  const first=onStage?`<button class="tab ${hl}" onclick="dnHomeTab()"><div class="tab-icon">${DN_TAB_IC.shelf}</div>${DN3_SHELF_LB}</button>`
+    :`<button class="tab ${hl}" onclick="dnHomeTab()"><div class="tab-icon">${DN3_PLAY}</div>약국</button>`;
+  const tabs=[['ranking','랭킹'],['comm','커뮤니티'],['mypage','MY']];
+  return first+tabs.map(([k,l])=>`<button class="tab ${k===active?'on':''}" onclick="goTab('${k}')"><div class="tab-icon">${DN_TAB_IC[k]||DN3_IC[k]}</div>${l}</button>`).join('');
 };
 Object.assign(DN_SCREEN_TAB,{dnRank:'ranking',dnProfile:'mypage',dnComm:'comm',dnThread:'comm'});
 const _dn3GoTab=goTab;
@@ -6336,6 +6346,7 @@ function dnPodGlow(){
 /* ===== 제품 랭킹 (고민 13칸) =====
    제품마다 칸이 정해지고(건기식 핵심성분 · 일반의약품 약효분류),
    케이스에 체크된 고민 칸과 겹치는 칸에만 약사 1명이 더해짐 */
+const PR_COL={'눈':'#4A7FB5','두뇌/기억':'#7B68A6','수면/스트레스':'#4C5A8C','피로/활력':'#D49A2A','소화/장':'#5E9A78','간':'#8A7A3E','뼈/근육':'#A08B6C','혈관/혈액':'#C2524A','혈당/다이어트':'#D9773B','피부':'#E09AA2','면역/항산화':'#3E8E8A','여성 건강':'#A8487A','남성 건강':'#5A6470'};
 const PR_CATS=['눈','두뇌/기억','수면/스트레스','피로/활력','소화/장','간','뼈/근육','혈관/혈액','혈당/다이어트','피부','면역/항산화','여성 건강','남성 건강'];
 const PR_ING={'항산화제':['면역/항산화'],'연골피부물질':['뼈/근육','피부'],'유산균':['소화/장'],'오메가3':['혈관/혈액','눈'],'밀크시슬':['간'],'미네랄비타민':['피로/활력'],'코엔자임Q10':['혈관/혈액','면역/항산화'],'철분':['혈관/혈액'],'프로폴리스':['면역/항산화','소화/장'],'강황(커큐민)':['뼈/근육','면역/항산화'],'루테인':['눈'],'은행잎':['혈관/혈액','두뇌/기억'],'칼슘마그네슘':['뼈/근육'],'엠에스엠':['뼈/근육'],'효소':['소화/장'],'아미노산':['피로/활력','뼈/근육'],'마그네슘':['뼈/근육','피로/활력','수면/스트레스'],'아티초크':['간'],'엽산':['혈관/혈액','여성 건강'],'베타글루칸':['면역/항산화'],'테아닌':['수면/스트레스'],'바나바잎':['혈당/다이어트'],'효모':['피부'],'포스파티딜세린':['두뇌/기억'],'홍경천':['수면/스트레스','피로/활력'],'비타민D':['뼈/근육','면역/항산화'],'비타민B군':['피로/활력'],'프리바이오틱스':['소화/장'],'식물스테롤':['혈관/혈액'],'감마리놀렌산':['여성 건강','혈관/혈액','피부'],'보스웰리아':['뼈/근육'],'아르지닌':['남성 건강','피로/활력','혈관/혈액'],'전칠삼':['혈관/혈액'],'요오드':[],'차전자피':['소화/장','혈관/혈액'],'후코이단':['면역/항산화'],'이노시톨':['여성 건강'],'아마씨유':['혈관/혈액'],'멜라토닌':['수면/스트레스'],'칼슘':['뼈/근육'],'홍삼':['면역/항산화','피로/활력'],'가르시니아':['혈당/다이어트'],'나토':['혈관/혈액'],'쏘팔메토':['남성 건강'],'레시친':['혈관/혈액'],'콜레우스포스콜리':['혈당/다이어트'],'스페인감초':['혈당/다이어트'],'크랜베리':['여성 건강'],'아연':['면역/항산화','남성 건강'],'비타민E':['면역/항산화'],'비타민C':['면역/항산화'],'비타민K':['뼈/근육','혈관/혈액'],'이소플라본':['여성 건강','뼈/근육'],'크롬':['혈당/다이어트'],'홍국':['혈관/혈액'],'빌베리':['눈'],'알파CD':['혈당/다이어트'],'맥주효모':['피부'],'초유':['면역/항산화'],'태반':['피부'],'푸룬':['소화/장'],'철':['혈관/혈액'],'헴철':['혈관/혈액'],'셀레늄':['면역/항산화']};
 const PR_OTC={'안과용제':['눈'],'건위소화제':['소화/장'],'건위소화제(내용액제에 한함)':['소화/장'],'제산제':['소화/장'],'정장제':['소화/장'],'하제, 완장제':['소화/장'],'기타의 소화기관용약':['소화/장'],'소화성궤양용제':['소화/장'],'치과구강용약':['소화/장'],'효소제제':['소화/장'],'소화기관용약':['소화/장'],'이담제':['간'],'간장질환용제':['간'],'칼슘제':['뼈/근육'],'비타민 A 및 D제':['뼈/근육','눈'],'단백아미노산제제':['피로/활력','뼈/근육'],'혈관보강제':['혈관/혈액'],'기타의 순환계용약':['혈관/혈액'],'동맥경화용제':['혈관/혈액'],'순환계용약':['혈관/혈액'],'최면진정제':['수면/스트레스'],'기타의 비타민제':['피로/활력'],'혼합비타민제(비타민AD 혼합제제를 제외)':['피로/활력'],'비타민 B제(비타민 B1을 제외)':['피로/활력'],'비타민 B1제':['피로/활력'],'기타의 자양강장변질제':['피로/활력'],'자양강장변질제':['피로/활력'],'종합대사성제제':['피로/활력'],'비타민제':['피로/활력'],'저함량 비타민 및 미네랄 제제':['피로/활력'],'비타민 C 및 P제':['면역/항산화'],'비타민 E 및 K제':['면역/항산화'],'모발용제(발모, 탈모, 염모, 양모제)':['피부'],'화농성질환용제':['피부'],'통경제':['여성 건강'],'기타의 비뇨생식기관 및 항문용약':['여성 건강','남성 건강']};
@@ -6388,7 +6399,7 @@ async function prRender(el,seg){
   const D=await prCompute();
   const order=PR_CATS.slice().sort((a,b)=>(D[b].length?1:0)-(D[a].length?1:0)||(D[b][0]?.n||0)-(D[a][0]?.n||0));
   if(!_prCat||!D[_prCat]?.length)_prCat=order.find(k=>D[k].length)||order[0];
-  const chips=`<div class="pr-chips">${order.map(k=>`<button class="${k===_prCat?'on':''} ${D[k].length?'':'off'}" onclick="${D[k].length?`_prCat='${k}';prList()`:"toast('아직 집계된 제품이 없어요')"}">${k}</button>`).join('')}</div>`;
+  const chips=`<div class="pr-chips">${order.map(k=>`<button style="--pc:${PR_COL[k]}" class="${k===_prCat?'on':''} ${D[k].length?'':'off'}" onclick="${D[k].length?`_prCat='${k}';prList()`:"toast('아직 집계된 제품이 없어요')"}"><i></i>${k}</button>`).join('')}</div>`;
   el.innerHTML=seg+chips+'<div id="prList"></div>';
   requestAnimationFrame(()=>{const on=el.querySelector('.pr-chips .on');on&&on.scrollIntoView({inline:'center',block:'nearest'});});
   prList(true);
@@ -6399,7 +6410,7 @@ function prList(first){
   const L=(_prData[_prCat]||[]).slice(0,30);
   if(!L.length){el.innerHTML='<div class="empty">아직 집계된 제품이 없어요</div>';return;}
   const top=L[0].n||1,G=['#D4A017','#A7ADB4','#C27A47'];
-  el.innerHTML=`<div class="pr-cap">${_prCat} · 약사들이 고른 제품</div><div class="dn-card pr-card">${L.map((x,i)=>`<button class="pr-row" style="animation-delay:${i*30}ms" onclick="prOpen(${i})"><span class="pr-no" style="${i<3?'color:'+G[i]:''}">${i+1}</span><span class="pr-tx"><b>${esc(x.name)}</b><em>${esc(x.co)}</em><span class="pr-bar"><i style="--w:${Math.max(6,Math.round(x.n/top*100))}%"></i></span></span><span class="pr-n">약사 <b>${x.n}</b>명 선택</span></button>`).join('')}</div>`;
+  el.innerHTML=`<div class="pr-cap" style="--pc:${PR_COL[_prCat]}"><i></i>${_prCat} · 약사들이 고른 제품</div><div class="dn-card pr-card" style="--pc:${PR_COL[_prCat]}">${L.map((x,i)=>`<button class="pr-row" style="animation-delay:${i*30}ms" onclick="prOpen(${i})"><span class="pr-no" style="${i<3?'color:'+G[i]:''}">${i+1}</span><span class="pr-tx"><b>${esc(x.name)}</b><em>${esc(x.co)}</em><span class="pr-bar"><i style="--w:${Math.max(6,Math.round(x.n/top*100))}%"></i></span></span><span class="pr-n">약사 <b>${x.n}</b>명 선택</span></button>`).join('')}</div>`;
 }
 function prOpen(i){
   const x=(_prData[_prCat]||[])[i];if(!x)return;
