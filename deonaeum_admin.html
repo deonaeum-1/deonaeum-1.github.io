@@ -220,6 +220,12 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
           <input id="fEduPdf" type="hidden"></div>
       </div>
 
+      <div class="field" id="concernBox">
+        <label>고민 칸 <span style="font-weight:500;color:#8B95A1">(제품 랭킹 집계용 · 여러 개 선택)</span></label>
+        <div id="concernWrap" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        <div class="field-hint">이 케이스에서 약사가 고른 제품은 여기 체크한 칸에만 집계돼요</div>
+      </div>
+
       <div class="field">
         <label>태그</label>
         <div class="tag-wrap" id="tagWrap"></div>
@@ -367,11 +373,12 @@ function openCaseForm(id) {
     eduPages = Array.isArray(c.eduPages)?c.eduPages.slice():[]; renderPages();
     tags = c.tags||[];
     renderTags();
+    renderConcerns(c.concerns||[]);
     previewVideo();
     document.getElementById('delBtn').style.display = 'block';
   } else {
     document.getElementById('fSet').value='';document.getElementById('fRole').value='';
-    eduPages=[]; renderPages();
+    eduPages=[]; renderPages();renderConcerns([]);
     // 추가 모드
     const nextNum = nextCaseId();
     document.getElementById('formTitleText').textContent = '새 케이스';
@@ -445,6 +452,10 @@ function previewVideo() {
   wrap.querySelector('video').load();
 }
 
+const CONCERNS=['눈','두뇌/기억','수면/스트레스','피로/활력','소화/장','간','뼈/근육','혈관/혈액','혈당/다이어트','피부','면역/항산화','여성 건강','남성 건강'];
+function renderConcerns(sel){
+  document.getElementById('concernWrap').innerHTML=CONCERNS.map(k=>`<label style="display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border:1.5px solid var(--border);border-radius:18px;font-size:13px;font-weight:600;cursor:pointer;margin:0"><input type="checkbox" value="${k}" ${sel.includes(k)?'checked':''} style="width:auto;margin:0">${k}</label>`).join('');
+}
 /* ── SAVE ── */
 async function saveCase() {
   const title = document.getElementById('fTitle').value.trim();
@@ -463,6 +474,7 @@ async function saveCase() {
     respondents: cases.find(c=>c.id===id)?.respondents || 0,
     updatedAt: new Date().toISOString(),
     set: setV ? Number(setV) : DEL,
+    concerns: [...document.querySelectorAll('#concernWrap input:checked')].map(x=>x.value),
     role: role || DEL,
   };
   if (role === 'acad') {
@@ -794,6 +806,7 @@ function fillSetSelect(){
 function toggleAcad(){
   const ac = document.getElementById('fRole').value==='acad';
   document.getElementById('acadBox').style.display = ac ? 'block' : 'none';
+  const cb=document.getElementById('concernBox');if(cb)cb.style.display=ac?'none':'block';
   /* 학술은 학술 영상 칸을 쓰므로 일반 영상 칸은 숨김 */
   const vf = document.getElementById('fVideo').closest('.field'); if(vf) vf.style.display = ac ? 'none' : '';
   const vp = document.getElementById('vidPreview'); if(vp) vp.style.display = ac ? 'none' : '';

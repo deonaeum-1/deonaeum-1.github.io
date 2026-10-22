@@ -1987,6 +1987,35 @@ body{
 #dnWrite .rx-count{font-size:12.5px}
 #dnWrite #rxBtn{font-size:16px}
 
+.pr-chips{display:flex;gap:7px;overflow-x:auto;margin:14px -18px 0;padding:0 18px 2px;scrollbar-width:none}
+.pr-chips::-webkit-scrollbar{display:none}
+.pr-chips button{flex:none;border:1px solid #E1D8CA;background:#fff;border-radius:18px;padding:8px 14px;font-family:inherit;font-weight:700;font-size:14px;color:#4E5968;white-space:nowrap}
+.pr-chips button.on{background:#2E3B30;border-color:#2E3B30;color:#fff}
+.pr-chips button.off{opacity:.4}
+.pr-cap{margin:16px 2px 0;font-size:13px;color:#8B8478;font-weight:600}
+.pr-card{margin-top:8px}
+.pr-row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:14px 16px;border-top:1px solid #F1ECE4;font-family:inherit;text-align:left;animation:prIn .35s ease both}
+.pr-row:first-child{border-top:0}
+@keyframes prIn{from{opacity:0;transform:translateY(8px)}}
+.pr-no{width:22px;flex:none;text-align:center;font-family:'Black Han Sans',sans-serif;font-size:19px;color:#191F28}
+.pr-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pr-tx b{font-size:16px;color:#191F28;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr-tx em{font-style:normal;font-size:12.5px;color:#8B8478}
+.pr-bar{display:block;height:5px;border-radius:3px;background:#F1ECE4;margin-top:6px;overflow:hidden}
+.pr-bar i{display:block;height:100%;width:var(--w);background:#7A9A7E;border-radius:3px;animation:prBar .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes prBar{from{width:0}}
+.pr-n{flex:none;font-size:13px;color:#6B6458;white-space:nowrap}.pr-n b{color:#4E6B53;font-size:15px}
+.pr-sheet{max-height:86vh;overflow-y:auto}
+.pr-dh{display:flex;flex-direction:column;gap:3px}.pr-dh .k{font-size:12px;font-weight:800;color:#5E7D63}
+.pr-dh b{font-size:21px;color:#191F28;font-weight:900;letter-spacing:-.03em}.pr-dh em{font-style:normal;font-size:14px;color:#8B8478}
+.pr-ing{background:#fff;border-radius:12px;padding:12px 14px;margin-top:8px}.pr-ing span{font-size:12px;color:#8B8478;font-weight:700}.pr-ing p{margin:4px 0 0;font-size:14px;line-height:1.5;color:#333D4B}
+.pr-stat{margin-top:10px;font-size:15px;color:#333D4B}.pr-stat b{color:#4E6B53;font-size:18px}
+.pr-note{font-size:12px;color:#8B8478;margin:4px 0 6px}
+.pr-cms{display:flex;flex-direction:column;gap:10px;background:linear-gradient(#B08A60,#937049);border-radius:14px;padding:12px;margin-bottom:8px}
+.pr-cm .h{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}.pr-cm .h b{font-size:15px;color:#5E7D63;font-weight:900}
+.pr-cm .h span{font-size:12px;color:#8B8478}.pr-cm .h em{margin-left:auto;font-style:normal;font-size:12px;font-weight:800;color:#C27A47}
+.pr-cm p{margin:0;font-size:14.5px;line-height:1.6;color:#333D4B}
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
 </head>
@@ -2636,7 +2665,7 @@ async function loadData(){
             papers:Array.isArray(x.papers)?x.papers:[]});
   });
   C=[];
-  if(cs){cs.forEach(d=>{const x=d.data();C.push({id:d.id,title:x.title||'',tag:(x.tags||[]).join('·'),e:x.emoji||_PERSON,videoUrl:x.videoUrl||'',pt:x.patient||{},set:x.set||null,role:x.role||'',type:x.type||'',eduVideoUrl:x.eduVideoUrl||'',eduImageUrl:x.eduImageUrl||'',eduPdfUrl:x.eduPdfUrl||'',eduPages:Array.isArray(x.eduPages)?x.eduPages:[]});});C.sort((a,b)=>a.id.localeCompare(b.id));}
+  if(cs){cs.forEach(d=>{const x=d.data();C.push({id:d.id,concerns:Array.isArray(x.concerns)?x.concerns:[],title:x.title||'',tag:(x.tags||[]).join('·'),e:x.emoji||_PERSON,videoUrl:x.videoUrl||'',pt:x.patient||{},set:x.set||null,role:x.role||'',type:x.type||'',eduVideoUrl:x.eduVideoUrl||'',eduImageUrl:x.eduImageUrl||'',eduPdfUrl:x.eduPdfUrl||'',eduPages:Array.isArray(x.eduPages)?x.eduPages:[]});});C.sort((a,b)=>a.id.localeCompare(b.id));}
   SETS={};FEATURED_SET=null;
   try{
     const [ss,cf]=await Promise.all([db.collection('sets').get(),db.collection('config').doc('home').get()]);
@@ -6044,24 +6073,18 @@ function dnMonthRank(key){
 function dnPrevKey(){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-1);return dnMonthKey(d);}
 function dnIsCounselor(id){return dnMonthRank(dnPrevKey()).filter(x=>x.s>0).slice(0,10).some(x=>x.id===id);}
 
-let _dnRankSeg='pharm';
+let _dnRankSeg='prod';
 async function dnRankRender(){
   const el=document.getElementById('dnRankBody');
+  if(_dnRankSeg!=='pharm'&&_dnRankSeg!=='prod')_dnRankSeg='prod';
+  const seg=`<div class="dn-seg"><button class="${_dnRankSeg==='prod'?'on':''}" onclick="_dnRankSeg='prod';dnRankRender()">제품</button><button class="${_dnRankSeg==='pharm'?'on':''}" onclick="_dnRankSeg='pharm';dnRankRender()">약사</button></div>`;
+  if(_dnRankSeg==='prod'){await prRender(el,seg);return;}
   await ensureResps();
   const key=dnMonthKey(),list=dnMonthRank(key).filter(x=>x.s>0);
   await dnLoadUsers(list.slice(0,10).map(x=>x.id));
   try{await loadPhotos(list.slice(0,10).map(x=>x.id));}catch(e){}
   const now=new Date(),end=new Date(now.getFullYear(),now.getMonth()+1,0),left=end.getDate()-now.getDate();
   const mem=dnIsMember();
-  const seg=`<div class="dn-seg"><button class="${_dnRankSeg==='pharm'?'on':''}" onclick="_dnRankSeg='pharm';dnRankRender()">약사</button><button class="${_dnRankSeg==='case'?'on':''}" onclick="_dnRankSeg='case';dnRankRender()">케이스</button></div>`;
-  if(_dnRankSeg==='case'){
-    const rows=C.filter(c=>c.role!=='acad'&&c.type!=='edu').map(c=>{
-      const r=dnRanks(c.id).slice(0,3),pres=mem||S.hist.some(h=>h.caseId===c.id);
-      return `<button class="dn-cr" onclick="dnCaseGo('${c.id}')"><div class="t"><b>${esc(c.title||'')}</b><span>약사 ${dnRespN(c.id)}명</span></div>${pres?`<div class="p">${r.map((x,k)=>`<span><i style="color:${DN_GSB[k]}">${k+1}</i>${esc(x.name)}</span>`).join('')}</div>`:'<div class="p lk">풀면 열려요</div>'}</button>`;
-    }).join('');
-    el.innerHTML=seg+`<div class="dn-card" style="margin-top:14px">${rows||'<div class="empty">케이스가 없어요</div>'}</div>`;
-    return;
-  }
   const top=list.slice(0,10);
   const pd=(x,rank,h,w,av)=>x?`<button class="dn-pp r${rank}" style="width:${w}px" onclick="dnProfileOpen('${jsArg(x.id)}')">${dnAv(x.id,av)}<b>${esc(dnNm(x.id))}</b><em>추천 ${x.s}${dnDmChip(x.id)}</em><div class="pd-bk" style="height:${h}px"><i></i><span style="color:${['#E2B33C','#D3D7DC','#D08A57'][rank-1]}">${rank}</span></div></button>`:`<div class="dn-pp" style="width:${w}px"><div class="pd-bk" style="height:${h}px;opacity:.35"><i></i><span>${rank}</span></div></div>`;
   const me=list.findIndex(x=>x.id===S.user.nick),mine=me>=0?list[me].s:0,need=top.length>=10?Math.max(0,top[9].s-mine+1):1;
@@ -6310,6 +6333,92 @@ function dnPodGlow(){
     dnGo(1);
   });
 })();
+/* ===== 제품 랭킹 (고민 13칸) =====
+   제품마다 칸이 정해지고(건기식 핵심성분 · 일반의약품 약효분류),
+   케이스에 체크된 고민 칸과 겹치는 칸에만 약사 1명이 더해짐 */
+const PR_CATS=['눈','두뇌/기억','수면/스트레스','피로/활력','소화/장','간','뼈/근육','혈관/혈액','혈당/다이어트','피부','면역/항산화','여성 건강','남성 건강'];
+const PR_ING={'항산화제':['면역/항산화'],'연골피부물질':['뼈/근육','피부'],'유산균':['소화/장'],'오메가3':['혈관/혈액','눈'],'밀크시슬':['간'],'미네랄비타민':['피로/활력'],'코엔자임Q10':['혈관/혈액','면역/항산화'],'철분':['혈관/혈액'],'프로폴리스':['면역/항산화','소화/장'],'강황(커큐민)':['뼈/근육','면역/항산화'],'루테인':['눈'],'은행잎':['혈관/혈액','두뇌/기억'],'칼슘마그네슘':['뼈/근육'],'엠에스엠':['뼈/근육'],'효소':['소화/장'],'아미노산':['피로/활력','뼈/근육'],'마그네슘':['뼈/근육','피로/활력','수면/스트레스'],'아티초크':['간'],'엽산':['혈관/혈액','여성 건강'],'베타글루칸':['면역/항산화'],'테아닌':['수면/스트레스'],'바나바잎':['혈당/다이어트'],'효모':['피부'],'포스파티딜세린':['두뇌/기억'],'홍경천':['수면/스트레스','피로/활력'],'비타민D':['뼈/근육','면역/항산화'],'비타민B군':['피로/활력'],'프리바이오틱스':['소화/장'],'식물스테롤':['혈관/혈액'],'감마리놀렌산':['여성 건강','혈관/혈액','피부'],'보스웰리아':['뼈/근육'],'아르지닌':['남성 건강','피로/활력','혈관/혈액'],'전칠삼':['혈관/혈액'],'요오드':[],'차전자피':['소화/장','혈관/혈액'],'후코이단':['면역/항산화'],'이노시톨':['여성 건강'],'아마씨유':['혈관/혈액'],'멜라토닌':['수면/스트레스'],'칼슘':['뼈/근육'],'홍삼':['면역/항산화','피로/활력'],'가르시니아':['혈당/다이어트'],'나토':['혈관/혈액'],'쏘팔메토':['남성 건강'],'레시친':['혈관/혈액'],'콜레우스포스콜리':['혈당/다이어트'],'스페인감초':['혈당/다이어트'],'크랜베리':['여성 건강'],'아연':['면역/항산화','남성 건강'],'비타민E':['면역/항산화'],'비타민C':['면역/항산화'],'비타민K':['뼈/근육','혈관/혈액'],'이소플라본':['여성 건강','뼈/근육'],'크롬':['혈당/다이어트'],'홍국':['혈관/혈액'],'빌베리':['눈'],'알파CD':['혈당/다이어트'],'맥주효모':['피부'],'초유':['면역/항산화'],'태반':['피부'],'푸룬':['소화/장'],'철':['혈관/혈액'],'헴철':['혈관/혈액'],'셀레늄':['면역/항산화']};
+const PR_OTC={'안과용제':['눈'],'건위소화제':['소화/장'],'건위소화제(내용액제에 한함)':['소화/장'],'제산제':['소화/장'],'정장제':['소화/장'],'하제, 완장제':['소화/장'],'기타의 소화기관용약':['소화/장'],'소화성궤양용제':['소화/장'],'치과구강용약':['소화/장'],'효소제제':['소화/장'],'소화기관용약':['소화/장'],'이담제':['간'],'간장질환용제':['간'],'칼슘제':['뼈/근육'],'비타민 A 및 D제':['뼈/근육','눈'],'단백아미노산제제':['피로/활력','뼈/근육'],'혈관보강제':['혈관/혈액'],'기타의 순환계용약':['혈관/혈액'],'동맥경화용제':['혈관/혈액'],'순환계용약':['혈관/혈액'],'최면진정제':['수면/스트레스'],'기타의 비타민제':['피로/활력'],'혼합비타민제(비타민AD 혼합제제를 제외)':['피로/활력'],'비타민 B제(비타민 B1을 제외)':['피로/활력'],'비타민 B1제':['피로/활력'],'기타의 자양강장변질제':['피로/활력'],'자양강장변질제':['피로/활력'],'종합대사성제제':['피로/활력'],'비타민제':['피로/활력'],'저함량 비타민 및 미네랄 제제':['피로/활력'],'비타민 C 및 P제':['면역/항산화'],'비타민 E 및 K제':['면역/항산화'],'모발용제(발모, 탈모, 염모, 양모제)':['피부'],'화농성질환용제':['피부'],'통경제':['여성 건강'],'기타의 비뇨생식기관 및 항문용약':['여성 건강','남성 건강']};
+function prOtcCats(o){
+  if(!o)return [];
+  if(o.t==='무기질제제'){const g=(o.g||[]).join(' ');
+    if(/철/.test(g))return ['혈관/혈액'];if(/마그네슘/.test(g))return PR_ING['마그네슘'];if(/아연/.test(g))return PR_ING['아연'];if(/셀렌/.test(g))return ['면역/항산화'];return [];}
+  return PR_OTC[o.t]||[];
+}
+function prIngCats(name){
+  const n=String(name||'').replace(/\s/g,'');if(!n)return [];
+  if(PR_ING[n])return PR_ING[n];
+  const k=Object.keys(PR_ING).find(k=>n.includes(k)||k.includes(n));return k?PR_ING[k]:[];
+}
+function prProdCats(pr){
+  const p=P.find(x=>x.id===pr.pid);
+  if(p){const s=[];(p.cats||[]).forEach(c=>s.push(...(PR_ING[c]||[])));return [...new Set(s)];}
+  if(pr.kind==='otc'){const o=(OTC||[]).find(x=>x.id===pr.pid);return prOtcCats(o);}
+  return prIngCats(pr.pnm||pr.ing);
+}
+function prKeyOf(pr){
+  const mem=dnIsMember();
+  if(pr.kind==='otc'){const nm=mem?((pr.ing||'')+' '+dnFormWord(pr.pnm)).trim():(pr.pnm||_pnm(pr.pid));return {key:mem?'o:'+nm:pr.pid,name:nm,co:mem?'일반의약품':(((OTC||[]).find(x=>x.id===pr.pid)||{}).c||'일반의약품'),kind:'otc'};}
+  const p=P.find(x=>x.id===pr.pid);
+  if(p)return {key:pr.pid,name:p.n,co:p.c||'',kind:'core'};
+  const nm=pr.pnm||pr.ing||'';return {key:'i:'+nm,name:nm,co:'성분',kind:'ing'};
+}
+let _prCat=null,_prData=null;
+async function prCompute(){
+  await ensureResps();try{await loadOtc();}catch(e){}
+  const caseCon={};C.forEach(c=>{if(Array.isArray(c.concerns)&&c.concerns.length)caseCon[c.id]=c.concerns;});
+  const D={};PR_CATS.forEach(k=>D[k]={});
+  (RESP_CACHE||[]).forEach(r=>{
+    const con=caseCon[r.caseId];if(!con||!r.nick)return;
+    const seen=new Set();
+    (r.pairs||[]).forEach(pr=>{
+      const info=prKeyOf(pr);if(!info.name||seen.has(info.key))return;seen.add(info.key);
+      prProdCats(pr).filter(k=>con.includes(k)).forEach(k=>{
+        const e=D[k][info.key]||(D[k][info.key]={...info,pids:new Set(),nicks:new Set(),recs:0,resp:[]});
+        e.pids.add(pr.pid);e.nicks.add(r.nick);e.recs+=(r.recs||0);e.resp.push(r);
+      });
+    });
+  });
+  const out={};
+  PR_CATS.forEach(k=>{out[k]=Object.values(D[k]).map(e=>({...e,n:e.nicks.size})).sort((a,b)=>b.n-a.n||b.recs-a.recs);});
+  _prData=out;return out;
+}
+async function prRender(el,seg){
+  el.innerHTML=seg+'<div class="empty">불러오는 중…</div>';
+  const D=await prCompute();
+  const order=PR_CATS.slice().sort((a,b)=>(D[b].length?1:0)-(D[a].length?1:0)||(D[b][0]?.n||0)-(D[a][0]?.n||0));
+  if(!_prCat||!D[_prCat]?.length)_prCat=order.find(k=>D[k].length)||order[0];
+  const chips=`<div class="pr-chips">${order.map(k=>`<button class="${k===_prCat?'on':''} ${D[k].length?'':'off'}" onclick="${D[k].length?`_prCat='${k}';prList()`:"toast('아직 집계된 제품이 없어요')"}">${k}</button>`).join('')}</div>`;
+  el.innerHTML=seg+chips+'<div id="prList"></div>';
+  requestAnimationFrame(()=>{const on=el.querySelector('.pr-chips .on');on&&on.scrollIntoView({inline:'center',block:'nearest'});});
+  prList(true);
+}
+function prList(first){
+  const el=document.getElementById('prList');if(!el)return;
+  document.querySelectorAll('.pr-chips button').forEach(b=>b.classList.toggle('on',b.textContent===_prCat));
+  const L=(_prData[_prCat]||[]).slice(0,30);
+  if(!L.length){el.innerHTML='<div class="empty">아직 집계된 제품이 없어요</div>';return;}
+  const top=L[0].n||1,G=['#D4A017','#A7ADB4','#C27A47'];
+  el.innerHTML=`<div class="pr-cap">${_prCat} · 약사들이 고른 제품</div><div class="dn-card pr-card">${L.map((x,i)=>`<button class="pr-row" style="animation-delay:${i*30}ms" onclick="prOpen(${i})"><span class="pr-no" style="${i<3?'color:'+G[i]:''}">${i+1}</span><span class="pr-tx"><b>${esc(x.name)}</b><em>${esc(x.co)}</em><span class="pr-bar"><i style="--w:${Math.max(6,Math.round(x.n/top*100))}%"></i></span></span><span class="pr-n">약사 <b>${x.n}</b>명 선택</span></button>`).join('')}</div>`;
+}
+function prOpen(i){
+  const x=(_prData[_prCat]||[])[i];if(!x)return;
+  const p=x.kind==='core'?P.find(q=>q.id===x.key):null;
+  const o=x.kind==='otc'?(OTC||[]).find(q=>x.pids.has(q.id)):null;
+  const ings=p?(p.i||[]):o?(o.g||[]):[];
+  const kindLb=x.kind==='otc'?'일반의약품':x.kind==='ing'?'성분':'건강기능식품';
+  const rs=[...new Map(x.resp.map(r=>[r.id,r])).values()].filter(r=>(r.summary||'').trim()).sort((a,b)=>(b.recs||0)-(a.recs||0));
+  const bg=document.createElement('div');bg.className='dn-sheet-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  bg.innerHTML=`<div class="dn-sheet pr-sheet">
+    <div class="pr-dh"><span class="k">${kindLb}</span><b>${esc(x.name)}</b><em>${esc(x.co)}</em></div>
+    ${ings.length?`<div class="pr-ing"><span>주요 성분</span><p>${ings.slice(0,8).map(esc).join(' · ')}</p></div>`:''}
+    <div class="pr-stat">약사 <b>${x.n}</b>명이 선택했어요</div>
+    <div class="pr-note">약사 개인 의견이며, 특정 제품을 권하는 광고가 아닙니다.</div>
+    <div class="pr-cms">${rs.length?rs.map(r=>{const c=C.find(q=>q.id===r.caseId);return `<div class="dn-slip pr-cm"><div class="h"><b>${esc(r.nm||dnNm(r.nick))}</b>${c?`<span>${esc(c.title)}</span>`:''}<em>추천 ${r.recs||0}</em></div><p>${peerHL(r)}</p></div>`;}).join(''):'<div class="empty" style="padding:16px">코멘트가 없어요</div>'}</div>
+    <button class="btn lbtn" onclick="document.querySelector('.dn-sheet-bg')?.remove();_dnRankSeg='pharm';dnRankRender()">제품 문의 · 상담하기</button>
+  </div>`;
+  document.body.appendChild(bg);
+}
 </script>
 </body>
 </html>
