@@ -200,6 +200,12 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
       <button class="tag-add-btn" onclick="loadMembers()" style="flex:1">새로고침</button>
     </div>
     <div id="memList"><div class="empty">로딩 중...</div></div>
+    <div class="form-wrap" style="margin-top:14px">
+      <div class="form-title">회원 정보 전환 (1회)</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:10px">민감 정보를 비공개 칸으로 옮기고, 기존 회원의 Firebase 로그인 계정을 만듭니다. 여러 번 실행해도 안전합니다.</div>
+      <button class="tag-add-btn" onclick="migrateUsers()" style="width:100%">전환 실행</button>
+      <pre id="migLog" style="white-space:pre-wrap;font-size:12px;max-height:240px;overflow:auto;margin:10px 0 0;color:var(--t2)"></pre>
+    </div>
   </div>
 
 </div>
@@ -291,6 +297,7 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
 const cfg={apiKey:"AIzaSyDB_PFZnR_eNp9rH4Pd9avnLNDef6DlUQ8",authDomain:"deonaeum-abcab.firebaseapp.com",projectId:"deonaeum-abcab",storageBucket:"deonaeum-abcab.firebasestorage.app",messagingSenderId:"660777673752",appId:"1:660777673752:web:48d7475f16f71a2b1bcf6d"};
 firebase.initializeApp(cfg);
@@ -298,6 +305,59 @@ const db = firebase.firestore();
 
 // Firebase 함수 전역 노출
 window._db = db;
+/* ── 로그인·민감정보 공용 (웹 index.html 과 같은 값) ── */
+const PW_SALT='deonaeum-2026-v1-7f3a';
+const AUTH_DOM='jipyakcheo.app';
+async function hashPw(pw){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(PW_SALT+':'+pw));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function authEmail(id){
+  id=String(id);
+  if(/^[a-z0-9._-]{1,60}$/.test(id))return id+'@'+AUTH_DOM;
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('dn-id:'+id));
+  return 'x'+Array.from(new Uint8Array(buf)).slice(0,20).map(b=>b.toString(16).padStart(2,'0')).join('')+'@'+AUTH_DOM;
+}
+const privRef=id=>db.collection('users').doc(id).collection('private').doc('info');
+async function loadPriv(id){try{const r=await privRef(id).get();return r.exists?r.data():{};}catch(e){return {};}}
+const SENS=['realName','phoneHash','phoneTail','pwHash','licName','licNo','licPath','licUrl','agreeAt','termsVer','marketing'];
+/* 1회용: 기존 회원 → 민감정보 분리 + Firebase 로그인 계정 생성 */
+async function migrateUsers(onlyId){
+  if(!onlyId&&!confirm('기존 회원 전체를 새 방식으로 옮길까요?\n\n· 실명·휴대폰·면허·비밀번호 해시를 비공개 칸으로 이동\n· 아직 Firebase 계정이 없는 회원은 계정 생성\n\n여러 번 눌러도 안전합니다.'))return;
+  const out=document.getElementById('migLog');out.textContent='시작...\n';
+  const log=t=>{out.textContent+=t+'\n';out.scrollTop=1e9;};
+  const FV=firebase.firestore.FieldValue,now=new Date().toISOString();
+  const sec=firebase.apps.find(a=>a.name==='mig')||firebase.initializeApp(firebase.app().options,'mig');
+  const sa=sec.auth();
+  const snap=await db.collection('users').get();
+  let nPriv=0,nAuth=0,nSkip=0,nErr=0;
+  for(const doc of snap.docs){
+    if(onlyId&&doc.id!==onlyId)continue;
+    const id=doc.id,x=doc.data();
+    try{
+      const pv={},up={};
+      SENS.forEach(k=>{if(x[k]!==undefined){pv[k]=x[k];up[k]=FV.delete();}});
+      if(x.pw!=null){if(!pv.pwHash)pv.pwHash=await hashPw(x.pw);up.pw=FV.delete();}
+      const old=await loadPriv(id);
+      const pwHash=pv.pwHash||old.pwHash;
+      if(!x.uid){
+        if(pwHash){
+          const em=await authEmail(id);
+          try{const c=await sa.createUserWithEmailAndPassword(em,pwHash);await c.user.updateProfile({displayName:id});up.uid=c.user.uid;up.authAt=now;nAuth++;}
+          catch(e){
+            if(e.code==='auth/email-already-in-use'){try{const c=await sa.signInWithEmailAndPassword(em,pwHash);up.uid=c.user.uid;}catch(e2){log('× '+id+' 계정 연결 실패 '+e2.code);nErr++;}}
+            else{log('× '+id+' 계정 생성 실패 '+e.code);nErr++;}
+          }
+          await sa.signOut().catch(()=>{});
+        }else{log('- '+id+' 비밀번호 정보 없음 (로그인 불가 계정)');nSkip++;}
+      }
+      if(Object.keys(pv).length){await privRef(id).set(pv,{merge:true});nPriv++;}
+      if(Object.keys(up).length)await doc.ref.update(up);
+      const ph=pv.phoneHash||old.phoneHash,no=pv.licNo||old.licNo;
+      if(ph)await db.collection('phones').doc(ph).set({id,at:now},{merge:true});
+      if(no&&(x.licStatus==='pending'||x.licStatus==='verified'))await db.collection('licNos').doc(no).set({id,at:now},{merge:true});
+    }catch(e){log('× '+id+' 실패 '+(e.code||e.message));nErr++;}
+  }
+  log(`끝: 전체 ${snap.size} · 비공개 이동 ${nPriv} · 계정 생성 ${nAuth} · 비밀번호 없음 ${nSkip} · 오류 ${nErr}`);
+  loadMembers();
+}
 window._fbReady = true;
 
 // 케이스 로드는 아래 스크립트 끝에서 실행
@@ -412,7 +472,8 @@ async function loadMembers(){
   const el=document.getElementById('memList');el.innerHTML='<div class="empty">로딩 중...</div>';
   try{
     const snap=await window._db.collection('users').get();
-    _mem=[];snap.forEach(d=>{const x=d.data();_mem.push({id:d.id,nick:x.nick||d.id,real:x.realName||x.licName||'',role:x.role||'',lic:x.licStatus||'',tail:x.phoneTail||'',at:x.createdAt||'',demo:!!(x.demo||x.demoProfile),banned:!!x.banned});});
+    const pvs={};await Promise.all(snap.docs.map(async d=>{pvs[d.id]=await loadPriv(d.id);}));
+    _mem=[];snap.forEach(d=>{const x={...d.data(),...pvs[d.id]};_mem.push({id:d.id,nick:x.nick||d.id,real:x.realName||x.licName||'',role:x.role||'',lic:x.licStatus||'',tail:x.phoneTail||'',at:x.createdAt||'',demo:!!(x.demo||x.demoProfile),banned:!!x.banned});});
     _mem.sort((a,b)=>String(b.at).localeCompare(String(a.at)));
     renderMembers();
   }catch(e){console.log(e);el.innerHTML='<div class="empty">불러오기에 실패했습니다.</div>';}
@@ -1227,7 +1288,7 @@ async function loadLicenses(){
     const want = _licShowVerified ? 'verified' : 'pending';
     const snap = await db.collection('users').where('licStatus','==',want).get();
     const rows = [];
-    snap.forEach(d => { const x=d.data(); rows.push({ ...x, nick:d.id, dispNick:x.nick||d.id }); });
+    await Promise.all(snap.docs.map(async d => { const x={...d.data(),...(await loadPriv(d.id))}; rows.push({ ...x, nick:d.id, dispNick:x.nick||d.id }); }));
     rows.sort((a,b) => String(b.licAt||'').localeCompare(String(a.licAt||'')));
 
     /* 대기 건수 배지 — 다른 탭에 있을 때도 보이게 */
@@ -1286,11 +1347,15 @@ async function loadLicenses(){
 }
 
 /* 면허증 이미지 삭제 — 실패해도 심사 결과 반영은 계속 진행 */
+/* 반려·취소된 면허번호는 다시 쓸 수 있게 풀어줌 */
+async function _freeLicNo(nick){
+  try{const pv=await loadPriv(nick);if(!pv.licNo)return;const r=db.collection('licNos').doc(pv.licNo);const d=await r.get();if(d.exists&&d.data().id===nick)await r.delete();}catch(e){}
+}
 async function _wipeLicFile(nick){
   try{
-    const u = await db.collection('users').doc(nick).get();
-    const p = u.exists && u.data().licPath;
-    if(p) await firebase.storage().ref(p).delete().catch(()=>{});
+    const pv = await loadPriv(nick);
+    if(pv.licPath) await firebase.storage().ref(pv.licPath).delete().catch(()=>{});
+    await privRef(nick).set({licPath:firebase.firestore.FieldValue.delete(),licUrl:firebase.firestore.FieldValue.delete()},{merge:true});
   }catch(e){}
 }
 
@@ -1302,8 +1367,6 @@ async function approveLic(encNick){
     await db.collection('users').doc(nick).update({
       licStatus:'verified',
       licVerifiedAt:new Date().toISOString(),
-      licPath:firebase.firestore.FieldValue.delete(),
-      licUrl:firebase.firestore.FieldValue.delete(),
       licReason:firebase.firestore.FieldValue.delete()
     });
     toast(`${nick} 인증 완료`);
@@ -1324,10 +1387,9 @@ async function rejectLic(encNick){
     await _wipeLicFile(nick);
     await db.collection('users').doc(nick).update({
       licStatus:'rejected',
-      licReason:reason.trim(),
-      licPath:firebase.firestore.FieldValue.delete(),
-      licUrl:firebase.firestore.FieldValue.delete()
+      licReason:reason.trim()
     });
+    await _freeLicNo(nick);
     toast(`${nick} 반려 처리`);
     loadLicenses();
   }catch(e){
@@ -1344,6 +1406,7 @@ async function revokeLic(encNick){
       licStatus:'rejected',
       licReason:'관리자에 의해 인증이 취소되었습니다. 문의가 필요하면 연락해주세요.'
     });
+    await _freeLicNo(nick);
     toast(`${nick} 인증 취소`);
     loadLicenses();
   }catch(e){ toast('처리에 실패했습니다'); }

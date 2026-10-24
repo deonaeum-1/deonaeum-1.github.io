@@ -2951,8 +2951,8 @@ async function phSend(){
   const btn=document.getElementById('sPhoneBtn');btn.disabled=true;btn.textContent='보내는 중';
   try{
     const h=await _phHash(e);
-    const dup=await db.collection('users').where('phoneHash','==',h).limit(1).get();
-    if(!dup.empty){showErr('serr','이미 이 번호로 가입된 계정이 있어요');btn.disabled=false;btn.textContent='인증번호 받기';return;}
+    const dup=await db.collection('phones').doc(h).get();
+    if(dup.exists){showErr('serr','이미 이 번호로 가입된 계정이 있어요');btn.disabled=false;btn.textContent='인증번호 받기';return;}
     firebase.auth().languageCode='ko';
     if(!_phVerifier)_phVerifier=new firebase.auth.RecaptchaVerifier('sRecap',{size:'invisible'});
     _phConf=await firebase.auth().signInWithPhoneNumber(e,_phVerifier);
@@ -2978,7 +2978,8 @@ async function phConfirm(){
   try{
     await _phConf.confirm(code);
     _phOk={e164:_phConf._e,hash:_phConf._h};
-    _phOk.uid=firebase.auth().currentUser&&firebase.auth().currentUser.uid;
+    /* 번호 확인용으로 생긴 임시 계정은 바로 지움 (계정은 가입 때 아이디로 새로 만듦) */
+    try{await firebase.auth().currentUser.delete();}catch(x){await authSignOut();}
     const d=_phOk.e164.replace('+82','0');
     document.getElementById('sfPhone').style.display='none';
     const ok=document.getElementById('sfPhoneOk');ok.style.display='flex';
@@ -3017,26 +3018,33 @@ async function doSignup(){
     const dupNick=await db.collection('users').where('nick','==',nick).limit(1).get();
     const legacy=await db.collection('users').doc(nick).get();
     if(!dupNick.empty||legacy.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
-    const pwHash=await hashPw(pw);
-    /* 휴대폰 인증한 계정에 아이디·비밀번호 연결 */
-    const A=firebase.auth(),au=A.currentUser;
-    if(!au||!au.phoneNumber){_phOk=null;showErr('serr','휴대폰 인증을 다시 해주세요');sfStep(1);return;}
-    if(au.providerData.some(p=>p.providerId==='password')){showErr('serr','이미 이 번호로 가입된 계정이 있어요');return;}
-    try{await au.linkWithCredential(firebase.auth.EmailAuthProvider.credential(await authEmail(id),pwHash));}
-    catch(e){showErr('serr',e.code==='auth/email-already-in-use'||e.code==='auth/credential-already-in-use'?'이미 사용 중인 아이디예요':'가입하지 못했어요 ['+(e.code||'')+']');return;}
-    await au.updateProfile({displayName:id});
-    const d={uid:au.uid,authAt:new Date().toISOString(),agreeAt:new Date().toISOString(),termsVer:TERMS_VER,marketing:document.getElementById('agMkt').checked,nick,role,realName:(document.getElementById('sLicName').value||'').trim(),pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4)};
     if(role==='pharm'){
-      const dup=await db.collection('users').where('licNo','==',licNo).get();
-      let taken=false;dup.forEach(x=>{const st=x.data().licStatus;if(st==='verified'||st==='pending')taken=true;});
-      if(taken){showErr('serr','이미 이 면허번호로 가입된 계정이 있어요');return;}
+      const ln=await db.collection('licNos').doc(licNo).get();
+      if(ln.exists&&ln.data().id!==id){showErr('serr','이미 이 면허번호로 가입된 계정이 있어요');return;}
+    }
+    const pwHash=await hashPw(pw);
+    /* Firebase 계정 만들기 */
+    const A=firebase.auth();
+    try{await A.createUserWithEmailAndPassword(await authEmail(id),pwHash);}
+    catch(e){showErr('serr',e.code==='auth/email-already-in-use'?'이미 사용 중인 아이디예요':'가입하지 못했어요 ['+(e.code||'')+']');return;}
+    const au=A.currentUser;
+    await au.updateProfile({displayName:id});
+    const now=new Date().toISOString();
+    const d={uid:au.uid,authAt:now,nick,role,hist:[],onboarded:false,createdAt:now};
+    const pv={realName:(document.getElementById('sLicName').value||'').trim(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4),agreeAt:now,termsVer:TERMS_VER,marketing:document.getElementById('agMkt').checked};
+    if(role==='pharm'){
       const path=`licenses/${_uuid()}.jpg`;
       const ref=firebase.storage().ref(path);
       await ref.put(_licBlob,{contentType:'image/jpeg'});
       const url=await ref.getDownloadURL();
-      Object.assign(d,{licStatus:'pending',licName,licNo,licPath:path,licUrl:url,licAt:new Date().toISOString()});
+      Object.assign(d,{licStatus:'pending',licAt:now});
+      Object.assign(pv,{licName,licNo,licPath:path,licUrl:url});
     }
     await db.collection('users').doc(id).set(d);
+    await privRef(id).set(pv);
+    await db.collection('phones').doc(_phOk.hash).set({id,at:now});
+    if(role==='pharm')await db.collection('licNos').doc(licNo).set({id,at:now});
+    Object.assign(d,pv);
     if(role==='pharm'){_licBlob=null;if(_licPrevUrl){URL.revokeObjectURL(_licPrevUrl);_licPrevUrl=null;}}
     try{localStorage.setItem('deonaeum_nick',id);}catch(e){}
     S.user={nick:id,name:nick,role};S.hist=[];S.bio='';
@@ -3061,6 +3069,9 @@ function _setUser(id,d){
    계정 = 내부용 이메일 + 비밀번호(pwHash). 아이디가 영문·숫자가 아니면 해시로 이메일을 만듦.
    기존 회원은 첫 로그인 때 옛 방식으로 확인한 뒤 Firebase 계정을 자동 생성. */
 const AUTH_DOM='jipyakcheo.app';
+/* 민감 정보(실명·휴대폰·면허·비밀번호 해시·약관 동의)는 users/{id}/private/info 에 따로 저장 */
+const privRef=id=>db.collection('users').doc(id).collection('private').doc('info');
+async function loadPriv(id){try{const r=await privRef(id).get();return r.exists?r.data():{};}catch(e){return {};}}
 async function authEmail(id){
   id=String(id);
   if(/^[a-z0-9._-]{1,60}$/.test(id))return id+'@'+AUTH_DOM;
@@ -3077,19 +3088,19 @@ async function authLogin(raw,pw){
       const docId=A.currentUser.displayName||id;
       const r=await db.collection('users').doc(docId).get();
       if(!r.exists){await A.signOut();return null;}
-      return {id:docId,d:r.data()};
+      return {id:docId,d:{...r.data(),...(await loadPriv(docId))}};
     }catch(e){if(!_AUTH_MISS.includes(e.code))throw e;}
   }
   /* 기존 회원 → 옛 방식 확인 후 Firebase 계정 생성 */
   const r=await _findUser(raw);if(!r.exists)return null;
-  const id=r.id,d=r.data();
+  const id=r.id,d={...r.data(),...(await loadPriv(r.id))};
   const ok=d.pwHash?d.pwHash===pwHash:(d.pw!=null&&d.pw===pw);
   if(!ok)return null;
   try{await A.createUserWithEmailAndPassword(await authEmail(id),pwHash);}
   catch(e){if(e.code==='auth/email-already-in-use')return null;throw e;}
   await A.currentUser.updateProfile({displayName:id});
   const up={uid:A.currentUser.uid,authAt:new Date().toISOString()};
-  if(!d.pwHash){up.pwHash=pwHash;up.pw=firebase.firestore.FieldValue.delete();}
+  if(d.pw!=null)up.pw=firebase.firestore.FieldValue.delete();
   await db.collection('users').doc(id).set(up,{merge:true});
   return {id,d:{...d,uid:up.uid}};
 }
@@ -3151,7 +3162,7 @@ async function tryAutoLogin(){
   try{
     const r=await db.collection('users').doc(id).get();
     if(!r.exists){try{localStorage.removeItem('deonaeum_nick');}catch(e){}await authSignOut();return false;}
-    const d=r.data();
+    const d={...r.data(),...(await loadPriv(id))};
     _setUser(id,d);
     await afterAuth(d);
     return true;
@@ -3326,14 +3337,8 @@ async function submitLicense(){
   try{
     /* 같은 면허번호로 이미 인증됐거나 심사 중인 계정이 있는지 확인.
        한 약사 한 계정을 지켜야 집단지성 데이터가 성립합니다. */
-    const dup=await db.collection('users').where('licNo','==',no).get();
-    let taken=null;
-    dup.forEach(doc=>{
-      if(doc.id===nick)return;
-      const st=doc.data().licStatus;
-      if(st==='verified'||st==='pending')taken=doc.id;
-    });
-    if(taken){
+    const ln=await db.collection('licNos').doc(no).get();
+    if(ln.exists&&ln.data().id!==nick){
       showErr('licErr','이미 이 면허번호로 등록된 계정이 있어요. 기존 계정으로 로그인해주세요.');
       return;
     }
@@ -3344,13 +3349,12 @@ async function submitLicense(){
     await ref.put(_licBlob,{contentType:'image/jpeg'});
     const url=await ref.getDownloadURL();
 
+    const now=new Date().toISOString();
+    await privRef(nick).set({licName:name,licNo:no,licPath:path,licUrl:url},{merge:true});
+    await db.collection('licNos').doc(no).set({id:nick,at:now});
     await db.collection('users').doc(nick).set({
       licStatus:'pending',
-      licName:name,
-      licNo:no,
-      licPath:path,
-      licUrl:url,
-      licAt:new Date().toISOString(),
+      licAt:now,
       licReason:firebase.firestore.FieldValue.delete()
     },{merge:true});
 
@@ -3445,9 +3449,11 @@ async function deleteAccount(){
 
     /* 5) 면허증 사진이 아직 남아 있으면 삭제 */
     try{
-      const u=await db.collection('users').doc(nick).get();
-      const lp=u.exists&&u.data().licPath;
-      if(lp)await firebase.storage().ref(lp).delete().catch(()=>{});
+      const pv=await loadPriv(nick);
+      if(pv.licPath)await firebase.storage().ref(pv.licPath).delete().catch(()=>{});
+      if(pv.phoneHash)await db.collection('phones').doc(pv.phoneHash).delete().catch(()=>{});
+      if(pv.licNo){const ln=await db.collection('licNos').doc(pv.licNo).get();if(ln.exists&&ln.data().id===nick)await ln.ref.delete().catch(()=>{});}
+      await privRef(nick).delete().catch(()=>{});
     }catch(e){}
 
     /* 6) 계정 문서 */
