@@ -239,6 +239,17 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
       <div style="display:flex;gap:8px"><input id="ofPw" class="tag-inp" type="password" placeholder="비밀번호 8자 이상" style="flex:2"><button class="tag-add-btn" onclick="makeOfficial()" style="flex:1">만들기</button></div>
       <div id="ofMsg" style="font-size:13px;margin-top:8px"></div>
     </div>
+    <div class="form-wrap" style="margin-top:14px">
+      <div class="form-title">관리자 계정</div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:8px">관리자 추가</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px"><input id="adId" class="tag-inp" placeholder="아이디" autocapitalize="off" style="flex:1"><input id="adNick" class="tag-inp" placeholder="이름(표시용)" style="flex:1"></div>
+      <div style="display:flex;gap:8px"><input id="adPw" class="tag-inp" type="password" placeholder="비밀번호 8자 이상" style="flex:2"><button class="tag-add-btn" onclick="addAdmin()" style="flex:1">추가</button></div>
+      <div id="adMsg" style="font-size:13px;margin-top:8px"></div>
+      <div style="font-size:13px;color:var(--t2);margin:16px 0 8px;border-top:1px solid var(--border);padding-top:14px">내 비밀번호 변경</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px"><input id="cpCur" class="tag-inp" type="password" placeholder="현재 비밀번호" style="flex:1"></div>
+      <div style="display:flex;gap:8px"><input id="cpNew" class="tag-inp" type="password" placeholder="새 비밀번호" style="flex:1"><input id="cpNew2" class="tag-inp" type="password" placeholder="새 비밀번호 확인" style="flex:1"><button class="tag-add-btn" onclick="changeMyPw()" style="flex:0 0 80px">변경</button></div>
+      <div id="cpMsg" style="font-size:13px;margin-top:8px"></div>
+    </div>
   </div>
 
 </div>
@@ -394,9 +405,37 @@ async function agCheck(u){
 }
 firebase.auth().onAuthStateChanged(async u=>{
   if(u){await agCheck(u);return;}
-  try{const s=await db.collection('admins').limit(1).get();agSetMode(s.empty?'create':'login');}catch(e){agSetMode('login');}
+  agSetMode('login');
   document.getElementById('admGate').style.display='flex';
 });
+/* 관리자 추가 (로그인한 관리자만) */
+async function addAdmin(){
+  const id=document.getElementById('adId').value.trim().toLowerCase(),nick=document.getElementById('adNick').value.trim()||id,pw=document.getElementById('adPw').value;
+  const out=document.getElementById('adMsg');out.style.color='var(--red)';
+  if(!/^[a-z0-9]{4,20}$/.test(id)||id==='admin'){out.textContent='아이디는 영문 소문자·숫자 4~20자';return;}
+  if(pw.length<8){out.textContent='비밀번호 8자 이상';return;}
+  try{
+    const sec=firebase.apps.find(a=>a.name==='mig')||firebase.initializeApp(firebase.app().options,'mig');
+    const c=await sec.auth().createUserWithEmailAndPassword(await authEmail(id),await hashPw(pw));
+    await c.user.updateProfile({displayName:id});
+    await db.collection('admins').doc(c.user.uid).set({id,nick,at:new Date().toISOString()});
+    await sec.auth().signOut();
+    out.style.color='var(--p)';out.textContent='관리자 '+id+' 추가했습니다';['adId','adNick','adPw'].forEach(i=>document.getElementById(i).value='');
+  }catch(e){out.textContent=e.code==='auth/email-already-in-use'?'이미 있는 아이디예요':'실패: '+(e.code||e.message);}
+}
+/* 내 비밀번호 변경 */
+async function changeMyPw(){
+  const cur=document.getElementById('cpCur').value,nw=document.getElementById('cpNew').value,nw2=document.getElementById('cpNew2').value;
+  const out=document.getElementById('cpMsg');out.style.color='var(--red)';
+  if(nw.length<8){out.textContent='새 비밀번호는 8자 이상';return;}
+  if(nw!==nw2){out.textContent='새 비밀번호가 서로 달라요';return;}
+  const u=firebase.auth().currentUser;if(!u){out.textContent='다시 로그인해주세요';return;}
+  try{
+    await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email,await hashPw(cur)));
+    await u.updatePassword(await hashPw(nw));
+    out.style.color='var(--p)';out.textContent='비밀번호를 바꿨습니다';['cpCur','cpNew','cpNew2'].forEach(i=>document.getElementById(i).value='');
+  }catch(e){out.textContent=(e.code||'').includes('credential')||(e.code||'').includes('password')?'현재 비밀번호가 맞지 않아요':'실패: '+(e.code||e.message);}
+}
 
 const SENS=['realName','phoneHash','phoneTail','pwHash','licName','licNo','licPath','licUrl','agreeAt','termsVer','marketing'];
 /* 1회용: 기존 회원 → 민감정보 분리 + Firebase 로그인 계정 생성 */

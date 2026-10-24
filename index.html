@@ -3002,8 +3002,6 @@ async function phSend(){
   const btn=document.getElementById('sPhoneBtn');btn.disabled=true;btn.textContent='보내는 중';
   try{
     const h=await _phHash(e);
-    const dup=await db.collection('phones').doc(h).get();
-    if(dup.exists){showErr('serr','이미 이 번호로 가입된 계정이 있어요');btn.disabled=false;btn.textContent='인증번호 받기';return;}
     firebase.auth().languageCode='ko';
     if(!_phVerifier)_phVerifier=new firebase.auth.RecaptchaVerifier('sRecap',{size:'invisible'});
     _phConf=await firebase.auth().signInWithPhoneNumber(e,_phVerifier);
@@ -3028,6 +3026,9 @@ async function phConfirm(){
   const btn=document.getElementById('sCodeBtn');btn.disabled=true;
   try{
     await _phConf.confirm(code);
+    /* 이미 가입된 번호인지 — 인증된 상태에서만 조회할 수 있음 */
+    const dup=await db.collection('phones').doc(_phConf._h).get().catch(()=>null);
+    if(dup&&dup.exists){try{await firebase.auth().currentUser.delete();}catch(x){await authSignOut();}_phConf=null;document.getElementById('sCodeRow').style.display='none';document.getElementById('sCode').value='';const sb=document.getElementById('sPhoneBtn');sb.textContent='인증번호 받기';showErr('serr','이미 이 번호로 가입된 계정이 있어요');return;}
     _phOk={e164:_phConf._e,hash:_phConf._h};
     /* 번호 확인용으로 생긴 임시 계정은 바로 지움 (계정은 가입 때 아이디로 새로 만듦) */
     try{await firebase.auth().currentUser.delete();}catch(x){await authSignOut();}
@@ -3064,15 +3065,6 @@ async function doSignup(){
   }
   setBtnLoading('signupBtn',true,role==='pharm'?'신청 중...':'가입 중...');
   try{
-    const r=await db.collection('users').doc(id).get();
-    if(r.exists){showErr('serr','이미 사용 중인 아이디예요');return;}
-    const dupNick=await db.collection('users').where('nick','==',nick).limit(1).get();
-    const legacy=await db.collection('users').doc(nick).get();
-    if(!dupNick.empty||legacy.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
-    if(role==='pharm'){
-      const ln=await db.collection('licNos').doc(licNo).get();
-      if(ln.exists&&ln.data().id!==id){showErr('serr','이미 이 면허번호로 가입된 계정이 있어요');return;}
-    }
     const pwHash=await hashPw(pw);
     /* Firebase 계정 만들기 */
     const A=firebase.auth();
@@ -3080,22 +3072,35 @@ async function doSignup(){
     catch(e){showErr('serr',e.code==='auth/email-already-in-use'?'이미 사용 중인 아이디예요':'가입하지 못했어요 ['+(e.code||'')+']');return;}
     const au=A.currentUser;
     await au.updateProfile({displayName:id});
+    /* 중복 확인 (로그인된 상태에서만 조회 가능) — 겹치면 방금 만든 계정은 지움 */
+    try{
+      const r=await db.collection('users').doc(id).get();
+      const dupNick=await db.collection('users').where('nick','==',nick).limit(1).get();
+      const legacy=await db.collection('users').doc(nick).get();
+      let msg='';
+      if(r.exists)msg='이미 사용 중인 아이디예요';
+      else if(!dupNick.empty||legacy.exists)msg='이미 사용 중인 닉네임이에요';
+      else if(role==='pharm'){const ln=await db.collection('licNos').doc(licNo).get();if(ln.exists&&ln.data().id!==id)msg='이미 이 면허번호로 가입된 계정이 있어요';}
+      if(msg){await au.delete().catch(()=>authSignOut());showErr('serr',msg);return;}
+    }catch(e){await au.delete().catch(()=>authSignOut());showErr('serr','확인 중 오류가 났어요. 다시 시도해주세요');return;}
     const now=new Date().toISOString();
     const d={uid:au.uid,authAt:now,nick,role,hist:[],onboarded:false,createdAt:now};
     const pv={realName:(document.getElementById('sLicName').value||'').trim(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4),agreeAt:now,termsVer:TERMS_VER,marketing:document.getElementById('agMkt').checked};
-    if(role==='pharm'){
-      const path=`licenses/${_uuid()}.jpg`;
-      const ref=firebase.storage().ref(path);
-      await ref.put(_licBlob,{contentType:'image/jpeg'});
-      const url=await ref.getDownloadURL();
-      Object.assign(d,{licStatus:'pending',licAt:now});
-      Object.assign(pv,{licName,licNo,licPath:path,licUrl:url});
-    }
-    await db.collection('users').doc(id).set(d);
-    await privRef(id).set(pv);
-    await db.collection('phones').doc(_phOk.hash).set({id,at:now});
-    if(role==='pharm')await db.collection('licNos').doc(licNo).set({id,at:now});
-    Object.assign(d,pv);
+    try{
+      if(role==='pharm'){
+        const path=`licenses/${_uuid()}.jpg`;
+        const ref=firebase.storage().ref(path);
+        await ref.put(_licBlob,{contentType:'image/jpeg'});
+        const url=await ref.getDownloadURL();
+        Object.assign(d,{licStatus:'pending',licAt:now});
+        Object.assign(pv,{licName,licNo,licPath:path,licUrl:url});
+      }
+      await db.collection('users').doc(id).set(d);
+      await privRef(id).set(pv);
+      await db.collection('phones').doc(_phOk.hash).set({id,at:now});
+      if(role==='pharm')await db.collection('licNos').doc(licNo).set({id,at:now});
+      Object.assign(d,pv);
+    }catch(e){console.log('signup write',e);await au.delete().catch(()=>authSignOut());showErr('serr',(e.code||'').startsWith('storage/')?'면허증 사진을 올리지 못했어요. 다시 시도해주세요':'가입하지 못했어요 ['+(e.code||e.message)+']');return;}
     if(role==='pharm'){_licBlob=null;if(_licPrevUrl){URL.revokeObjectURL(_licPrevUrl);_licPrevUrl=null;}}
     try{localStorage.setItem('deonaeum_nick',id);}catch(e){}
     S.user={nick:id,name:nick,role};S.hist=[];S.bio='';
@@ -3142,8 +3147,9 @@ async function authLogin(raw,pw){
       return {id:docId,d:{...r.data(),...(await loadPriv(docId))}};
     }catch(e){if(!_AUTH_MISS.includes(e.code))throw e;}
   }
-  /* 기존 회원 → 옛 방식 확인 후 Firebase 계정 생성 */
-  const r=await _findUser(raw);if(!r.exists)return null;
+  /* 기존 회원 → 옛 방식 확인 후 Firebase 계정 생성 (전환이 끝나 보통 여기 안 옴) */
+  let r;try{r=await _findUser(raw);}catch(e){return null;}
+  if(!r.exists)return null;
   const id=r.id,d={...r.data(),...(await loadPriv(r.id))};
   const ok=d.pwHash?d.pwHash===pwHash:(d.pw!=null&&d.pw===pw);
   if(!ok)return null;
@@ -3186,11 +3192,10 @@ async function pwSend(){
   if(!e){showErr('pwErr','휴대폰 번호를 확인해주세요');return;}
   const btn=document.getElementById('pwSendBtn');btn.disabled=true;btn.textContent='보내는 중';
   try{
-    const h=await _phHash(e),ph=await db.collection('phones').doc(h).get();
-    if(!ph.exists||String(ph.data().id).toLowerCase()!==id.toLowerCase()){showErr('pwErr','아이디와 휴대폰 번호가 가입 정보와 달라요');btn.disabled=false;btn.textContent='인증번호 받기';return;}
+    const h=await _phHash(e);
     firebase.auth().languageCode='ko';
     if(!_pwVerifier)_pwVerifier=new firebase.auth.RecaptchaVerifier('pwRecap',{size:'invisible'});
-    _pwConf=await firebase.auth().signInWithPhoneNumber(e,_pwVerifier);_pwConf._id=ph.data().id;
+    _pwConf=await firebase.auth().signInWithPhoneNumber(e,_pwVerifier);_pwConf._id=id;_pwConf._h=h;
     document.getElementById('pwCodeRow').style.display='flex';btn.textContent='다시 받기';btn.disabled=false;
     document.getElementById('pwCode').focus();toast('인증번호를 보냈어요');
   }catch(err){
@@ -3203,7 +3208,11 @@ async function pwConfirm(){
   if(!_pwConf){showErr('pwErr','인증번호를 먼저 받아주세요');return;}
   if(!/^\d{6}$/.test(code)){showErr('pwErr','인증번호 6자리를 입력해주세요');return;}
   const btn=document.getElementById('pwCodeBtn');btn.disabled=true;
-  try{await _pwConf.confirm(code);document.getElementById('pwS1').style.display='none';document.getElementById('pwS2').style.display='block';document.getElementById('pwErr').style.display='none';document.getElementById('pwNew').focus();}
+  try{await _pwConf.confirm(code);
+    const ph=await db.collection('phones').doc(_pwConf._h).get().catch(()=>null);
+    if(!ph||!ph.exists||String(ph.data().id).toLowerCase()!==String(_pwConf._id).toLowerCase()){await authSignOut();_pwConf=null;document.getElementById('pwCodeRow').style.display='none';document.getElementById('pwSendBtn').textContent='인증번호 받기';showErr('pwErr','아이디와 휴대폰 번호가 가입 정보와 달라요');return;}
+    _pwConf._id=ph.data().id;
+    document.getElementById('pwS1').style.display='none';document.getElementById('pwS2').style.display='block';document.getElementById('pwErr').style.display='none';document.getElementById('pwNew').focus();}
   catch(err){showErr('pwErr','인증번호가 맞지 않아요');}
   finally{btn.disabled=false;}
 }
@@ -6202,7 +6211,7 @@ function dnHerbName(p){return (p.kind==='herb'&&p.ing)||dnHerbOf(p.pid)||p.pnm||
 const HERB_CATS={
 '쌍화탕':['피로/활력','영양'],'보중익기탕':['피로/활력','면역/항산화','영양'],'공진단':['피로/활력','면역/항산화','영양'],'경옥고':['피로/활력','면역/항산화','영양'],'십전대보탕':['피로/활력','면역/항산화','영양'],'팔물탕':['피로/활력','면역/항산화','영양'],'사물탕':['피로/활력','여성 건강','혈관/혈액','영양'],'생맥산':['피로/활력'],'육미지황탕':['피로/활력','남성 건강','영양'],'육미지황환':['피로/활력','남성 건강','영양'],'팔미지황환':['피로/활력','남성 건강'],'우차신기환':['피로/활력','남성 건강'],'연령고본단':['피로/활력','영양'],'옥로환':['피로/활력'],'청서익기탕':['피로/활력'],'복령보심탕':['피로/활력'],'녹용대보탕':['피로/활력','영양'],'익위승양탕':['피로/활력'],'황기건중탕':['피로/활력','영양'],'원탕':['피로/활력'],
 '우황청심원':['수면/스트레스'],'우황청심환':['수면/스트레스'],'천왕보심단':['수면/스트레스'],'황련해독탕':['수면/스트레스','혈관/혈액','피부'],'반하후박탕':['수면/스트레스','소화/장'],'가미소요산':['수면/스트레스','여성 건강'],'가미귀비탕':['수면/스트레스'],'귀비탕':['수면/스트레스'],'산조인탕':['수면/스트레스'],'계지가용골모려탕':['수면/스트레스','남성 건강'],'시호가용골모려탕':['수면/스트레스'],'삼황사심탕':['수면/스트레스','소화/장','혈관/혈액'],'억간산가진피반하':['수면/스트레스'],'억간산':['수면/스트레스'],'사칠탕':['수면/스트레스'],'안신환':['수면/스트레스'],'청심연자음':['수면/스트레스'],'시호소간탕':['간','수면/스트레스'],
-'반하사심탕':['소화/장'],'향사평위산':['소화/장'],'평위산':['소화/장'],'이중탕':['소화/장'],'인삼탕':['소화/장'],'이진탕':['소화/장'],'소건중탕':['소화/장'],'불환금정기산':['소화/장'],'활명수':['소화/장'],'반하백출천마탕':['소화/장','두뇌/기억'],'삼출건비탕':['소화/장'],'내소산':['소화/장'],'소체환':['소화/장'],'궁하탕':['소화/장'],'대화중음':['소화/장'],'곽향정기산':['소화/장'],'계지가작약탕':['소화/장'],'육군자탕':['소화/장'],'향사육군자탕':['소화/장'],'대금음자':['소화/장'],'영계출감탕':['소화/장'],'을자탕':['소화/장'],'을자':['소화/장'],'생강사심탕':['소화/장'],'백출탕':['소화/장'],'위령탕':['소화/장'],'계지탕':['소화/장'],'오령산':['소화/장','혈관/혈액'],'작약감초탕':['뼈/근육','소화/장'],'청위산':['피부','소화/장'],'방풍통성산':['혈당/다이어트','소화/장'],'도핵승기탕':['소화/장','여성 건강'],'조위승기탕':['소화/장'],'소승기탕':['소화/장'],'대승기탕':['소화/장'],'대황목단피탕':['소화/장','여성 건강'],'대황감초탕':['소화/장'],'마자인환':['소화/장'],'안중산':['소화/장'],
+'반하사심탕':['소화/장'],'향사평위산':['소화/장'],'평위산':['소화/장'],'이중탕':['소화/장'],'인삼탕':['소화/장'],'이진탕':['소화/장'],'소건중탕':['소화/장'],'불환금정기산':['소화/장'],'반하백출천마탕':['소화/장','두뇌/기억'],'삼출건비탕':['소화/장'],'내소산':['소화/장'],'소체환':['소화/장'],'궁하탕':['소화/장'],'대화중음':['소화/장'],'곽향정기산':['소화/장'],'계지가작약탕':['소화/장'],'육군자탕':['소화/장'],'향사육군자탕':['소화/장'],'대금음자':['소화/장'],'영계출감탕':['소화/장'],'을자탕':['소화/장'],'을자':['소화/장'],'생강사심탕':['소화/장'],'백출탕':['소화/장'],'위령탕':['소화/장'],'계지탕':['소화/장'],'오령산':['소화/장','혈관/혈액'],'작약감초탕':['뼈/근육','소화/장'],'청위산':['피부','소화/장'],'방풍통성산':['혈당/다이어트','소화/장'],'도핵승기탕':['소화/장','여성 건강'],'조위승기탕':['소화/장'],'소승기탕':['소화/장'],'대승기탕':['소화/장'],'대황목단피탕':['소화/장','여성 건강'],'대황감초탕':['소화/장'],'마자인환':['소화/장'],'안중산':['소화/장'],
 '소시호탕':['간','면역/항산화'],'대시호탕':['간','면역/항산화'],'시호계지탕':['간','면역/항산화'],'인진호탕':['간'],'인진오령산':['간'],'시호청간탕':['간'],'사역산':['간'],'시박탕':['간'],'용담사간탕':['간','남성 건강','피부'],
 '방기황기탕':['뼈/근육','혈당/다이어트'],'소경활혈탕':['뼈/근육'],'오적산':['뼈/근육'],'구미강활탕':['뼈/근육'],'의이인탕':['뼈/근육','피부'],'당귀수산':['뼈/근육'],'영선제통음':['뼈/근육'],
 '계지복령환':['여성 건강'],'당귀작약산':['여성 건강'],'온경탕':['여성 건강'],'당귀사역가오수유생강탕':['여성 건강'],'통도산':['여성 건강'],'궁귀교애탕':['여성 건강'],
