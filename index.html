@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>더나음 — Better Choices, Better Health</title>
+<title>집약처 — 집단지성 약사들의 처방</title>
 
 <!-- ===== PWA / 홈화면 앱 ===== -->
 <meta name="description" content="약사 집단지성 임상 판단 플랫폼. 환자 케이스에 처방하고, 동료 약사의 판단과 비교하고, 목적별 제품 순위를 확인하세요.">
@@ -13,7 +13,7 @@
 <!-- iOS: 홈화면에 추가했을 때 주소창 없는 전체화면으로 실행 -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="더나음">
+<meta name="apple-mobile-web-app-title" content="집약처">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
 
@@ -228,7 +228,40 @@ body{
 .sf-back{position:absolute;left:-10px;top:0;width:44px;height:44px;border:0;background:none;color:#191F28;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .sf-seg{display:flex;gap:4px;padding:4px;border-radius:14px;background:#ECE6DC;margin-bottom:14px}
 .sf-seg button{flex:1;height:42px;border:0;border-radius:10px;background:transparent;font:inherit;font-size:15px;font-weight:500;color:#8B95A1;cursor:pointer}
-.sf-seg button.on{background:#fff;color:#191F28;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sf-seg button.on{background:#5E7D63;color:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ugc-dot{border:0;background:none;color:#B0A898;padding:2px 4px;margin-left:auto;line-height:0;cursor:pointer;flex:none}
+.pr-c .pr-hd{display:flex;align-items:center;gap:4px}.pr-c .pr-hd>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.pr-cm .h .ugc-dot,.dn-cm .h .ugc-dot,.dn-thp .m .ugc-dot{align-self:center}
+.dn-thtop .ugc-dot{margin-left:auto}
+.ugc-pf{float:right;margin:2px -6px 0 0}.ugc-pf .ugc-dot{padding:8px}
+.ugc-sh{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.ugc-it{display:block;width:100%;height:52px;border:0;border-bottom:1px solid #EFEAE0;background:none;font:inherit;font-size:16px;font-weight:700;color:#191F28;cursor:pointer}
+.ugc-it.red{color:#C2524A}.ugc-it.gray{color:#8B95A1;border:0}
+.ugc-rs label{display:flex;align-items:center;gap:10px;padding:11px 2px;font-size:15px;color:#333D4B;border-bottom:1px solid #F2EEE6;cursor:pointer}
+.ugc-rs input{width:20px;height:20px;accent-color:#5E7D63;margin:0}
+.ugc-bl{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #EFEAE0}
+.ugc-bl span{display:flex;align-items:center;gap:10px;font-size:15px}
+.ugc-bl button{border:1px solid #D9D2C4;background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;color:#4E5968;cursor:pointer}
+.sf-terms{margin:16px 0 4px;padding:14px;border-radius:14px;background:#fff;border:1px solid #E8E2D6}
+.sf-terms label{display:flex;align-items:center;gap:10px;font-size:14px;color:#4E5968;padding:7px 0;cursor:pointer}
+.sf-terms label span{flex:1}
+.sf-terms input{width:20px;height:20px;accent-color:#5E7D63;flex:none;margin:0}
+.sf-terms em{font-style:normal;color:#5E7D63;font-weight:700}
+.sf-terms em.op{color:#8B95A1}
+.sf-terms .sf-all{font-size:15px;font-weight:700;color:#191F28;border-bottom:1px solid #EFEAE0;padding-bottom:11px;margin-bottom:4px}
+.sf-terms button{border:0;background:none;color:#8B95A1;font:inherit;font-size:13px;text-decoration:underline;padding:4px;cursor:pointer}
+.doc-ov{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}
+.doc-sh{background:#FBF8F3;width:100%;max-width:480px;height:88dvh;border-radius:20px 20px 0 0;display:flex;flex-direction:column}
+.doc-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #EAE4D8;font-size:16px;font-weight:700}
+.doc-hd button{border:0;background:none;font-size:24px;line-height:1;color:#4E5968;cursor:pointer}
+.doc-bd{flex:1;overflow:auto;padding:16px 20px 40px;font-size:13.5px;line-height:1.7;color:#4E5968;white-space:pre-wrap;-webkit-overflow-scrolling:touch}
+.doc-bd b{display:block;color:#191F28;font-size:14.5px;margin:16px 0 4px}
+.sf-steps{display:flex;align-items:center;gap:6px;margin:0 0 14px}
+.sf-steps b{width:22px;height:22px;border-radius:50%;background:#ECE6DC;color:#8B95A1;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sf-steps b.on{background:#5E7D63;color:#fff}
+.sf-steps i{width:18px;height:2px;background:#ECE6DC}
+.sf-steps span{margin-left:6px;font-size:13px;font-weight:700;color:#4E5968}
+.sf-prev{display:block;width:100%;margin-top:10px;height:44px;border:0;background:none;font:inherit;font-size:14px;color:#8B95A1;cursor:pointer}
 .sf-lb{font-size:13px;font-weight:700;color:#4E5968;margin:4px 0 6px}
 .sf-auth{width:100%;height:50px;border-radius:12px;background:#fff;border:1.5px solid #5E7D63;color:#5E7D63;display:flex;align-items:center;gap:10px;padding:0 14px;font:inherit;font-size:15px;font-weight:700;margin-bottom:10px;cursor:pointer}
 .sf-auth span{flex:1;text-align:left}
@@ -2027,19 +2060,24 @@ body{
 <div class="lw">
   <div id="lf" class="lw-in">
     <div class="ll">
-      <div class="dn-logo">더나음<i>.</i></div>
-      <p>THE BETTER CHOICES, BETTER HEALTH</p>
+      <div class="dn-logo">집약처<i>.</i></div>
+      <p>집단지성 약사들의 처방</p>
     </div>
     <div class="err" id="lerr"></div>
     <input class="inp" id="lid" placeholder="아이디" autocomplete="username" autocapitalize="off">
     <input class="inp" id="lpw" type="password" placeholder="비밀번호" autocomplete="current-password">
     <button class="btn lbtn" id="loginBtn" onclick="doLogin()">로그인</button>
     <div class="llinks"><button type="button" onclick="toast('준비 중이에요')">비밀번호 찾기</button><span>|</span><button type="button" class="b" onclick="switchLTab('signup')">회원가입하기</button></div>
+    <div class="llinks" style="margin-top:6px;font-size:12px"><button type="button" onclick="showDoc('tos')">이용약관</button><span>|</span><button type="button" onclick="showDoc('priv')">개인정보처리방침</button></div>
   </div>
   <div id="sf" class="lw-in sf" style="display:none">
     <div class="sf-hd"><button type="button" class="sf-back" onclick="switchLTab('login')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span>회원가입</span></div>
     <div class="sf-seg"><button type="button" class="on" data-role="pharm" onclick="setSignupRole('pharm')">약사</button><button type="button" data-role="member" onclick="setSignupRole('member')">일반회원</button></div>
+    <div class="sf-steps" id="sfSteps"><b class="on">1</b><i></i><b>2</b><span id="sfStepTx">기본 정보</span></div>
     <div class="err" id="serr"></div>
+    <div id="sfS1">
+    <div id="sfNameWrap"><div class="sf-lb">실명</div>
+    <input class="inp" id="sLicName" maxlength="20" placeholder="면허증에 적힌 이름"></div>
     <div class="sf-lb">휴대폰 인증</div>
     <div class="sf-ph" id="sfPhone">
       <div class="sf-phrow"><input class="inp" id="sPhone" type="tel" inputmode="numeric" maxlength="13" placeholder="휴대폰 번호 (- 없이)"><button type="button" class="sf-phbt" id="sPhoneBtn" onclick="phSend()">인증번호 받기</button></div>
@@ -2055,9 +2093,15 @@ body{
     <input class="inp" id="spw" type="password" placeholder="8자 이상" autocomplete="new-password">
     <div class="sf-lb">비밀번호 확인</div>
     <input class="inp" id="spw2" type="password" placeholder="한 번 더 입력" autocomplete="new-password">
-    <div id="sfPharm">
-      <div class="sf-lb">약사 실명</div>
-      <input class="inp" id="sLicName" maxlength="20" placeholder="면허증에 적힌 이름">
+    <div class="sf-terms">
+      <label class="sf-all"><input type="checkbox" id="agAll" onchange="agToggleAll(this.checked)"><span>모두 동의해요</span></label>
+      <label><input type="checkbox" class="ag" id="ag14" onchange="agSync()"><span><em>[필수]</em> 만 14세 이상이에요</span></label>
+      <label><input type="checkbox" class="ag" id="agTos" onchange="agSync()"><span><em>[필수]</em> 이용약관 동의</span><button type="button" onclick="event.preventDefault();showDoc('tos')">보기</button></label>
+      <label><input type="checkbox" class="ag" id="agPriv" onchange="agSync()"><span><em>[필수]</em> 개인정보 수집·이용 동의</span><button type="button" onclick="event.preventDefault();showDoc('priv')">보기</button></label>
+      <label><input type="checkbox" class="ag" id="agMkt" onchange="agSync()"><span><em class="op">[선택]</em> 새 소식·이벤트 알림 받기</span></label>
+    </div>
+    </div>
+    <div id="sfPharm" style="display:none">
       <div class="sf-lb">약사 면허번호</div>
       <input class="inp" id="sLicNo" maxlength="10" inputmode="numeric" placeholder="숫자만">
       <div class="sf-lb">면허증 사진</div>
@@ -2066,7 +2110,9 @@ body{
       <label class="sf-agree"><input type="checkbox" id="sLicAgree"><span>약사 자격 확인을 위해 실명·면허번호·면허증 사진 수집에 동의해요. 사진은 확인 후 바로 삭제돼요.</span></label>
     </div>
     <p class="sf-note" id="sfNote">면허 확인 후 승인돼요</p>
-    <button class="btn lbtn" id="signupBtn" onclick="doSignup()">가입 신청</button>
+    <button class="btn lbtn" id="sfNextBtn" onclick="sfNext()">다음</button>
+    <button class="btn lbtn" id="signupBtn" onclick="doSignup()" style="display:none">가입 신청</button>
+    <button type="button" class="sf-prev" id="sfPrevBtn" onclick="sfStep(1)" style="display:none">이전으로</button>
   </div>
 </div>
 </div>
@@ -2074,7 +2120,7 @@ body{
 <!-- 일반회원 (준비 중) -->
 <div class="screen" id="memberScreen">
   <div class="lw"><div class="lw-in" style="text-align:center">
-    <div class="ll"><div class="dn-logo">더나음<i>.</i></div><p>THE BETTER CHOICES, BETTER HEALTH</p></div>
+    <div class="ll"><div class="dn-logo">집약처<i>.</i></div><p>집단지성 약사들의 처방</p></div>
     <p style="font-size:15px;color:var(--t2);margin-bottom:24px">일반회원 화면을 준비하고 있어요</p>
     <button class="btn lbtn" onclick="logout()">로그아웃</button>
   </div></div>
@@ -2088,7 +2134,7 @@ body{
     <div class="dn-cti" id="dnCardTi"></div>
     <button type="button" class="dn-down" onclick="dnWriteClose()" aria-label="매대 내리기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
   </div>
-  <div class="dn-hd"><div class="dn-logo s">더나음<i>.</i></div><div class="dn-bars" id="dnBars"></div></div>
+  <div class="dn-hd"><div class="dn-logo s">집약처<i>.</i></div><div class="dn-bars" id="dnBars"></div></div>
   <div class="dn-ti" id="dnTi"></div>
   <button type="button" class="dn-snd" id="dnSnd" onclick="dnSound()" aria-label="소리"><svg class="off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg><svg class="onn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
   <div class="dn-counter" id="dnCounter">
@@ -2102,16 +2148,16 @@ body{
 
 <!-- ===== 더나음2: 책장 ===== -->
 <div class="screen dn-shelfscr" id="dnShelf">
-  <div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div>
+  <div class="dn-shd"><div class="dn-logo s">집약처<i>.</i></div></div>
   <div id="dnShelfBody"></div>
   <div class="tabbar"></div>
 </div>
 
 
 <!-- ===== 더나음3 ===== -->
-<div class="screen dn-shelfscr dn3" id="dnRank"><div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div><div class="dn3b" id="dnRankBody"></div><div class="tabbar"></div></div>
-<div class="screen dn-shelfscr dn3" id="dnProfile"><div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div><div class="dn3b" id="dnProfBody"></div><div class="tabbar"></div></div>
-<div class="screen dn-shelfscr dn3" id="dnComm"><div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div><div class="dn3b" id="dnCommBody"></div><div class="tabbar"></div></div>
+<div class="screen dn-shelfscr dn3" id="dnRank"><div class="dn-shd"><div class="dn-logo s">집약처<i>.</i></div></div><div class="dn3b" id="dnRankBody"></div><div class="tabbar"></div></div>
+<div class="screen dn-shelfscr dn3" id="dnProfile"><div class="dn-shd"><div class="dn-logo s">집약처<i>.</i></div></div><div class="dn3b" id="dnProfBody"></div><div class="tabbar"></div></div>
+<div class="screen dn-shelfscr dn3" id="dnComm"><div class="dn-shd"><div class="dn-logo s">집약처<i>.</i></div></div><div class="dn3b" id="dnCommBody"></div><div class="tabbar"></div></div>
 <div class="screen dn-shelfscr dn3" id="dnThread"><div class="dn3b" id="dnThBody"></div></div>
 
 <!-- 면허 인증 게이트 -->
@@ -2123,8 +2169,8 @@ body{
 <div class="screen" id="home">
 <div class="topbar" style="justify-content:center;padding-top:calc(18px + env(safe-area-inset-top))">
   <div class="hbrand">
-    <div class="hb-l">더나음</div>
-    <div class="hb-s">Better Choices, Better Health</div>
+    <div class="hb-l">집약처</div>
+    <div class="hb-s">집단지성 약사들의 처방</div>
   </div>
 </div>
 <div class="hguide">
@@ -2305,9 +2351,9 @@ body{
 
 <!-- RANKING -->
 <div class="screen" id="ranking">
-<div class="dn-shd"><div class="dn-logo s">더나음<i>.</i></div></div>
+<div class="dn-shd"><div class="dn-logo s">집약처<i>.</i></div></div>
 <div class="rp">
-  <div class="st">더나음 랭킹</div>
+  <div class="st">집약처 랭킹</div>
   <div class="ss">케이스를 풀면 약사들의 선택이 열려요</div>
   <div class="seg" id="rankSeg">
     <div class="segthumb"></div>
@@ -2337,7 +2383,7 @@ body{
     </div>
   </div>
   <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="onPhotoPicked(this)">
-  <div class="ms">더나음과 함께해주셔서 감사해요</div>
+  <div class="ms">집약처과 함께해주셔서 감사해요</div>
   <div class="mst">
     <div class="mstb"><div class="msn" id="sc">0</div><div class="msl">케이스 참여</div></div>
     <div class="mstb"><div class="msn" id="sp2">0</div><div class="msl">통합 추천수</div></div>
@@ -2378,11 +2424,11 @@ body{
 <div class="screen" id="board">
 <div class="mh">
   <div class="mn">게시판</div>
-  <div class="ms">더나음 소식 · 약사 라운지</div>
+  <div class="ms">집약처 소식 · 약사 라운지</div>
 </div>
 <div class="hw">
   <div class="stabs" style="margin-bottom:14px">
-    <button class="stab on" id="btabN" onclick="switchBoardTab('notice')"><svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> 더나음 소식</button>
+    <button class="stab on" id="btabN" onclick="switchBoardTab('notice')"><svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg> 집약처 소식</button>
     <button class="stab" id="btabL" onclick="switchBoardTab('lounge')"><svg class="ui-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 약사 라운지</button>
   </div>
   <div id="boardNotice"><div class="empty">로딩 중...</div></div>
@@ -2684,6 +2730,7 @@ let S={user:null,case:null,pair:0,pairs:[],ing:null,hist:[],selTab:'ing',shownIn
 function switchLTab(t){
   document.getElementById('lf').style.display=t==='login'?'block':'none';
   document.getElementById('sf').style.display=t==='signup'?'block':'none';
+  if(t==='signup'&&typeof sfStep==='function')sfStep(1);
   window.scrollTo(0,0);
 }
 let _signupRole='pharm';
@@ -2692,9 +2739,149 @@ function setSignupRole(r){
   document.querySelectorAll('.sf-seg button').forEach(b=>b.classList.toggle('on',b.dataset.role===r));
   const n=document.getElementById('snick');if(n)n.placeholder=r==='pharm'?'다른 약사에게 보이는 이름':'다른 사람에게 보이는 이름';
   const note=document.getElementById('sfNote');if(note)note.style.display=r==='pharm'?'block':'none';
-  const ph=document.getElementById('sfPharm');if(ph)ph.style.display=r==='pharm'?'block':'none';
   const bt=document.getElementById('signupBtn');if(bt)bt.textContent=r==='pharm'?'가입 신청':'가입하기';
+  const ln=document.getElementById('sLicName');if(ln)ln.placeholder=r==='pharm'?'면허증에 적힌 이름':'본인 이름';
+  sfStep(1);
 }
+/* ===== 약관 · 개인정보처리방침 (초안 — 시행 전 법률 검토 필요) ===== */
+const TERMS_VER='2026-11-01';
+const OP_NAME='[운영자명]';           /* ← 운영 주체(회사명 또는 대표자) */
+const OP_MAIL='[문의 이메일]';         /* ← 고객 문의 이메일 */
+const OP_DPO='[개인정보 보호책임자 이름]';
+const DOCS={
+tos:{t:'이용약관',b:()=>`시행일: ${TERMS_VER}
+
+<b>제1조 (목적)</b>이 약관은 ${OP_NAME}(이하 "운영자")이 제공하는 집약처 서비스(이하 "서비스")의 이용 조건과 절차, 운영자와 회원의 권리·의무를 정합니다.
+
+<b>제2조 (정의)</b>1. "회원"은 이 약관에 동의하고 가입한 사람을 말하며, "약사회원"과 "일반회원"으로 나뉩니다.
+2. "약사회원"은 약사 면허 확인을 거쳐 승인된 회원입니다.
+3. "게시물"은 회원이 서비스에 올린 처방 의견, 코멘트, 글, 댓글, 사진 등을 말합니다.
+
+<b>제3조 (약관의 효력과 변경)</b>1. 이 약관은 서비스 화면에 게시하여 효력이 생깁니다.
+2. 운영자는 관련 법령을 위반하지 않는 범위에서 약관을 변경할 수 있으며, 변경 시 시행일 7일 전(회원에게 불리한 경우 30일 전)부터 공지합니다.
+3. 회원이 변경된 약관에 동의하지 않으면 탈퇴할 수 있습니다.
+
+<b>제4조 (회원가입)</b>1. 만 14세 이상인 사람만 가입할 수 있습니다.
+2. 약사회원은 면허 확인 후 승인되며, 허위 정보로 가입한 사실이 확인되면 승인을 취소할 수 있습니다.
+3. 한 사람은 하나의 계정만 만들 수 있습니다.
+
+<b>제5조 (서비스의 성격)</b>1. 서비스에 표시되는 처방 의견, 제품 순위, 코멘트는 약사 개인의 의견을 모은 것이며, 특정 제품을 권하는 광고가 아닙니다.
+2. 서비스의 정보는 의사의 진료나 약사의 복약지도를 대신하지 않습니다. 증상이 있거나 약을 복용 중인 경우 반드시 의사·약사와 상담하세요.
+
+<b>제6조 (회원의 의무)</b>회원은 다음 행위를 해서는 안 됩니다.
+1. 타인의 정보 도용, 허위 면허 정보 제출
+2. 특정 제품·업체의 홍보 목적 게시, 대가를 받은 추천
+3. 타인에 대한 비방, 명예훼손, 개인정보 노출
+4. 환자나 타인을 식별할 수 있는 정보 게시
+5. 법령에 위반되거나 공서양속에 반하는 내용 게시
+6. 서비스 운영을 방해하는 행위
+운영자는 위와 같은 부적절한 게시물과 이를 올린 회원에게 무관용 원칙을 적용합니다.
+
+<b>제7조 (게시물)</b>1. 게시물의 저작권은 작성한 회원에게 있습니다.
+2. 회원은 운영자가 서비스 안에서 게시물을 노출·정렬·집계(순위 산정 포함)하는 데 필요한 범위에서 이용하는 것을 허락합니다.
+3. 운영자는 제6조에 해당하는 게시물을 사전 통지 없이 숨기거나 삭제할 수 있습니다.
+
+<b>제8조 (신고·차단과 이용 제한)</b>1. 회원은 게시물이나 다른 회원을 ⋯ 메뉴로 신고하거나 차단할 수 있습니다. 차단하면 그 회원의 게시물과 메시지가 보이지 않습니다.
+2. 운영자는 신고를 받으면 24시간 이내에 검토하여 게시물 삭제 등 필요한 조치를 합니다.
+3. 서로 다른 회원 3명 이상이 신고한 게시물은 운영자 검토 전까지 자동으로 숨겨집니다.
+4. 운영자는 회원이 이 약관을 위반한 경우 경고, 일시 정지, 영구 이용 정지 등의 조치를 할 수 있습니다.
+
+<b>제9조 (탈퇴)</b>회원은 MY 화면의 '계정 삭제'로 언제든 탈퇴할 수 있습니다. 탈퇴 시 회원 정보와 작성한 게시물은 삭제되며 되돌릴 수 없습니다.
+
+<b>제10조 (책임의 한계)</b>1. 운영자는 회원이 올린 게시물의 정확성을 보증하지 않으며, 회원이 게시물을 믿고 한 판단에 대해 고의 또는 중대한 과실이 없는 한 책임지지 않습니다.
+2. 천재지변, 통신 장애 등 불가항력으로 서비스를 제공하지 못한 경우 책임이 면제됩니다.
+
+<b>제11조 (분쟁 해결)</b>이 약관은 대한민국 법률에 따르며, 분쟁이 생기면 민사소송법상 관할 법원에 제기합니다.
+
+문의: ${OP_MAIL}`},
+priv:{t:'개인정보처리방침',b:()=>`시행일: ${TERMS_VER}
+
+${OP_NAME}(이하 "운영자")은 개인정보 보호법에 따라 회원의 개인정보를 다음과 같이 처리합니다.
+
+<b>1. 수집 항목과 목적</b>[공통 · 필수]
+· 실명, 휴대폰 번호 — 본인 확인, 중복 가입 방지
+· 닉네임, 아이디, 비밀번호 — 회원 식별, 로그인
+[약사회원 · 필수]
+· 약사 면허번호, 면허증 사진 — 약사 자격 확인
+[선택]
+· 새 소식·이벤트 알림 수신 여부, 프로필 사진·소개
+[자동 수집]
+· 서비스 이용 기록(작성한 처방 의견, 추천, 접속 기록)
+
+※ 휴대폰 번호는 원문이 아닌 변환값(해시)과 끝 4자리만 저장합니다.
+※ 비밀번호는 복원할 수 없는 방식으로 암호화해 저장합니다.
+
+<b>2. 보유 기간</b>· 회원 정보: 탈퇴 시 즉시 파기
+· 면허증 사진: 자격 심사(승인·반려) 완료 즉시 파기
+· 실명·면허번호: 중복 가입 방지를 위해 탈퇴 시까지 보관
+· 관련 법령에 보관 의무가 있는 경우 그 기간 동안 보관
+
+<b>3. 파기 절차와 방법</b>보유 기간이 끝나거나 목적이 달성된 개인정보는 지체 없이 복구할 수 없는 방법으로 삭제합니다.
+
+<b>4. 제3자 제공</b>운영자는 회원의 개인정보를 제3자에게 제공하지 않습니다. 단, 법령에 따른 요청이 있는 경우는 예외입니다.
+
+<b>5. 처리 위탁 및 국외 이전</b>서비스 운영을 위해 다음과 같이 개인정보 처리를 위탁하며, 해당 정보는 국외 서버에 저장될 수 있습니다.
+· 수탁자: Google LLC (Firebase)
+· 위탁 업무: 회원 데이터 저장, 휴대폰 인증 문자 발송, 파일 보관
+· 이전 국가: [서버 지역 기재 — 예: 미국 / 대한민국(서울 리전)]
+· 이전 일시·방법: 서비스 이용 시 네트워크를 통해 수시 전송
+· 이전 항목: 1번의 수집 항목
+· 보유 기간: 2번과 동일
+국외 이전을 원하지 않으면 회원 탈퇴로 거부할 수 있으나, 이 경우 서비스를 이용할 수 없습니다.
+
+<b>6. 회원의 권리</b>회원은 언제든지 자신의 개인정보 열람, 정정, 삭제, 처리 정지를 요구할 수 있으며, MY 화면의 '계정 삭제'로 탈퇴할 수 있습니다. 요청은 아래 연락처로 할 수 있습니다.
+
+<b>7. 만 14세 미만</b>만 14세 미만은 가입할 수 없으며, 운영자는 만 14세 미만 아동의 개인정보를 수집하지 않습니다.
+
+<b>8. 안전성 확보 조치</b>접근 권한 관리, 비밀번호 암호화, 면허증 사진의 심사 후 즉시 삭제 등 개인정보 보호를 위한 조치를 하고 있습니다.
+
+<b>9. 개인정보 보호책임자</b>· 책임자: ${OP_DPO}
+· 연락처: ${OP_MAIL}
+
+개인정보 침해 신고·상담: 개인정보침해신고센터(privacy.kisa.or.kr, 국번 없이 118), 개인정보분쟁조정위원회(kopico.go.kr, 1833-6972)
+
+<b>10. 방침의 변경</b>이 방침이 바뀌면 시행 7일 전부터 서비스 공지로 알립니다.`}
+};
+function showDoc(k){
+  const d=DOCS[k];if(!d)return;
+  const ov=document.createElement('div');ov.className='doc-ov';
+  ov.innerHTML=`<div class="doc-sh"><div class="doc-hd"><span>${d.t}</span><button type="button" aria-label="닫기">×</button></div><div class="doc-bd">${d.b().replace(/\n+<b>/g,'<b>')}</div></div>`;
+  ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('.doc-hd button'))ov.remove();});
+  document.body.appendChild(ov);
+}
+function agToggleAll(on){document.querySelectorAll('.sf-terms .ag').forEach(c=>c.checked=on);}
+function agSync(){const a=[...document.querySelectorAll('.sf-terms .ag')];document.getElementById('agAll').checked=a.every(c=>c.checked);}
+
+let _sfStep=1;
+function sfStep(n){
+  const ph=_signupRole==='pharm';if(!ph)n=1;_sfStep=n;
+  const g=id=>document.getElementById(id);
+  g('serr').style.display='none';
+  g('sfS1').style.display=n===1?'block':'none';
+  g('sfPharm').style.display=ph&&n===2?'block':'none';
+  g('sfSteps').style.display=ph?'flex':'none';
+  g('sfSteps').querySelectorAll('b').forEach((b,i)=>b.classList.toggle('on',i<n));
+  g('sfStepTx').textContent=n===1?'기본 정보':'면허 인증';
+  g('sfNote').style.display=ph&&n===2?'block':'none';
+  g('sfNextBtn').style.display=ph&&n===1?'block':'none';
+  g('signupBtn').style.display=!ph||n===2?'block':'none';
+  g('sfPrevBtn').style.display=ph&&n===2?'block':'none';
+  window.scrollTo(0,0);
+}
+function sfCheck1(){
+  const v=id=>document.getElementById(id).value;
+  if(!/^[가-힣a-zA-Z\s]{2,20}$/.test(v('sLicName').trim())){showErr('serr',_signupRole==='pharm'?'면허증에 적힌 실명을 입력해주세요':'실명을 입력해주세요');return false;}
+  if(!_phOk){showErr('serr','휴대폰 인증을 해주세요');return false;}
+  if(!/^[가-힣a-zA-Z0-9._-]{2,20}$/.test(v('snick').trim())){showErr('serr','닉네임은 2~20자, 한글·영문·숫자로 입력해주세요');return false;}
+  if(!/^[a-z0-9]{4,20}$/.test(v('sid').trim().toLowerCase())){showErr('serr','아이디는 영문·숫자 4~20자로 입력해주세요');return false;}
+  if(v('spw').length<8){showErr('serr','비밀번호는 8자 이상이에요');return false;}
+  if(v('spw')!==v('spw2')){showErr('serr','비밀번호가 일치하지 않아요');return false;}
+  const ck=id=>document.getElementById(id).checked;
+  if(!ck('ag14')){showErr('serr','만 14세 이상만 가입할 수 있어요');return false;}
+  if(!ck('agTos')||!ck('agPriv')){showErr('serr','필수 약관에 동의해주세요');return false;}
+  return true;
+}
+function sfNext(){document.getElementById('serr').style.display='none';if(sfCheck1())sfStep(2);}
 /* 가입 화면 면허증 사진 — 장변 1600px JPEG */
 function sOnLicPicked(inp){
   const f=inp.files&&inp.files[0];inp.value='';
@@ -2808,6 +2995,7 @@ async function doSignup(){
   const pw2=document.getElementById('spw2').value;
   const role=_signupRole;
   document.getElementById('serr').style.display='none';
+  if(!sfCheck1()){if(role==='pharm'&&_sfStep===2){const m=document.getElementById('serr').textContent;sfStep(1);showErr('serr',m);}return;}
   if(!/^[가-힣a-zA-Z0-9._-]{2,20}$/.test(nick)){showErr('serr','닉네임은 2~20자, 한글·영문·숫자로 입력해주세요');return;}
   if(!/^[a-z0-9]{4,20}$/.test(id)){showErr('serr','아이디는 영문·숫자 4~20자로 입력해주세요');return;}
   if(pw.length<8){showErr('serr','비밀번호는 8자 이상이에요');return;}
@@ -2830,7 +3018,7 @@ async function doSignup(){
     const legacy=await db.collection('users').doc(nick).get();
     if(!dupNick.empty||legacy.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
     const pwHash=await hashPw(pw);
-    const d={nick,role,pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4)};
+    const d={agreeAt:new Date().toISOString(),termsVer:TERMS_VER,marketing:document.getElementById('agMkt').checked,nick,role,realName:(document.getElementById('sLicName').value||'').trim(),pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4)};
     if(role==='pharm'){
       const dup=await db.collection('users').where('licNo','==',licNo).get();
       let taken=false;dup.forEach(x=>{const st=x.data().licStatus;if(st==='verified'||st==='pending')taken=true;});
@@ -3015,7 +3203,7 @@ function renderLicGate(){
       <div class="lg-t">${rejected?'인증이 반려되었어요':'약사 면허 인증이 필요해요'}</div>
       <div class="lg-d">${rejected
         ? '아래 사유를 확인하고 다시 신청해주세요.'
-        : '더나음의 데이터는 약사님들의 판단만으로<br>만들어집니다. 확인을 위해 한 번만 인증해주세요.'}</div>
+        : '집약처의 데이터는 약사님들의 판단만으로<br>만들어집니다. 확인을 위해 한 번만 인증해주세요.'}</div>
     </div>
     ${rejected&&d.licReason?`<div class="lg-reason">${esc(d.licReason)}</div>`:''}
     <div class="lg-card">
@@ -3236,7 +3424,7 @@ async function deleteAccount(){
 }
 /* 온보딩 */
 const OB_SLIDES=[
- {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16.5 15.5c2.3.2 4.5 1.7 4.5 4.5"/></svg>',t:'더나음에 오신 걸 환영해요',d:'환자에게 가장 좋은 선택을\n늘 고민하는 약사님께.\n그 고민을 이제 동료들과 함께 나눠요'},
+ {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16.5 15.5c2.3.2 4.5 1.7 4.5 4.5"/></svg>',t:'집약처에 오신 걸 환영해요',d:'환자에게 가장 좋은 선택을\n늘 고민하는 약사님께.\n그 고민을 이제 동료들과 함께 나눠요'},
  {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5v5l4-2.5z" fill="currentColor" stroke="none"/></svg>',t:'① 케이스를 만나요',d:'약국에서 마주하는 상황을\nAI 환자 케이스 영상으로 살펴봐요'},
  {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3h-6z"/><path d="M9 13l2 2l4-4"/></svg>',t:'② 직접 처방해요',d:'성분과 제품을 1~3순위로 고르고\n나만의 임상 근거를 적어요'},
  {ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg>',t:'③ 추천을 보내요',d:'공감되는 다른 약사의 처방에\n추천을 보내요'},
@@ -4680,7 +4868,7 @@ async function renderPeerCmt(){
   const stage = document.getElementById('peerStage');
   stage.innerHTML = '<div class="empty" style="padding:24px">로딩 중...</div>';
   await ensureResps();
-  PEER_RX = (RESP_CACHE||[]).filter(x => x.caseId === c.id && x.nick !== S.user?.nick);
+  PEER_RX = (RESP_CACHE||[]).filter(x => x.caseId === c.id && x.nick !== S.user?.nick && ugcOk(x,'resp'));
   _peerUsed = PEER_RX.filter(rx => (rx.recVoters||[]).includes(S.user?.nick)).length;
   _peerQ = _buildPeerQueue();
   PEER_DECK = _peerQ.splice(0,4);
@@ -4789,7 +4977,7 @@ function drawPeerRx(){
   }
   stage.style.display='grid'; tip.style.display='block'; empty.style.display='none';
   stage.innerHTML = PEER_DECK.map(rx =>
-    `<div class="pr-c" data-rid="${rx.id}"><div class="ov yes">추천</div><div class="ov no">패스</div><div class="pr-hd"><b>${esc(rx.nm||rx.nick||'약사')}</b> 의 처방전</div><p>${peerHL(rx)}</p></div>`).join('');
+    `<div class="pr-c" data-rid="${rx.id}"><div class="ov yes">추천</div><div class="ov no">패스</div><div class="pr-hd"><span><b>${esc(rx.nm||rx.nick||'약사')}</b> 의 처방전</span>${ugcDots('resp',rx.id,rx.nick)}</div><p>${peerHL(rx)}</p></div>`).join('');
   stage.querySelectorAll('.pr-c[data-rid]').forEach(el=>{
     _bindPeerCard(el, el.dataset.rid);
     const p=el.querySelector('p');
@@ -4999,13 +5187,13 @@ async function renderResult(){
     </div>`;}).join('') || '<div class="empty" style="padding:20px">아직 처방 데이터가 없어요</div>';
 
   /* 2) 추천 많은 소견 — 소견 글이 주인공 */
-  const topRx=[...resps].filter(r=>(r.recs||0)>0&&(r.summary||'').trim()).sort((a,b)=>(b.recs||0)-(a.recs||0)).slice(0,5);
+  const topRx=[...resps].filter(r=>(r.recs||0)>0&&(r.summary||'').trim()&&ugcOk(r,'resp')).sort((a,b)=>(b.recs||0)-(a.recs||0)).slice(0,5);
   const TU='<svg class="tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 2 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/></svg>';
   _resTop=topRx;
   document.getElementById('topRxList').innerHTML=topRx.length?topRx.map((r,i)=>{
     const me=r.nick===S.user?.nick;
     return `<div class="rcm${me?' mine':''}">
-      <div class="rcm-h"><span class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</span><span class="rcm-n">${TU} ${r.recs||0}</span></div>
+      <div class="rcm-h"><span class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</span><span class="rcm-n">${TU} ${r.recs||0}</span>${ugcDots('resp',r.id,r.nick)}</div>
       <div class="rcm-t" onclick="resZoom(${i})">${peerHL(r)}</div>
       <div class="rcm-by" onclick="openPharmacist('${jsArg(r.nick)}')">${_nickAvatar(r.nick,18)}${esc(r.nm||r.nick)}${me?'<span class="you">YOU</span>':''}</div>
     </div>`;}).join(''):'<div class="empty" style="padding:20px">아직 추천받은 소견이 없어요</div>';
@@ -5195,7 +5383,7 @@ function closeImgZoom(){
 function showClassifyInfo(){
   document.getElementById('popContent').innerHTML=`
     <div class="pop-title">제품 분류 안내</div>
-    <div style="font-size:13.5px;color:var(--t2);line-height:1.7">더나음에 등록된 제품은 약국 임상에서 자주 사용되는 <strong style="color:var(--pd)">대표성분</strong>과 <strong style="color:var(--pd)">약국유통전문 브랜드</strong>로 분류되었습니다.</div>
+    <div style="font-size:13.5px;color:var(--t2);line-height:1.7">집약처에 등록된 제품은 약국 임상에서 자주 사용되는 <strong style="color:var(--pd)">대표성분</strong>과 <strong style="color:var(--pd)">약국유통전문 브랜드</strong>로 분류되었습니다.</div>
     <div style="font-size:12px;color:var(--t3);line-height:1.6;margin-top:10px">계속 업데이트될 예정입니다.</div>
     <button class="btn" style="margin-top:18px" onclick="closePop()">확인</button>`;
   showPop();
@@ -6107,7 +6295,11 @@ async function dnProfileRender(){
   try{const d=await db.collection('users').doc(id).get();_dnUsers[id]=d.exists?d.data():{};}catch(e){}
   try{await loadPhotos([id]);}catch(e){}
   const u=_dnUsers[id]||{},member=u.role==='member';
-  const back=own?'':`<button class="dn-back" onclick="goTab('ranking')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>`;
+  if(!own&&UGC.blocked.has(id)){
+    el.innerHTML=`<button class="dn-back" onclick="goTab('ranking')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="empty" style="padding:60px 20px">차단한 사용자예요<br><button class="btn lbtn" style="margin-top:16px" onclick="ugcUnblock('${jsArg(id)}')">차단 해제</button></div>`;
+    return;
+  }
+  const back=own?'':`<span class="ugc-pf">${ugcDots('user',id,id)}</span><button class="dn-back" onclick="goTab('ranking')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>`;
   if(member){
     const mine=(await dnLoadPosts(true)).filter(p=>p.type==='ask'&&p.nick===id);
     el.innerHTML=`${back}<div class="dn-ph">${dnAv(id,72)}<div><b class="nm">${esc(u.nick||id)}</b><p>일반회원</p></div></div>
@@ -6119,7 +6311,7 @@ async function dnProfileRender(){
   const recs=resp.reduce((a,r)=>a+(r.recs||0),0);
   const mr=dnMonthRank(dnMonthKey()).filter(x=>x.s>0),ri=mr.findIndex(x=>x.id===id);
   const badge=dnIsCounselor(id);
-  const best=resp.filter(r=>(r.summary||'').trim()).sort((a,b)=>(b.recs||0)-(a.recs||0)).slice(0,2);
+  const best=resp.filter(r=>(r.summary||'').trim()&&ugcOk(r,'resp')).sort((a,b)=>(b.recs||0)-(a.recs||0)).slice(0,2);
   const ints=Array.isArray(u.interests)?u.interests:[];
   const row=(k,v,empty)=>v||own?`<div class="dn-kv"><span>${k}</span>${v?`<b>${v}</b>`:`<button class="lnk" onclick="dnEditProfile()">${empty}</button>`}</div>`:'';
   el.innerHTML=`${back}${own?'<button class="dn-edit" onclick="dnEditProfile()">편집</button>':''}
@@ -6128,11 +6320,11 @@ async function dnProfileRender(){
     ${(u.pharmacy||u.career||ints.length||own)?`<div class="dn-card">${row('약국',esc(u.pharmacy||''),'+ 약국 등록하기')}${row('경력',u.career?esc(u.career)+'년 차':'','+ 경력 입력')}${row('관심 분야',ints.map(x=>`<i class="dn-chip">${esc(x)}</i>`).join(''),'+ 관심 분야')}</div>`:''}
     ${best.length&&!dnIsMember()?`<div class="dn-sh"><b>추천 많이 받은 소견</b></div><div class="dn-desk">${best.map(r=>{const c=C.find(x=>x.id===r.caseId);return `<div class="dn-slip"><span>${esc(c?c.title:'')}</span><p>${peerHL(r)}</p><em>추천 ${r.recs||0}</em></div>`;}).join('')}</div>`:''}
     ${own?`<div class="dn-card dn-tg"><div><b>1:1 문의 받기</b><span>${badge?'상담 약사 · 이번 달 말까지':'지난달 Top 10 약사만 켤 수 있어요'}</span></div><button class="dn-sw ${u.dmOpen&&badge?'on':''}" ${badge?'':'disabled'} onclick="dnToggleDm()"><i></i></button></div>${dnSettingsHtml()}`
-      :(badge&&u.dmOpen&&dnIsMember()?`<button class="btn lbtn" style="margin-top:14px" onclick="dnDmCompose('${jsArg(id)}')">1:1 문의하기</button>`:'')}`;
+      :(badge&&u.dmOpen&&dnIsMember()&&!(u.blocked||[]).includes(S.user.nick)?`<button class="btn lbtn" style="margin-top:14px" onclick="dnDmCompose('${jsArg(id)}')">1:1 문의하기</button>`:'')}`;
 }
 function dnCaseGo(cid){for(const n of dnSetKeys()){const it=dnItems(n),i=it.findIndex(c=>String(c.id)===String(cid));if(i>=0){dnOpenStage(n,i);if(dnIsMember()||S.hist.some(h=>h.caseId===cid))setTimeout(dnRankOpen,350);return;}}startCase(cid);}
 function dnDmChip(id){const u=_dnUsers[id]||{};return u.dmOpen&&dnIsCounselor(id)?'<i class="dn-dmc">1:1</i>':'';}
-function dnSettingsHtml(){return `<div class="dn-set"><button onclick="logout()">로그아웃</button><span>|</span><button onclick="deleteAccount()">계정 삭제</button></div>`;}
+function dnSettingsHtml(){return `<div class="dn-set"><button onclick="logout()">로그아웃</button><span>|</span><button onclick="deleteAccount()">계정 삭제</button></div><div class="dn-set" style="margin-top:6px;font-size:12px"><button onclick="ugcBlockList()">차단 목록</button><span>|</span><button onclick="showDoc('tos')">이용약관</button><span>|</span><button onclick="showDoc('priv')">개인정보처리방침</button></div>`;}
 function dnEditProfile(){
   const u=_dnUsers[S.user.nick]||{};
   const bg=document.createElement('div');bg.className='dn-sheet-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
@@ -6237,6 +6429,7 @@ function dnDmCompose(to){
 }
 async function dnDmSubmit(to){
   const b=(document.getElementById('dmB').value||'').trim();if(!b){toast('내용을 적어주세요');return;}
+  try{const tu=await db.collection('users').doc(to).get();if(((tu.data()||{}).blocked||[]).includes(S.user.nick)){toast('이 약사에게는 문의할 수 없어요');return;}}catch(e){}
   const now=new Date().toISOString();
   try{const ref=await db.collection('posts').add({type:'dm',to,body:b,nick:S.user.nick,nm:S.user.name||S.user.nick,read:false,lastBody:b,lastAt:now,commentCount:0,createdAt:now});
     document.querySelector('.dn-sheet-bg')?.remove();toast('문의를 보냈어요');POSTS3=null;_dnCommSeg='dm';goTab('comm');}
@@ -6257,18 +6450,20 @@ async function dnThreadRender(quick){
   if(!quick)dnThreadRender(true);
   let cm=[];
   if(!quick){try{const sn=await db.collection('posts').doc(p.id).collection('comments').get();sn.forEach(d=>cm.push({id:d.id,...d.data()}));}catch(e){}
-  cm.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+  cm=cm.filter(x=>ugcOk(x,'cmt',p.id));cm.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
   await dnLoadUsers([p.nick,p.to,...cm.map(c=>c.nick)].filter(Boolean));}
   const me=S.user.nick,mem=dnIsMember();
   if(p.type==='dm'){const upd=mem?{unreadFrom:false}:{read:true};if(mem?p.unreadFrom:!p.read){db.collection('posts').doc(p.id).update(upd).catch(()=>{});Object.assign(p,upd);}}
-  const canWrite=p.type==='ask'?(!mem||p.nick===me):p.type==='dm'?(p.nick===me||p.to===me):!mem;
+  const dmOther=p.type==='dm'?(p.nick===me?p.to:p.nick):null;
+  const dmBlocked=!!dmOther&&(UGC.blocked.has(dmOther)||((_dnUsers[dmOther]||{}).blocked||[]).includes(me));
+  const canWrite=dmBlocked?false:p.type==='ask'?(!mem||p.nick===me):p.type==='dm'?(p.nick===me||p.to===me):!mem;
   const c=p.type==='case'?C.find(x=>x.id===p.caseId):null;
   const head=p.type==='case'?`<div class="dn-thc">${c&&c.videoUrl?`<video src="${c.videoUrl}#t=1" muted playsinline preload="metadata"></video>`:''}<i></i><div><em>케이스 토론방</em><b>${esc(p.title||'')}</b><span>이 케이스를 푼 약사만 볼 수 있어요</span></div></div>`
-    :`<div class="dn-card dn-thp">${p.type==='ask'?`<div class="m0">${p.secret?'🔒 비밀 글 · 약사만 볼 수 있어요':'공개 글'}</div>`:''}${p.title?`<b class="tt">${esc(p.title)}</b>`:''}<p>${esc(p.body||'')}</p><div class="m"><span class="nk">${esc(p.nm||dnNm(p.nick))}</span><span>${dnAgo(p.createdAt)}</span></div></div>`;
-  el.innerHTML=`<div class="dn-thtop"><button class="dn-back" onclick="goTab('comm')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><b>${p.type==='ask'?'고민 상담':p.type==='dm'?esc(dnNm(mem?p.to:p.nick)):p.type==='case'?'케이스 토론':'자유 토론'}</b></div>
+    :`<div class="dn-card dn-thp">${p.type==='ask'?`<div class="m0">${p.secret?'🔒 비밀 글 · 약사만 볼 수 있어요':'공개 글'}</div>`:''}${p.title?`<b class="tt">${esc(p.title)}</b>`:''}<p>${esc(p.body||'')}</p><div class="m"><span class="nk">${esc(p.nm||dnNm(p.nick))}</span><span>${dnAgo(p.createdAt)}</span>${ugcDots('post',p.id,p.nick)}</div></div>`;
+  el.innerHTML=`<div class="dn-thtop"><button class="dn-back" onclick="goTab('comm')" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><b>${p.type==='ask'?'고민 상담':p.type==='dm'?esc(dnNm(mem?p.to:p.nick)):p.type==='case'?'케이스 토론':'자유 토론'}</b>${p.type==='dm'?ugcDots('user',dmOther,dmOther):''}</div>
     ${head}
-    <div class="dn-card dn-cms">${quick?'<div class="empty" style="padding:20px">댓글 불러오는 중…</div>':''}${cm.map(x=>`<div class="dn-cm">${dnAv(x.nick,32,x.nm)}<div><div class="h"><b>${esc(x.nm||dnNm(x.nick))}</b><span>${dnAgo(x.createdAt)}</span></div><p>${esc(x.body||'')}</p></div></div>`).join('')||(quick?'':`<div class="empty" style="padding:20px">${p.type==='ask'?'약사님의 답변을 기다리고 있어요':'첫 의견을 남겨보세요'}</div>`)}</div>
-    ${p.type==='ask'&&!mem?'<p class="dn-note">일반적인 안내 위주로 답해주세요. 구체적인 약 선택은 약국 방문을 권해주세요.</p>':''}
+    <div class="dn-card dn-cms">${quick?'<div class="empty" style="padding:20px">댓글 불러오는 중…</div>':''}${cm.map(x=>`<div class="dn-cm">${dnAv(x.nick,32,x.nm)}<div><div class="h"><b>${esc(x.nm||dnNm(x.nick))}</b><span>${dnAgo(x.createdAt)}</span>${ugcDots('cmt',x.id,x.nick,p.id)}</div><p>${esc(x.body||'')}</p></div></div>`).join('')||(quick?'':`<div class="empty" style="padding:20px">${p.type==='ask'?'약사님의 답변을 기다리고 있어요':'첫 의견을 남겨보세요'}</div>`)}</div>
+    ${dmBlocked?'<p class="dn-note">대화할 수 없는 상대예요</p>':''}${p.type==='ask'&&!mem?'<p class="dn-note">일반적인 안내 위주로 답해주세요. 구체적인 약 선택은 약국 방문을 권해주세요.</p>':''}
     ${canWrite?`<div class="dn-inbar"><input class="inp" id="thIn" maxlength="500" placeholder="${p.type==='ask'&&!mem?'답변 남기기':'의견 남기기'}"><button onclick="dnThreadSend()">등록</button></div>`:''}`;
 }
 async function dnThreadSend(){
@@ -6346,14 +6541,14 @@ function dnPodGlow(){
 /* ===== 제품 랭킹 (고민 13칸) =====
    제품마다 칸이 정해지고(건기식 핵심성분 · 일반의약품 약효분류),
    케이스에 체크된 고민 칸과 겹치는 칸에만 약사 1명이 더해짐 */
-const PR_COL={'눈':'#4A7FB5','두뇌/기억':'#7B68A6','수면/스트레스':'#4C5A8C','피로/활력':'#D49A2A','소화/장':'#5E9A78','간':'#8A7A3E','뼈/근육':'#A08B6C','혈관/혈액':'#C2524A','혈당/다이어트':'#D9773B','피부':'#E09AA2','면역/항산화':'#3E8E8A','여성 건강':'#A8487A','남성 건강':'#5A6470'};
-const PR_CATS=['눈','두뇌/기억','수면/스트레스','피로/활력','소화/장','간','뼈/근육','혈관/혈액','혈당/다이어트','피부','면역/항산화','여성 건강','남성 건강'];
-const PR_ING={'항산화제':['면역/항산화'],'연골피부물질':['뼈/근육','피부'],'유산균':['소화/장'],'오메가3':['혈관/혈액','눈'],'밀크시슬':['간'],'미네랄비타민':['피로/활력'],'코엔자임Q10':['혈관/혈액','면역/항산화'],'철분':['혈관/혈액'],'프로폴리스':['면역/항산화','소화/장'],'강황(커큐민)':['뼈/근육','면역/항산화'],'루테인':['눈'],'은행잎':['혈관/혈액','두뇌/기억'],'칼슘마그네슘':['뼈/근육'],'엠에스엠':['뼈/근육'],'효소':['소화/장'],'아미노산':['피로/활력','뼈/근육'],'마그네슘':['뼈/근육','피로/활력','수면/스트레스'],'아티초크':['간'],'엽산':['혈관/혈액','여성 건강'],'베타글루칸':['면역/항산화'],'테아닌':['수면/스트레스'],'바나바잎':['혈당/다이어트'],'효모':['피부'],'포스파티딜세린':['두뇌/기억'],'홍경천':['수면/스트레스','피로/활력'],'비타민D':['뼈/근육','면역/항산화'],'비타민B군':['피로/활력'],'프리바이오틱스':['소화/장'],'식물스테롤':['혈관/혈액'],'감마리놀렌산':['여성 건강','혈관/혈액','피부'],'보스웰리아':['뼈/근육'],'아르지닌':['남성 건강','피로/활력','혈관/혈액'],'전칠삼':['혈관/혈액'],'요오드':[],'차전자피':['소화/장','혈관/혈액'],'후코이단':['면역/항산화'],'이노시톨':['여성 건강'],'아마씨유':['혈관/혈액'],'멜라토닌':['수면/스트레스'],'칼슘':['뼈/근육'],'홍삼':['면역/항산화','피로/활력'],'가르시니아':['혈당/다이어트'],'나토':['혈관/혈액'],'쏘팔메토':['남성 건강'],'레시친':['혈관/혈액'],'콜레우스포스콜리':['혈당/다이어트'],'스페인감초':['혈당/다이어트'],'크랜베리':['여성 건강'],'아연':['면역/항산화','남성 건강'],'비타민E':['면역/항산화'],'비타민C':['면역/항산화'],'비타민K':['뼈/근육','혈관/혈액'],'이소플라본':['여성 건강','뼈/근육'],'크롬':['혈당/다이어트'],'홍국':['혈관/혈액'],'빌베리':['눈'],'알파CD':['혈당/다이어트'],'맥주효모':['피부'],'초유':['면역/항산화'],'태반':['피부'],'푸룬':['소화/장'],'철':['혈관/혈액'],'헴철':['혈관/혈액'],'셀레늄':['면역/항산화']};
-const PR_OTC={'안과용제':['눈'],'건위소화제':['소화/장'],'건위소화제(내용액제에 한함)':['소화/장'],'제산제':['소화/장'],'정장제':['소화/장'],'하제, 완장제':['소화/장'],'기타의 소화기관용약':['소화/장'],'소화성궤양용제':['소화/장'],'치과구강용약':['소화/장'],'효소제제':['소화/장'],'소화기관용약':['소화/장'],'이담제':['간'],'간장질환용제':['간'],'칼슘제':['뼈/근육'],'비타민 A 및 D제':['뼈/근육','눈'],'단백아미노산제제':['피로/활력','뼈/근육'],'혈관보강제':['혈관/혈액'],'기타의 순환계용약':['혈관/혈액'],'동맥경화용제':['혈관/혈액'],'순환계용약':['혈관/혈액'],'최면진정제':['수면/스트레스'],'기타의 비타민제':['피로/활력'],'혼합비타민제(비타민AD 혼합제제를 제외)':['피로/활력'],'비타민 B제(비타민 B1을 제외)':['피로/활력'],'비타민 B1제':['피로/활력'],'기타의 자양강장변질제':['피로/활력'],'자양강장변질제':['피로/활력'],'종합대사성제제':['피로/활력'],'비타민제':['피로/활력'],'저함량 비타민 및 미네랄 제제':['피로/활력'],'비타민 C 및 P제':['면역/항산화'],'비타민 E 및 K제':['면역/항산화'],'모발용제(발모, 탈모, 염모, 양모제)':['피부'],'화농성질환용제':['피부'],'통경제':['여성 건강'],'기타의 비뇨생식기관 및 항문용약':['여성 건강','남성 건강']};
+const PR_COL={'영양':'#4F8A3C','눈':'#4A7FB5','두뇌/기억':'#7B68A6','수면/스트레스':'#4C5A8C','피로/활력':'#D49A2A','소화/장':'#5E9A78','간':'#8A7A3E','뼈/근육':'#A08B6C','혈관/혈액':'#C2524A','혈당/다이어트':'#D9773B','피부':'#E09AA2','면역/항산화':'#3E8E8A','여성 건강':'#A8487A','남성 건강':'#5A6470'};
+const PR_CATS=['영양','눈','두뇌/기억','수면/스트레스','피로/활력','소화/장','간','뼈/근육','혈관/혈액','혈당/다이어트','피부','면역/항산화','여성 건강','남성 건강'];
+const PR_ING={'항산화제':['면역/항산화'],'연골피부물질':['뼈/근육','피부'],'유산균':['소화/장'],'오메가3':['혈관/혈액','눈'],'밀크시슬':['간'],'미네랄비타민':['영양','피로/활력'],'코엔자임Q10':['혈관/혈액','면역/항산화'],'철분':['영양','혈관/혈액'],'프로폴리스':['면역/항산화','소화/장'],'강황(커큐민)':['뼈/근육','면역/항산화'],'루테인':['눈'],'은행잎':['혈관/혈액','두뇌/기억'],'칼슘마그네슘':['영양','뼈/근육'],'엠에스엠':['뼈/근육'],'효소':['소화/장'],'아미노산':['영양','피로/활력','뼈/근육'],'마그네슘':['영양','뼈/근육','피로/활력','수면/스트레스'],'아티초크':['간'],'엽산':['영양','혈관/혈액','여성 건강'],'베타글루칸':['면역/항산화'],'테아닌':['수면/스트레스'],'바나바잎':['혈당/다이어트'],'효모':['피부'],'포스파티딜세린':['두뇌/기억'],'홍경천':['수면/스트레스','피로/활력'],'비타민D':['영양','뼈/근육','면역/항산화'],'비타민B군':['영양','피로/활력'],'프리바이오틱스':['소화/장'],'식물스테롤':['혈관/혈액'],'감마리놀렌산':['여성 건강','혈관/혈액','피부'],'보스웰리아':['뼈/근육'],'아르지닌':['남성 건강','피로/활력','혈관/혈액'],'전칠삼':['혈관/혈액'],'요오드':[],'차전자피':['소화/장','혈관/혈액'],'후코이단':['면역/항산화'],'이노시톨':['여성 건강'],'아마씨유':['혈관/혈액'],'멜라토닌':['수면/스트레스'],'칼슘':['영양','뼈/근육'],'홍삼':['면역/항산화','피로/활력'],'가르시니아':['혈당/다이어트'],'나토':['혈관/혈액'],'쏘팔메토':['남성 건강'],'레시친':['혈관/혈액'],'콜레우스포스콜리':['혈당/다이어트'],'스페인감초':['혈당/다이어트'],'크랜베리':['여성 건강'],'아연':['영양','면역/항산화','남성 건강'],'비타민E':['영양','면역/항산화'],'비타민C':['영양','면역/항산화'],'비타민K':['영양','뼈/근육','혈관/혈액'],'이소플라본':['여성 건강','뼈/근육'],'크롬':['혈당/다이어트'],'홍국':['혈관/혈액'],'빌베리':['눈'],'알파CD':['혈당/다이어트'],'맥주효모':['피부'],'초유':['면역/항산화'],'태반':['피부'],'푸룬':['소화/장'],'철':['영양','혈관/혈액'],'헴철':['혈관/혈액'],'셀레늄':['영양','면역/항산화']};
+const PR_OTC={'안과용제':['눈'],'건위소화제':['소화/장'],'건위소화제(내용액제에 한함)':['소화/장'],'제산제':['소화/장'],'정장제':['소화/장'],'하제, 완장제':['소화/장'],'기타의 소화기관용약':['소화/장'],'소화성궤양용제':['소화/장'],'치과구강용약':['소화/장'],'효소제제':['소화/장'],'소화기관용약':['소화/장'],'이담제':['간'],'간장질환용제':['간'],'칼슘제':['영양','뼈/근육'],'비타민 A 및 D제':['영양','뼈/근육','눈'],'단백아미노산제제':['영양','피로/활력','뼈/근육'],'혈관보강제':['혈관/혈액'],'기타의 순환계용약':['혈관/혈액'],'동맥경화용제':['혈관/혈액'],'순환계용약':['혈관/혈액'],'최면진정제':['수면/스트레스'],'기타의 비타민제':['영양','피로/활력'],'혼합비타민제(비타민AD 혼합제제를 제외)':['영양','피로/활력'],'비타민 B제(비타민 B1을 제외)':['영양','피로/활력'],'비타민 B1제':['영양','피로/활력'],'기타의 자양강장변질제':['피로/활력'],'자양강장변질제':['피로/활력'],'종합대사성제제':['영양','피로/활력'],'비타민제':['영양','피로/활력'],'저함량 비타민 및 미네랄 제제':['영양','피로/활력'],'비타민 C 및 P제':['영양','면역/항산화'],'비타민 E 및 K제':['영양','면역/항산화'],'모발용제(발모, 탈모, 염모, 양모제)':['피부'],'화농성질환용제':['피부'],'통경제':['여성 건강'],'기타의 비뇨생식기관 및 항문용약':['여성 건강','남성 건강']};
 function prOtcCats(o){
   if(!o)return [];
   if(o.t==='무기질제제'){const g=(o.g||[]).join(' ');
-    if(/철/.test(g))return ['혈관/혈액'];if(/마그네슘/.test(g))return PR_ING['마그네슘'];if(/아연/.test(g))return PR_ING['아연'];if(/셀렌/.test(g))return ['면역/항산화'];return [];}
+    if(/철/.test(g))return ['영양','혈관/혈액'];if(/마그네슘/.test(g))return PR_ING['마그네슘'];if(/아연/.test(g))return PR_ING['아연'];if(/셀렌/.test(g))return ['면역/항산화'];return [];}
   return PR_OTC[o.t]||[];
 }
 function prIngCats(name){
@@ -6418,18 +6613,150 @@ function prOpen(i){
   const o=x.kind==='otc'?(OTC||[]).find(q=>x.pids.has(q.id)):null;
   const ings=p?(p.i||[]):o?(o.g||[]):[];
   const kindLb=x.kind==='otc'?'일반의약품':x.kind==='ing'?'성분':'건강기능식품';
-  const rs=[...new Map(x.resp.map(r=>[r.id,r])).values()].filter(r=>(r.summary||'').trim()).sort((a,b)=>(b.recs||0)-(a.recs||0));
+  const rs=[...new Map(x.resp.map(r=>[r.id,r])).values()].filter(r=>(r.summary||'').trim()&&ugcOk(r,'resp')).sort((a,b)=>(b.recs||0)-(a.recs||0));
   const bg=document.createElement('div');bg.className='dn-sheet-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
   bg.innerHTML=`<div class="dn-sheet pr-sheet">
     <div class="pr-dh"><span class="k">${kindLb}</span><b>${esc(x.name)}</b><em>${esc(x.co)}</em></div>
     ${ings.length?`<div class="pr-ing"><span>주요 성분</span><p>${ings.slice(0,8).map(esc).join(' · ')}</p></div>`:''}
     <div class="pr-stat">약사 <b>${x.n}</b>명이 선택했어요</div>
     <div class="pr-note">약사 개인 의견이며, 특정 제품을 권하는 광고가 아닙니다.</div>
-    <div class="pr-cms">${rs.length?rs.map(r=>{const c=C.find(q=>q.id===r.caseId);return `<div class="dn-slip pr-cm"><div class="h"><b>${esc(r.nm||dnNm(r.nick))}</b>${c?`<span>${esc(c.title)}</span>`:''}<em>추천 ${r.recs||0}</em></div><p>${peerHL(r)}</p></div>`;}).join(''):'<div class="empty" style="padding:16px">코멘트가 없어요</div>'}</div>
+    <div class="pr-cms">${rs.length?rs.map(r=>{const c=C.find(q=>q.id===r.caseId);return `<div class="dn-slip pr-cm"><div class="h"><b>${esc(r.nm||dnNm(r.nick))}</b>${c?`<span>${esc(c.title)}</span>`:''}<em>추천 ${r.recs||0}</em>${ugcDots('resp',r.id,r.nick)}</div><p>${peerHL(r)}</p></div>`;}).join(''):'<div class="empty" style="padding:16px">코멘트가 없어요</div>'}</div>
     <button class="btn lbtn" onclick="document.querySelector('.dn-sheet-bg')?.remove();_dnRankSeg='pharm';dnRankRender()">제품 문의 · 상담하기</button>
   </div>`;
   document.body.appendChild(bg);
 }
+
+/* ===== 신고 · 차단 =====
+   - 신고: reports/{대상키__신고자} 1건, 대상 문서 reporters에 추가, 서로 다른 3명이면 hidden:true
+   - 신고한 사람 화면에서는 즉시 숨김 (users.repHidden)
+   - 차단: users.blocked — 내 화면에서만 숨김, 랭킹 집계에는 영향 없음
+   - 정지: users.banned (관리자) → 로그인 불가 */
+const UGC_REASONS=['광고·홍보','욕설·비방','잘못되거나 위험한 정보','개인정보 노출','기타'];
+const UGC_HIDE_N=3;
+const UGC={blocked:new Set(),rep:new Set()};
+const UGC_DOT='<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
+function ugcInit(d){UGC.blocked=new Set((d&&d.blocked)||[]);UGC.rep=new Set((d&&d.repHidden)||[]);}
+function ugcKey(k,id,pid){return k+':'+(pid?pid+'/':'')+id;}
+function ugcMe(){return S.user&&S.user.nick;}
+/* 이 글을 지금 내 화면에 보여도 되는지 */
+function ugcOk(x,k,pid){
+  if(!x)return false;
+  const me=ugcMe();
+  if(k==='post'&&x.type==='dm'){const other=x.nick===me?x.to:x.nick;if(UGC.blocked.has(other))return false;}
+  if(x.nick&&x.nick===me)return true;
+  if(UGC.blocked.has(x.nick))return false;
+  if(x.hidden)return false;
+  if(UGC.rep.has(ugcKey(k,x.id,pid)))return false;
+  return true;
+}
+function ugcRef(k,id,pid){
+  if(k==='resp')return db.collection('responses').doc(id);
+  if(k==='post')return db.collection('posts').doc(id);
+  if(k==='cmt')return db.collection('posts').doc(pid).collection('comments').doc(id);
+  if(k==='user')return db.collection('users').doc(id);
+  return null;
+}
+/* ⋯ 버튼 (내 글에는 안 붙음) */
+function ugcDots(k,id,author,pid){
+  if(!author||author===ugcMe()||author==='admin')return '';
+  return `<button type="button" class="ugc-dot" aria-label="더보기" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation();ugcMenu('${k}','${jsArg(id)}','${jsArg(author)}','${jsArg(pid||'')}')">${UGC_DOT}</button>`;
+}
+function ugcSheet(html){
+  document.querySelectorAll('.ugc-bg').forEach(x=>x.remove());
+  const bg=document.createElement('div');bg.className='dn-sheet-bg ugc-bg';
+  bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  bg.innerHTML=`<div class="dn-sheet ugc-sh">${html}</div>`;
+  document.body.appendChild(bg);return bg;
+}
+function ugcClose(){document.querySelectorAll('.ugc-bg').forEach(x=>x.remove());}
+function ugcMenu(k,id,author,pid){
+  const nm=esc(dnNm(author));
+  ugcSheet(`<button class="ugc-it" onclick="ugcReport('${k}','${jsArg(id)}','${jsArg(author)}','${jsArg(pid)}')">${k==='user'?'이 사용자 신고하기':'신고하기'}</button>
+    ${UGC.blocked.has(author)?`<button class="ugc-it" onclick="ugcUnblock('${jsArg(author)}')">${nm} 차단 해제</button>`
+      :`<button class="ugc-it red" onclick="ugcBlock('${jsArg(author)}')">${nm} 차단하기</button>`}
+    <button class="ugc-it gray" onclick="ugcClose()">취소</button>`);
+}
+function ugcReport(k,id,author,pid){
+  ugcSheet(`<b class="t">신고 사유를 골라주세요</b>
+    <div class="ugc-rs">${UGC_REASONS.map((r,i)=>`<label><input type="radio" name="ugcR" value="${r}"${i===0?' checked':''} onchange="document.getElementById('ugcMemo').style.display=this.value==='기타'?'block':'none'"><span>${r}</span></label>`).join('')}</div>
+    <textarea class="inp" id="ugcMemo" rows="3" maxlength="200" placeholder="내용을 적어주세요" style="display:none;margin-top:8px"></textarea>
+    <p class="dn-note" style="text-align:left">신고한 글은 바로 내 화면에서 사라지고, 운영자가 검토해 조치해요. 여러 명이 신고하면 모두에게서 숨겨져요.</p>
+    <button class="btn lbtn" id="ugcGo" onclick="ugcSubmit('${k}','${jsArg(id)}','${jsArg(author)}','${jsArg(pid)}')">신고하기</button>`);
+}
+async function ugcSubmit(k,id,author,pid){
+  const me=ugcMe();if(!me)return;
+  const reason=(document.querySelector('input[name="ugcR"]:checked')||{}).value||'기타';
+  const memo=(document.getElementById('ugcMemo')?.value||'').trim();
+  if(reason==='기타'&&!memo){toast('신고 내용을 적어주세요');return;}
+  const key=ugcKey(k,id,pid),now=new Date().toISOString(),FV=firebase.firestore.FieldValue;
+  const btn=document.getElementById('ugcGo');if(btn){btn.disabled=true;btn.textContent='보내는 중…';}
+  try{
+    await db.collection('reports').doc((key+'__'+me).replace(/[\/]/g,'_')).set({kind:k,tid:id,pid:pid||'',author,reason,memo,reporter:me,createdAt:now,status:'open'});
+    if(k!=='user'){
+      const ref=ugcRef(k,id,pid);
+      await ref.update({reporters:FV.arrayUnion(me)});
+      const s=await ref.get(),x=s.data()||{};
+      if((x.reporters||[]).length>=UGC_HIDE_N&&!x.hidden)await ref.update({hidden:true,hiddenAt:now});
+      UGC.rep.add(key);
+      await db.collection('users').doc(me).update({repHidden:FV.arrayUnion(key)}).catch(()=>{});
+    }
+  }catch(e){console.log('신고 실패',e);toast('신고하지 못했어요');if(btn){btn.disabled=false;btn.textContent='신고하기';}return;}
+  ugcClose();toast('신고했어요. 검토 후 조치할게요');
+  if(k!=='user')ugcRefresh();
+}
+async function ugcBlock(nick){
+  const me=ugcMe();if(!me||nick===me)return;
+  if(!confirm(`${dnNm(nick)}님을 차단할까요?\n\n이 사람의 글·댓글·메시지가 보이지 않고, 나에게 1:1 문의를 보낼 수 없어요. MY에서 언제든 풀 수 있어요.`))return;
+  try{await db.collection('users').doc(me).update({blocked:firebase.firestore.FieldValue.arrayUnion(nick)});}
+  catch(e){toast('차단하지 못했어요');return;}
+  UGC.blocked.add(nick);if(_dnUsers[me])_dnUsers[me].blocked=[...UGC.blocked];
+  ugcClose();toast('차단했어요');ugcRefresh();
+}
+async function ugcUnblock(nick){
+  const me=ugcMe();if(!me)return;
+  try{await db.collection('users').doc(me).update({blocked:firebase.firestore.FieldValue.arrayRemove(nick)});}
+  catch(e){toast('해제하지 못했어요');return;}
+  UGC.blocked.delete(nick);if(_dnUsers[me])_dnUsers[me].blocked=[...UGC.blocked];
+  ugcClose();toast('차단을 풀었어요');ugcRefresh();
+}
+/* MY → 차단 목록 */
+async function ugcBlockList(){
+  const ids=[...UGC.blocked];
+  if(ids.length)try{await dnLoadUsers(ids);}catch(e){}
+  ugcSheet(`<b class="t">차단한 사용자</b>
+    ${ids.length?ids.map(id=>`<div class="ugc-bl"><span>${dnAv(id,32)}<b>${esc(dnNm(id))}</b></span><button onclick="ugcUnblock('${jsArg(id)}').then(ugcBlockList)">해제</button></div>`).join('')
+      :'<div class="empty" style="padding:24px">차단한 사용자가 없어요</div>'}
+    <button class="ugc-it gray" onclick="ugcClose()">닫기</button>`);
+}
+/* 지금 보고 있는 화면 다시 그리기 */
+function ugcRefresh(){
+  const on=id=>document.getElementById(id)?.classList.contains('on');
+  document.querySelectorAll('.pr-sheet').forEach(s=>s.closest('.dn-sheet-bg')?.remove());
+  if(Array.isArray(POSTS3))POSTS3=POSTS3.filter(p=>ugcOk(p,'post'));
+  if(on('dnThread')){const p=(POSTS3||[]).find(x=>x.id===_dnTh);if(p)dnThreadRender();else goTab('comm');}
+  else if(on('dnComm'))dnCommRender();
+  else if(on('dnProfile'))dnProfileRender();
+  else if(on('peerCmtScreen')){PEER_RX=PEER_RX.filter(x=>ugcOk(x,'resp'));PEER_DECK=PEER_DECK.filter(x=>ugcOk(x,'resp'));_peerQ=_peerQ.filter(x=>ugcOk(x,'resp'));drawPeerRx();}
+  else if(on('resultScreen'))renderResult();
+  else if(on('dnRank'))dnRankRender();
+}
+
+/* 로그인 직후: 차단·신고 목록 불러오기 + 정지 계정 차단 */
+const _ugcAA=afterAuth;
+afterAuth=async function(d){
+  if(d&&d.banned){
+    try{localStorage.removeItem('deonaeum_nick');}catch(e){}
+    S.user=null;gs('loginScreen');switchLTab('login');
+    showErr('lerr','이용이 정지된 계정이에요. 문의: '+OP_MAIL);
+    return;
+  }
+  ugcInit(d);
+  return _ugcAA(d);
+};
+
+/* 게시판 목록: 숨김·차단 글 제외 */
+const _ugcLP=dnLoadPosts;
+dnLoadPosts=async function(force){const r=await _ugcLP(force);if(Array.isArray(POSTS3))POSTS3=POSTS3.filter(p=>ugcOk(p,'post'));return POSTS3;};
 </script>
 </body>
 </html>

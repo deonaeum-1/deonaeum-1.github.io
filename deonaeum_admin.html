@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>더나음 — 관리자</title>
+<title>집약처 — 관리자</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--primary:#0F6E56;--pl:#1D9E75;--pb:#E1F5EE;--pd:#085041;--bg:#F5F5F2;--card:#fff;--border:#E0E0DD;--t:#1A1A1A;--t2:#6B6B6B;--t3:#9B9B9B;--red:#D85A30}
@@ -87,7 +87,7 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
 
 <div class="topbar">
   <div>
-    <div class="topbar-title">더나음 관리자</div>
+    <div class="topbar-title">집약처 관리자</div>
     <div class="topbar-sub">케이스 · 제품 관리</div>
   </div>
   <div style="font-size:11px;opacity:.7">deonaeum-abcab</div>
@@ -97,9 +97,11 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
   <div class="tabs">
     <button class="tab on" onclick="switchTab('cases',this)">케이스</button>
     <button class="tab" onclick="switchTab('products',this)">제품</button>
-    <button class="tab" onclick="switchTab('notices',this)">더나음 소식</button>
+    <button class="tab" onclick="switchTab('notices',this)">집약처 소식</button>
     <button class="tab" onclick="switchTab('lounge',this)">약사 라운지</button>
     <button class="tab" onclick="switchTab('lic',this)">약사 인증 <span id="licBadge" style="display:none;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px"></span></button>
+    <button class="tab" onclick="switchTab('reports',this)">신고 <span id="repBadge" style="display:none;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px"></span></button>
+    <button class="tab" onclick="switchTab('members',this)">회원</button>
   </div>
 
   <!-- 케이스 탭 -->
@@ -121,7 +123,7 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
       <div class="field">
         <label>엑셀 파일 선택</label>
         <input type="file" id="xlsxFile" accept=".xlsx,.xls" onchange="handleXlsx(this)" style="padding:10px;background:var(--bg);border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;width:100%">
-        <div class="field-hint">더나음 제품 양식 파일 업로드 (회사명·제품명·분류·대표성분1·대표성분2·대표성분3·상세성분·용법용량 8열)</div>
+        <div class="field-hint">집약처 제품 양식 파일 업로드 (회사명·제품명·분류·대표성분1·대표성분2·대표성분3·상세성분·용법용량 8열)</div>
       </div>
       <div id="xlsxPreview" style="display:none">
         <div class="sec-divider">미리보기 (<span id="previewCount">0</span>개 제품)</div>
@@ -139,7 +141,7 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
   <!-- 더나음 소식 탭 -->
   <div id="noticesTab" style="display:none">
     <div class="form-wrap">
-      <div class="form-title">📢 더나음 소식 작성</div>
+      <div class="form-title">📢 집약처 소식 작성</div>
       <div class="field"><label>유형</label>
         <select id="nType" onchange="toggleNoticeType()">
           <option value="text">일반 공지</option>
@@ -182,6 +184,22 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
       <button class="tag-add-btn" onclick="toggleLicView()" id="licViewBtn" style="flex:1">인증 완료 목록 보기</button>
     </div>
     <div id="licList"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <div id="reportsTab" style="display:none">
+    <div class="form-title" style="margin:4px 0 12px">신고 처리 <span style="font-size:12px;font-weight:400;color:#888">· 약관상 24시간 안에 처리 · 3명 이상 신고되면 앱에서 자동 숨김</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:14px"><button class="tag-add-btn" onclick="loadReports()" style="flex:1">새로고침</button></div>
+    <div id="repList"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <div id="membersTab" style="display:none">
+    <div class="form-title" style="margin:4px 0 12px">회원 목록 <span id="memCount" style="font-size:12px;font-weight:400;color:#888"></span></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input id="memQ" class="tag-inp" placeholder="실명 · 닉네임 · 아이디 검색" oninput="renderMembers()" style="flex:2">
+      <select id="memRole" class="tag-inp" onchange="renderMembers()" style="flex:1"><option value="">전체</option><option value="pharm">약사</option><option value="member">일반회원</option></select>
+      <button class="tag-add-btn" onclick="loadMembers()" style="flex:1">새로고침</button>
+    </div>
+    <div id="memList"><div class="empty">로딩 중...</div></div>
   </div>
 
 </div>
@@ -291,6 +309,14 @@ window._fbReady = true;
     if(b&&s.size){b.textContent=s.size;b.style.display='inline-block';}
   }catch(e){}
 })();
+(async()=>{
+  try{
+    const s=await db.collection('reports').where('status','==','open').get();
+    const n=new Set();s.forEach(d=>{const x=d.data();n.add(x.kind+'|'+x.tid+'|'+(x.pid||''));});
+    const b=document.getElementById('repBadge');
+    if(b&&n.size){b.textContent=n.size;b.style.display='inline-block';}
+  }catch(e){}
+})();
 
 </script>
 
@@ -308,7 +334,101 @@ function switchTab(t, btn) {
   document.getElementById('noticesTab').style.display = t==='notices'?'block':'none';
   document.getElementById('loungeTab').style.display = t==='lounge'?'block':'none';
   document.getElementById('licTab').style.display = t==='lic'?'block':'none';
+  document.getElementById('membersTab').style.display = t==='members'?'block':'none';
   if(t==='lic') loadLicenses();
+  if(t==='members') loadMembers();
+  document.getElementById('reportsTab').style.display = t==='reports'?'block':'none';
+  if(t==='reports') loadReports();
+}
+/* ── 신고 ── */
+const REP_KIND={resp:'처방 소견',post:'게시글',cmt:'댓글',user:'사용자'};
+let _repG=[];
+function _repRef(k,id,pid){
+  const db=window._db;
+  if(k==='resp')return db.collection('responses').doc(id);
+  if(k==='post')return db.collection('posts').doc(id);
+  if(k==='cmt')return db.collection('posts').doc(pid).collection('comments').doc(id);
+  if(k==='user')return db.collection('users').doc(id);
+}
+async function loadReports(){
+  const el=document.getElementById('repList');el.innerHTML='<div class="empty">로딩 중...</div>';
+  try{
+    const snap=await window._db.collection('reports').where('status','==','open').get();
+    const g={};
+    snap.forEach(d=>{const x=d.data();const k=x.kind+'|'+x.tid+'|'+(x.pid||'');(g[k]=g[k]||{kind:x.kind,tid:x.tid,pid:x.pid||'',author:x.author,items:[]}).items.push({id:d.id,...x});});
+    _repG=Object.values(g).sort((a,b)=>b.items.length-a.items.length);
+    const badge=document.getElementById('repBadge');badge.textContent=_repG.length;badge.style.display=_repG.length?'inline-block':'none';
+    if(!_repG.length){el.innerHTML='<div class="empty">처리할 신고가 없습니다.</div>';return;}
+    await Promise.all(_repG.map(async r=>{try{const d=await _repRef(r.kind,r.tid,r.pid).get();r.doc=d.exists?d.data():null;}catch(e){r.doc=null;}}));
+    el.innerHTML=_repG.map((r,i)=>{
+      const x=r.doc||{};
+      const text=r.kind==='resp'?(x.summary||''):r.kind==='post'?((x.title?x.title+'\n':'')+(x.body||'')):r.kind==='cmt'?(x.body||''):('닉네임: '+(x.nick||r.tid)+(x.bio?'\n소개: '+x.bio:''));
+      const rs={};r.items.forEach(it=>rs[it.reason]=(rs[it.reason]||0)+1);
+      const memos=r.items.filter(it=>it.memo).map(it=>`<div style="font-size:12px;color:var(--t2)">· ${_esc(it.memo)} <span style="color:#aaa">(${_esc(it.reporter)})</span></div>`).join('');
+      const last=r.items.map(it=>it.createdAt).sort().pop()||'';
+      return `<div class="form-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px">
+          <div style="font-size:15px;font-weight:700">${REP_KIND[r.kind]||r.kind} <span style="color:var(--red)">신고 ${r.items.length}건</span>${x.hidden?' <span style="font-size:11px;background:#F5E3E1;color:var(--red);border-radius:6px;padding:2px 6px">자동 숨김 중</span>':''}</div>
+          <div style="font-size:12px;color:var(--t3)">${last?new Date(last).toLocaleString('ko-KR'):''}</div>
+        </div>
+        <div style="font-size:13px;color:var(--t2);margin-bottom:6px">작성자 <b>${_esc(r.author)}</b> · ${Object.entries(rs).map(([k,n])=>_esc(k)+' '+n).join(' · ')}</div>
+        <div style="white-space:pre-wrap;font-size:14px;line-height:1.6;background:#FAFAF8;border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;max-height:200px;overflow:auto">${r.doc?_esc(text)||'(내용 없음)':'<span style="color:#aaa">이미 삭제된 글</span>'}</div>
+        ${memos}
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn-save" onclick="repAct(${i},'ok')">문제 없음</button>
+          ${r.kind!=='user'&&r.doc?`<button class="btn-del" onclick="repAct(${i},'del')">글 삭제</button>`:''}
+          <button class="btn-del" onclick="repAct(${i},'ban')">작성자 이용 정지</button>
+        </div>
+      </div>`;}).join('');
+  }catch(e){console.log(e);el.innerHTML='<div class="empty">불러오기에 실패했습니다.</div>';}
+}
+async function repAct(i,act){
+  const r=_repG[i];if(!r)return;
+  const msg={ok:'문제 없음으로 처리하고 숨김을 풀까요?',del:'이 글을 삭제할까요? 되돌릴 수 없습니다.',ban:`${r.author} 님을 이용 정지할까요?\n정지되면 로그인할 수 없고, 신고된 글은 숨겨집니다.`}[act];
+  if(!confirm(msg))return;
+  const db=window._db,FV=firebase.firestore.FieldValue,ref=_repRef(r.kind,r.tid,r.pid),now=new Date().toISOString();
+  try{
+    if(act==='ok'&&r.kind!=='user'&&r.doc)await ref.update({hidden:false,reporters:[]});
+    if(act==='del'){
+      await ref.delete();
+      if(r.kind==='cmt')await db.collection('posts').doc(r.pid).update({commentCount:FV.increment(-1)}).catch(()=>{});
+    }
+    if(act==='ban'){
+      await db.collection('users').doc(r.author).update({banned:true,bannedAt:now});
+      if(r.kind!=='user'&&r.doc)await ref.update({hidden:true}).catch(()=>{});
+    }
+    const st={ok:'dismissed',del:'removed',ban:'banned'}[act];
+    await Promise.all(r.items.map(it=>db.collection('reports').doc(it.id).update({status:st,doneAt:now})));
+    loadReports();
+  }catch(e){console.log(e);alert('처리하지 못했습니다');}
+}
+async function unbanUser(id){
+  if(!confirm(id+' 님의 이용 정지를 풀까요?'))return;
+  try{await window._db.collection('users').doc(id).update({banned:false});const m=_mem.find(x=>x.id===id);if(m)m.banned=false;renderMembers();}catch(e){alert('처리하지 못했습니다');}
+}
+let _mem=[];
+const _esc=v=>String(v==null?'':v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function loadMembers(){
+  const el=document.getElementById('memList');el.innerHTML='<div class="empty">로딩 중...</div>';
+  try{
+    const snap=await window._db.collection('users').get();
+    _mem=[];snap.forEach(d=>{const x=d.data();_mem.push({id:d.id,nick:x.nick||d.id,real:x.realName||x.licName||'',role:x.role||'',lic:x.licStatus||'',tail:x.phoneTail||'',at:x.createdAt||'',demo:!!(x.demo||x.demoProfile),banned:!!x.banned});});
+    _mem.sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+    renderMembers();
+  }catch(e){console.log(e);el.innerHTML='<div class="empty">불러오기에 실패했습니다.</div>';}
+}
+function renderMembers(){
+  const q=(document.getElementById('memQ').value||'').trim().toLowerCase(),rf=document.getElementById('memRole').value;
+  const rows=_mem.filter(m=>(!rf||m.role===rf)&&(!q||(m.real+' '+m.nick+' '+m.id).toLowerCase().includes(q)));
+  document.getElementById('memCount').textContent='· '+rows.length+'명';
+  const LS={verified:'인증',pending:'심사중',rejected:'반려'};
+  document.getElementById('memList').innerHTML=rows.length?`<div class="form-wrap" style="padding:0;overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">
+    <tr style="background:#F7F5F0;text-align:left"><th style="padding:10px">실명</th><th>닉네임 (아이디)</th><th>구분</th><th>휴대폰</th><th>가입일</th></tr>
+    ${rows.map(m=>`<tr style="border-top:1px solid var(--border)"><td style="padding:10px;font-weight:700">${m.real?_esc(m.real):'<span style="color:#aaa;font-weight:400">미입력</span>'}</td>
+      <td>${_esc(m.nick)}${m.nick!==m.id?' <span style="color:#999">@'+_esc(m.id)+'</span>':''}${m.demo?' <span style="color:#C2524A;font-size:11px">예시</span>':''}</td>
+      <td>${m.banned?`<span style="color:var(--red);font-weight:700">정지</span> <button onclick="unbanUser('${_esc(m.id)}')" style="font-size:11px;border:1px solid var(--border);background:#fff;border-radius:6px;padding:1px 6px;cursor:pointer">해제</button><br>`:''}${m.role==='pharm'?'약사'+(m.lic?' · '+(LS[m.lic]||m.lic):''):m.role==='member'?'일반회원':_esc(m.role||'-')}</td>
+      <td>${m.tail?'···'+_esc(m.tail):'-'}</td><td style="white-space:nowrap;padding-right:10px">${String(m.at).slice(0,10)||'-'}</td></tr>`).join('')}
+  </table></div>`:'<div class="empty">회원이 없습니다.</div>';
 }
 
 /* ── LOAD CASES ── */
@@ -452,7 +572,7 @@ function previewVideo() {
   wrap.querySelector('video').load();
 }
 
-const CONCERNS=['눈','두뇌/기억','수면/스트레스','피로/활력','소화/장','간','뼈/근육','혈관/혈액','혈당/다이어트','피부','면역/항산화','여성 건강','남성 건강'];
+const CONCERNS=['영양','눈','두뇌/기억','수면/스트레스','피로/활력','소화/장','간','뼈/근육','혈관/혈액','혈당/다이어트','피부','면역/항산화','여성 건강','남성 건강'];
 function renderConcerns(sel){
   document.getElementById('concernWrap').innerHTML=CONCERNS.map(k=>`<label style="display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border:1.5px solid var(--border);border-radius:18px;font-size:13px;font-weight:600;cursor:pointer;margin:0"><input type="checkbox" value="${k}" ${sel.includes(k)?'checked':''} style="width:auto;margin:0">${k}</label>`).join('');
 }
