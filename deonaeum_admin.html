@@ -205,6 +205,13 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
     <div class="form-title" style="margin:4px 0 12px">신고 처리 <span style="font-size:12px;font-weight:400;color:#888">· 약관상 24시간 안에 처리 · 3명 이상 신고되면 앱에서 자동 숨김</span></div>
     <div style="display:flex;gap:8px;margin-bottom:14px"><button class="tag-add-btn" onclick="loadReports()" style="flex:1">새로고침</button></div>
     <div id="repList"><div class="empty">로딩 중...</div></div>
+    <div class="form-wrap" style="margin-top:14px">
+      <div class="form-title">금칙어 <span style="font-size:12px;font-weight:400;color:#888">· 소견·글·댓글·쪽지·닉네임·프로필에 적용 · 쉼표나 줄바꿈으로 구분</span></div>
+      <div class="field"><label>추가 금칙어 (기본 목록에 더해짐)</label><textarea id="bwWords" rows="4" placeholder="예: 돌팔이, 사기꾼"></textarea></div>
+      <div class="field"><label>예외 단어 (금칙어가 들어 있어도 허용)</label><textarea id="bwAllow" rows="2" placeholder="예: 씹쌀, 새끼손가락"></textarea></div>
+      <div class="btn-row"><button class="btn-save" onclick="saveBadwords()">저장</button><button class="tag-add-btn" onclick="loadBadwords()">불러오기</button></div>
+      <div id="bwMsg" style="font-size:13px;margin-top:8px;color:var(--t2)"></div>
+    </div>
   </div>
 
   <div id="preqTab" style="display:none">
@@ -475,6 +482,19 @@ function switchTab(t, btn) {
   if(t==='preq') loadPreq();
   document.getElementById('reportsTab').style.display = t==='reports'?'block':'none';
   if(t==='reports') loadReports();
+  if(t==='reports') loadBadwords();
+}
+/* ── 금칙어 ── */
+const _bwSplit=t=>[...new Set(String(t||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean))];
+async function loadBadwords(){
+  try{const d=await db.collection('config').doc('badwords').get();const x=d.exists?d.data():{};
+    document.getElementById('bwWords').value=(x.words||[]).join(', ');document.getElementById('bwAllow').value=(x.allow||[]).join(', ');
+    document.getElementById('bwMsg').textContent=`추가 금칙어 ${(x.words||[]).length}개 · 예외 ${(x.allow||[]).length}개`;}catch(e){}
+}
+async function saveBadwords(){
+  const words=_bwSplit(document.getElementById('bwWords').value),allow=_bwSplit(document.getElementById('bwAllow').value);
+  try{await db.collection('config').doc('badwords').set({words,allow,updatedAt:new Date().toISOString()});document.getElementById('bwMsg').textContent=`저장했습니다 · 추가 금칙어 ${words.length}개 · 예외 ${allow.length}개 (앱은 다시 열 때 반영)`;}
+  catch(e){alert('저장하지 못했습니다');}
 }
 /* ── 신고 ── */
 const REP_KIND={resp:'처방 소견',post:'게시글',cmt:'댓글',user:'사용자'};

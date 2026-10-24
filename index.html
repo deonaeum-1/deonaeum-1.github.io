@@ -563,6 +563,8 @@ body{
 .pr-hl.otc{background:#E0F5F1;color:#0F9D8A;box-shadow:0 0 0 2px #E0F5F1}
 .pr-hl.ing{background:#FFF4CC;color:#A67600;box-shadow:0 0 0 2px #FFF4CC}
 .pr-hl.user{background:#EEF0F3;color:#6B7684;box-shadow:0 0 0 2px #EEF0F3}
+.pr-hl.herb{background:#F3E4DC;color:#A3553A;box-shadow:0 0 0 2px #F3E4DC}
+.pr-hl.food{background:#FCEBDD;color:#E07B39;box-shadow:0 0 0 2px #FCEBDD}
 .pr-tip{text-align:center;font-size:14px;font-weight:600;color:var(--t2);padding:0 0 10px}
 .pr-zoom{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom))}
 .pr-zoom.on{display:flex}
@@ -1642,9 +1644,10 @@ body{
 .rx-tag-nm{flex:1;min-width:0;font-size:14px;font-weight:700;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rx-kind{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0}
 .rx-kind.core{background:#E8F2FF;color:#3182F6}
-.rx-kind.food{background:#FBF1DF;color:#B7791F}
+.rx-kind.food{background:#FCEBDD;color:#E07B39}
 .rx-kind.otc{background:#E0F5F1;color:#0F9D8A}
-.rx-kind.ing{background:#EEF0F3;color:#6B7684}
+.rx-kind.ing{background:#FFF4CC;color:#A67600}
+.rx-kind.herb{background:#F3E4DC;color:#A3553A}
 .rx-tag-btn{width:26px;height:26px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--t3);font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
 .rx-tag-sub{font-size:11px;color:var(--t3);margin:3px 0 0 30px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rx-purps{display:flex;gap:6px;overflow-x:auto;margin:8px 0 0 30px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -1672,9 +1675,10 @@ body{
 .rx-chip .co{font-weight:600;color:var(--t3);font-size:12px;flex:none}
 .rx-chip button{flex:none;border:none;background:none;color:var(--t3);font-size:15px;line-height:1;padding:0 4px;cursor:pointer}
 .rx-chip.k-otc,.rx-hl mark.k-otc{--kc:#0F9D8A;--kb:#E0F5F1}
-.rx-chip.k-food,.rx-hl mark.k-food{--kc:#B7791F;--kb:#FBF1DF}
+.rx-chip.k-food,.rx-hl mark.k-food{--kc:#E07B39;--kb:#FCEBDD}
 .rx-chip.k-ing,.rx-hl mark.k-ing{--kc:#E0A000;--kb:#FFF4CC}
 .rx-chip.k-user,.rx-hl mark.k-user{--kc:#8B95A1;--kb:#EEF0F3}
+.rx-chip.k-herb,.rx-hl mark.k-herb{--kc:#A3553A;--kb:#F3E4DC}
 .rx-list{max-height:216px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .rx-li{display:flex;align-items:center;gap:10px;width:100%;padding:9px 16px;border:none;border-bottom:1px solid var(--bd-soft);background:none;text-align:left;cursor:pointer;font-family:inherit}
 .rx-li:last-child{border-bottom:none}
@@ -1750,7 +1754,16 @@ body{
 .dn-shelfrow{display:flex;align-items:flex-end;gap:12px;justify-content:center;transform:scale(1.3);transform-origin:center bottom}
 .dn-pr{display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative}
 .dn-pr .lb{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:9px;font-weight:900;color:#191F28;background:#fff;padding:1px 4px;border-radius:3px;letter-spacing:-.03em}
-.dn-pr.bottle .lb{top:28px}.dn-pr.tube .lb{top:9px;left:44%}.dn-pr.stick .lb{top:18px}
+.dn-pr.bottle .lb{top:28px}.dn-pr.tube .lb{top:9px;left:44%}.dn-pr.stick .lb{top:18px}.dn-pr.jar .lb{top:25px;color:#191F28;background:none;padding:0;width:40px;white-space:normal;line-height:1.1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;letter-spacing:-.03em;word-break:keep-all}
+.dn-pr.carton .lb{top:33px;color:#fff;background:none;padding:0;width:32px;white-space:normal;line-height:1.1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;letter-spacing:-.03em;word-break:keep-all}
+.dn-pr.carton{margin-bottom:20px}.dn-pr.jar{margin-bottom:12px}
+.dn-pr.tile .tl,.dn-pr.round .tl{width:62px;height:40px;border-radius:6px;background:#fff;border:2px solid var(--kc);color:#191F28;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;letter-spacing:-.03em;padding:2px;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.dn-pr.tile{margin-bottom:10px}
+.dn-pr.round .tl{width:52px;height:52px;border-radius:50%;padding:4px}.dn-pr.round{margin-bottom:8px}
+.dn-pr .bx .rx{position:absolute;left:5px;bottom:5px;width:12px;height:12px;border-radius:3px;background:#E0F5F1}
+.dn-pr .bx .rx::before,.dn-pr .bx .rx::after{content:'';position:absolute;left:5px;top:2.5px;width:2px;height:7px;background:var(--kc);border-radius:1px}
+.dn-pr .bx .rx::after{transform:rotate(90deg)}
+.dn-pr.pouch{margin-bottom:16px}.dn-pr.pouch .lb{top:41px;left:42%;color:#191F28;background:none;width:44px;white-space:nowrap;text-align:center;line-height:1;padding:0;letter-spacing:-.03em}.pd-col .dn-pr.pouch{margin-bottom:4px}
 .dn-pr .bx{position:relative;width:78px;height:42px}
 #dnObj.many .dn-pr{transform:scale(.82);transform-origin:center bottom;margin:0 -6px}
 .dn-pr .bx .tp{position:absolute;left:0;top:-6px;width:84px;height:6px;background:#F4F6F8;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
@@ -2732,7 +2745,7 @@ async function loadData(){
   if(cs){cs.forEach(d=>{const x=d.data();C.push({id:d.id,concerns:Array.isArray(x.concerns)?x.concerns:[],title:x.title||'',tag:(x.tags||[]).join('·'),e:x.emoji||_PERSON,videoUrl:x.videoUrl||'',pt:x.patient||{},set:x.set||null,role:x.role||'',type:x.type||'',eduVideoUrl:x.eduVideoUrl||'',eduImageUrl:x.eduImageUrl||'',eduPdfUrl:x.eduPdfUrl||'',eduPages:Array.isArray(x.eduPages)?x.eduPages:[]});});C.sort((a,b)=>a.id.localeCompare(b.id));}
   SETS={};FEATURED_SET=null;
   try{
-    const [ss,cf]=await Promise.all([db.collection('sets').get(),db.collection('config').doc('home').get()]);
+    const [ss,cf]=await Promise.all([db.collection('sets').get(),db.collection('config').doc('home').get(),loadBadwords()]);
     ss.forEach(d=>{SETS[d.id]=d.data()||{};});
     if(cf.exists)FEATURED_SET=(cf.data()||{}).featuredSet??null;
   }catch(e){console.log('세트',e);}
@@ -2869,6 +2882,26 @@ function showDoc(k){
 function agToggleAll(on){document.querySelectorAll('.sf-terms .ag').forEach(c=>c.checked=on);}
 function agSync(){const a=[...document.querySelectorAll('.sf-terms .ag')];document.getElementById('agAll').checked=a.every(c=>c.checked);}
 
+/* ── 금칙어 ──
+   기본 목록 + 관리자가 config/badwords 에 추가한 목록. 띄어쓰기·특수문자·숫자를 지우고 비교.
+   약 이름·의학 용어가 걸리지 않게 짧고 확실한 단어만 넣고, 예외(allow)로 뺄 수 있음. */
+const BAD_BASE=['시발','씨발','씨팔','시팔','씨바','좆','좇','존나','병신','븅신','빙신','지랄','염병','엠병','개새끼','개새','새끼','썅','쌍놈','쌍년','년놈','미친놈','미친년','또라이','꺼져','닥쳐','엿먹','엿머','느금','니미','니애미','니앰','애미','애비','창녀','걸레','개같','개년','개놈','호로','후레','등신','멍청이','찐따','ㅅㅂ','ㅆㅂ','ㅂㅅ','ㅈㄹ','ㅗ','fuck','shit','bitch','asshole'];
+let BAD_EXTRA=[],BAD_ALLOW=['씹쌀','씹히','씹어','씹는','병신경','새끼손','새끼발','애미노','멍청이풀'];
+async function loadBadwords(){try{const d=await db.collection('config').doc('badwords').get();if(d.exists){const x=d.data();BAD_EXTRA=Array.isArray(x.words)?x.words:[];if(Array.isArray(x.allow))BAD_ALLOW=BAD_ALLOW.concat(x.allow);}}catch(e){}}
+function badNorm(t){return String(t||'').toLowerCase().replace(/[\s\-_.,!?~^*#@$%&()\[\]{}'"`/\\|<>:;+=0-9]/g,'');}
+/* 걸린 단어를 돌려줌 (없으면 '') */
+function findBadword(text){
+  const raw=String(text||''),n=badNorm(raw);
+  if(!n)return '';
+  let safe=n;BAD_ALLOW.forEach(a=>{safe=safe.split(badNorm(a)).join('');});
+  for(const w of [...BAD_EXTRA,...BAD_BASE]){
+    const k=badNorm(w);if(!k)continue;
+    if(k.length===1){if(/^[ㄱ-ㅎㅏ-ㅣ]$/.test(k)&&raw.includes(k))return w;continue;}
+    if(safe.includes(k))return w;
+  }
+  return '';
+}
+function badCheck(text,label){const w=findBadword(text);if(!w)return true;toast((label||'글')+'에 쓸 수 없는 표현이 있어요');return false;}
 let _sfStep=1;
 function sfStep(n){
   const ph=_signupRole==='pharm';if(!ph)n=1;_sfStep=n;
@@ -2890,6 +2923,7 @@ function sfCheck1(){
   if(!/^[가-힣a-zA-Z\s]{2,20}$/.test(v('sLicName').trim())){showErr('serr',_signupRole==='pharm'?'면허증에 적힌 실명을 입력해주세요':'실명을 입력해주세요');return false;}
   if(!_phOk){showErr('serr','휴대폰 인증을 해주세요');return false;}
   if(!/^[가-힣a-zA-Z0-9._-]{2,20}$/.test(v('snick').trim())){showErr('serr','닉네임은 2~20자, 한글·영문·숫자로 입력해주세요');return false;}
+  if(findBadword(v('snick'))){showErr('serr','닉네임에 쓸 수 없는 표현이 있어요');return false;}
   if(!/^[a-z0-9]{4,20}$/.test(v('sid').trim().toLowerCase())){showErr('serr','아이디는 영문·숫자 4~20자로 입력해주세요');return false;}
   if(v('spw').length<8){showErr('serr','비밀번호는 8자 이상이에요');return false;}
   if(v('spw')!==v('spw2')){showErr('serr','비밀번호가 일치하지 않아요');return false;}
@@ -4632,7 +4666,7 @@ function updatePrescGate(){
 let OTC=null,_otcLoading=null;
 let _rxTags=[],_rxTok=null,_rxRes=[],_rxUse={};
 const RX_MAX=4,RX_MIN_Q=2,RX_SUG_MAX=30;
-const RX_KIND={core:'건기식',food:'식품',otc:'일반의약품',ing:'성분'};
+const RX_KIND={core:'건기식',food:'식품',otc:'일반의약품',ing:'성분',herb:'한약제제'};
 function rxKindKey(t){return t.kind==='core'&&t.cat&&t.cat!=='건기식'?'food':t.kind;}
 
 function loadOtc(){
@@ -4716,8 +4750,9 @@ function rxSearch(q){
   });
   (OTC||[]).forEach(o=>{
     let t=nameTier(o.n);
+    if(t<0&&o.h){const ft=nameTier(o.h);if(ft>=0)t=rxNorm(o.n).includes(nq)?ft:ft+1;}
     if(t<0&&ingHit(o.g))t=2;
-    if(t>=0)add({kind:'otc',id:o.id,n:o.n,c:o.c||'',ings:o.g||[],ing:(o.g&&o.g[0])||'',t});
+    if(t>=0)add({kind:o.h?'herb':'otc',id:o.id,n:o.n,c:o.c||'',ings:o.g||[],ing:o.h||(o.g&&o.g[0])||'',t});
   });
 
   const kindOrd={core:0,ing:1,otc:2};
@@ -4746,7 +4781,7 @@ function rxRenderSug(){
   };
   row.innerHTML=res.map((r,i)=>{
     const via=r.t===2?(r.ings||[]).find(g=>rxNorm(g).startsWith(nq)):'';
-    const sub=[r.c,via?via+' 함유':''].filter(Boolean).join(' · ');
+    const sub=[r.c,r.kind==='herb'&&r.ing?r.ing:'',via?via+' 함유':''].filter(Boolean).join(' · ');
     const k=rxKindKey(r);
     return `<button type="button" class="rx-li" onmousedown="event.preventDefault()" ontouchend="if(Date.now()-_rxLastPick<800)event.preventDefault()" onpointerdown="rxPickDown(event,${i})" onpointerup="rxPickUp(event,${i})" onclick="rxPickClick(${i})"><div style="min-width:0"><div class="nm">${hl(r.n)}</div>${sub?`<div class="co">${esc(sub)}</div>`:''}</div><span class="rx-kind ${k}">${RX_KIND[k]}</span></button>`;
   }).join('');
@@ -4908,11 +4943,11 @@ function rxOpenTag(i){
   if(t.kind==='user'){document.getElementById('popContent').innerHTML=`<div class="pop-title">${esc(t.n)}</div><div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:16px">목록에 없어 직접 적은 제품이에요.<br>운영팀이 확인한 뒤 제품 목록과 랭킹에 반영돼요.</div><button class="btn" style="background:var(--bg);color:var(--t)" onclick="rxNotProduct(${i})">제품이 아니에요</button>`;showPop();return;}
   const box=(l,v)=>`<div style="flex:1;background:var(--bg);border-radius:10px;padding:10px 12px"><div style="font-size:10px;color:var(--t3);margin-bottom:3px">${l}</div><div style="font-size:13px;font-weight:700;color:var(--t)">${v||'-'}</div></div>`;
   let h='';
-  if(t.kind==='otc'){
-    const o=(OTC||[]).find(x=>x.id===t.id)||{n:t.n,c:t.c,g:t.ings||[]};
+  if(t.kind==='otc'||t.kind==='herb'){
+    const o=(OTC||[]).find(x=>x.id===t.id)||{n:t.n,c:t.c,g:t.ings||[],h:t.kind==='herb'?t.ing:''};
     const g=(o.g||[]).map(c=>`<span class="ch">${esc(c)}</span>`).join(' ')||'<span style="font-size:12px;color:var(--t3)">성분 정보 없음</span>';
     h=`<div class="pop-title">${esc(o.n)}</div>
-      <div style="display:flex;gap:8px;margin-bottom:10px">${box('제조사',esc(o.c||''))}${box('분류','일반의약품')}</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">${box('제조사',esc(o.c||''))}${o.h?box('한약제제 · 처방',esc(o.h)):box('분류','일반의약품')}</div>
       ${o.t?`<div style="display:flex;gap:8px;margin-bottom:14px">${box('약효 분류',esc(o.t))}</div>`:''}
       ${o.f&&o.f!==o.n?`<div style="font-size:12px;color:var(--t2);margin-bottom:12px"><strong style="color:var(--t3)">품목명</strong> · ${esc(o.f)}</div>`:''}
       <div style="font-size:12px;font-weight:700;color:var(--t3);margin-bottom:6px">${_DNA} 성분</div>
@@ -4971,6 +5006,7 @@ function rxUpdateGate(){
 async function submitRx(){
   if(!S.user?.nick){toast('로그인이 필요해요');return;}
   const txt=(document.getElementById('rxText').value||'').trim();
+  if(!badCheck(txt,'소견'))return;
   if(!_rxTags.length||txt.length<20){rxUpdateGate();return;}
   if(_sendLock)return;
   _sendLock=true;
@@ -5083,7 +5119,7 @@ function peerHL(rx){
     while(i>=0){hits.push({s:i,e:i+w.length,k});i=low.indexOf(lw,i+1);}
   };
   (rx.pairs||[]).forEach(p=>{
-    const k=p.kind==='otc'?'otc':p.kind==='ing'?'ing':p.kind==='user'?'user':'';
+    const pk=dnPairKind(p);const _fp=pk==='core'?P.find(x=>x.id===p.pid):null;const k=pk==='otc'?'otc':pk==='ing'?'ing':pk==='user'?'user':pk==='herb'?'herb':(_fp&&_fp.cat&&_fp.cat!=='건기식')?'food':'';
     const nm=String(p.pnm||'').trim();
     if(nm){
       add(nm,k);
@@ -6093,7 +6129,7 @@ const DN_KIT="<svg width=\"152\" height=\"90\" viewBox=\"0 0 190 112\">\n       
 const DN_LEAF="<svg width=\"132\" height=\"138\" viewBox=\"0 0 132 138\" aria-hidden=\"true\">\n        <defs>\n          <linearGradient id=\"acr\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#FFFFFF\" stop-opacity=\"0.35\"></stop><stop offset=\"0.5\" stop-color=\"#FFFFFF\" stop-opacity=\"0.08\"></stop><stop offset=\"1\" stop-color=\"#FFFFFF\" stop-opacity=\"0.3\"></stop></linearGradient>\n          <linearGradient id=\"paper\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#FFFFFF\"></stop><stop offset=\"1\" stop-color=\"#EEF0F2\"></stop></linearGradient>\n        </defs>\n        <path d=\"M14 10 L118 10 L122 128 L10 128 Z\" fill=\"url(#acr)\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1\"></path>\n        <g>\n          <path d=\"M22 18 L110 18 L113 118 L19 118 Z\" fill=\"url(#paper)\"></path>\n          <path d=\"M22 18 L110 18 L110.3 26 L21.7 26 Z\" fill=\"#7A9A7E\"></path>\n          <text x=\"66\" y=\"64\" text-anchor=\"middle\" font-family=\"Black Han Sans, sans-serif\" font-size=\"18\" letter-spacing=\"0\" fill=\"#4E6B53\">\uc804\ubb38 \uc57d\uc0ac\uc758</text>\n          <text x=\"66\" y=\"88\" text-anchor=\"middle\" font-family=\"Black Han Sans, sans-serif\" font-size=\"18\" letter-spacing=\"0\" fill=\"#4E6B53\">\uc774\uc57c\uae30 \ub4e3\uae30</text>\n          <rect x=\"54\" y=\"98\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#7A9A7E\"></rect>\n        </g>\n        <path d=\"M10 112 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 Z\" fill=\"rgba(255,255,255,0.22)\" stroke=\"rgba(255,255,255,0.6)\" stroke-width=\"1\"></path>\n        <rect x=\"14\" y=\"113\" width=\"104\" height=\"1.2\" fill=\"rgba(255,255,255,0.8)\"></rect>\n        <path d=\"M18 14 L24 124\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"2\" stroke-linecap=\"round\"></path>\n      </svg>";
 function dnKit(label){return DN_KIT.replace(/>처방하기<\/text>/g,'>'+label+'</text>');}
 function dnLeaf(l1,l2){return DN_LEAF.replace('>전문 약사의</text>','>'+l1+'</text>').replace('>이야기 듣기</text>','>'+l2+'</text>');}
-const DN_KC={core:'#3182F6',food:'#B7791F',otc:'#0F9D8A',ing:'#E0A000',user:'#8B95A1'};
+const DN_KC={core:'#3182F6',food:'#E07B39',otc:'#0F9D8A',ing:'#E0A000',user:'#8B95A1',herb:'#A3553A'};
 
 /* 제형 추정 — 이름 속 단어로 모양을 고릅니다 (모르면 박스) */
 function dnShape(name){
@@ -6104,13 +6140,24 @@ function dnShape(name){
   return 'box';
 }
 function dnShort(n){return String(n||'').replace(/\(.*?\)/g,'').replace(/\s*\d+(\.\d+)?\s*(mg|g|ml|mL|정|캡슐|포|병|T|C)\b.*$/i,'').trim()||String(n||'');}
-function dnProdObj(name,color,key){
-  const nm=esc(dnShort(name)),sh=dnShape(name);
+function dnProdObj(name,color,key,kind){
+  const nm=esc(dnShort(name));
+  let sh=dnShape(name);
+  if(kind==='herb')sh='pouch';
+  else if(kind==='ing')sh='round';
+  else if(kind==='food')sh='tile';
+  else if(kind==='core'&&sh==='box')sh='jar';
+  const fsz=nm.length>8?7.5:nm.length>6?8.5:nm.length>4?9.5:10.5;
+  if(sh==='jar')return `<div class="dn-pr jar" ${key}><svg width="50" height="62" viewBox="0 0 50 62"><defs><linearGradient id="dnjg" x1="0" x2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#F4F6F8"/><stop offset="1" stop-color="#D5DAE0"/></linearGradient></defs><rect x="8" y="2" width="34" height="11" rx="3" fill="${color}"/><rect x="8" y="2" width="34" height="3.5" rx="2" fill="rgba(255,255,255,.3)"/><path d="M4 14 Q4 10 8 10 L42 10 Q46 10 46 14 L46 56 Q46 62 40 62 L10 62 Q4 62 4 56 Z" fill="url(#dnjg)"/><rect x="4" y="22" width="42" height="24" fill="${color}" opacity=".18"/><rect x="4" y="22" width="42" height="24" fill="#fff" opacity=".55"/><rect x="7" y="16" width="2.5" height="38" rx="1.2" fill="rgba(255,255,255,.65)"/></svg><span class="lb" style="font-size:${fsz}px">${nm}</span></div>`;
+  if(sh==='carton')return `<div class="dn-pr carton" ${key}><svg width="46" height="64" viewBox="0 0 46 64"><path d="M6 20 L23 10 L40 20 Z" fill="#F7F3EC"/><path d="M23 10 L40 20 L40 28 L23 18 Z" fill="#E7DED1"/><path d="M6 20 L23 18 L40 20 L40 60 Q40 64 36 64 L10 64 Q6 64 6 60 Z" fill="#FFFDF8" stroke="#DDD3C4" stroke-width="1"/><path d="M19 12 L27 12" stroke="#CBBBA3" stroke-width="2" stroke-linecap="round"/><rect x="6" y="30" width="34" height="18" fill="${color}"/><rect x="6" y="30" width="34" height="4" fill="rgba(255,255,255,.22)"/><rect x="12" y="52" width="22" height="3" rx="1.5" fill="#E9E2D6"/></svg><span class="lb" style="font-size:${fsz}px">${nm}</span></div>`;
+  if(sh==='tile')return `<div class="dn-pr tile" ${key}><div class="tl" style="--kc:${color};font-size:${fsz}px">${nm}</div></div>`;
+  if(sh==='round')return `<div class="dn-pr round" ${key}><div class="tl" style="--kc:${color};font-size:${nm.length>4?8:nm.length>3?9:10.5}px">${nm}</div></div>`;
+  if(sh==='pouch'){const pf=nm.length>5?7.5:nm.length>4?8.5:nm.length>3?9.5:10.5;return `<div class="dn-pr pouch" ${key}><svg width="72" height="66" viewBox="0 0 72 66"><defs><radialGradient id="dnpb" cx="36%" cy="34%" r="72%"><stop offset="0" stop-color="#8A6248"/><stop offset=".5" stop-color="#4A2E1E"/><stop offset="1" stop-color="#241509"/></radialGradient><linearGradient id="dnpl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A563E"/><stop offset="1" stop-color="#33200F"/></linearGradient></defs><path d="M47 40 C58 38 63 31 65 23 C65.5 20 70.5 20 70 23.5 C68 36 61 47 48 52 Z" fill="url(#dnpl)"/><path d="M50 44 C58 41 62 35 64.5 27" stroke="rgba(255,255,255,.14)" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="42" rx="25" ry="22" fill="url(#dnpb)"/><path d="M13 31 Q19 23 29 22" stroke="rgba(255,255,255,.18)" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M11 24 Q30 14 49 24 Q30 30 11 24Z" fill="url(#dnpl)"/><path d="M11 24 Q30 30 49 24" stroke="rgba(0,0,0,.35)" stroke-width="1.2" fill="none"/><path d="M26 19.5 L26.6 14 Q30 12.5 33.4 14 L34 19.5 Q30 21 26 19.5Z" fill="#5C3B27"/><ellipse cx="30" cy="14" rx="3.6" ry="1.6" fill="#8A6248"/><rect x="9" y="39" width="42" height="12" rx="2" fill="#fff" stroke="${color}" stroke-width="1.2"/></svg><span class="lb" style="font-size:${pf}px">${nm}</span></div>`;}
   const fs=nm.length>10?9.5:nm.length>6?10.5:nm.length>4?11.5:12.5;
   if(sh==='bottle')return `<div class="dn-pr bottle" ${key}><svg width="44" height="54" viewBox="0 0 44 50"><rect x="15" y="0" width="14" height="8" rx="2" fill="#2B2F36"/><rect x="16" y="8" width="12" height="5" fill="#8C6A3E"/><path d="M16 13 L28 13 Q38 16 38 24 L38 46 Q38 50 34 50 L10 50 Q6 50 6 46 L6 24 Q6 16 16 13 Z" fill="#6B4220"/><rect x="6" y="25" width="32" height="18" fill="#fff"/><rect x="6" y="25" width="32" height="3" fill="${color}"/><rect x="9" y="16" width="3" height="30" rx="1.5" fill="rgba(255,255,255,.22)"/></svg><span class="lb">${nm}</span></div>`;
   if(sh==='tube')return `<div class="dn-pr tube" ${key}><svg width="70" height="30" viewBox="0 0 70 30"><path d="M4 6 L52 2 L52 28 L4 24 Z" fill="#F4F6F8" stroke="#CBD2DA"/><rect x="52" y="6" width="10" height="18" rx="2" fill="#E9ECEF" stroke="#CBD2DA"/><rect x="62" y="9" width="6" height="12" rx="1.5" fill="${color}"/><path d="M4 6 L52 2 L52 8 L4 11 Z" fill="${color}" opacity=".85"/></svg><span class="lb">${nm}</span></div>`;
   if(sh==='stick')return `<div class="dn-pr stick" ${key}><svg width="46" height="40" viewBox="0 0 46 40"><rect x="4" y="6" width="9" height="32" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="15" y="3" width="9" height="35" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="26" y="7" width="9" height="31" rx="2" fill="#fff" stroke="#CBD2DA"/><rect x="4" y="6" width="9" height="5" rx="1" fill="${color}"/><rect x="15" y="3" width="9" height="5" rx="1" fill="${color}"/><rect x="26" y="7" width="9" height="5" rx="1" fill="${color}"/></svg><span class="lb">${nm}</span></div>`;
-  return `<div class="dn-pr box" ${key}><div class="bx" style="--kc:${color}"><i class="tp"></i><i class="sd"></i><div class="fr"><i class="bd"></i><span style="font-size:${fs}px">${nm}</span></div></div></div>`;
+  return `<div class="dn-pr box" ${key}><div class="bx" style="--kc:${color}"><i class="tp"></i><i class="sd"></i><div class="fr"><i class="bd"></i><span style="font-size:${fs}px">${nm}</span>${kind==='otc'?'<i class="rx"></i>':''}</div></div></div>`;
 }
 
 /* ── 세트 아이템 ── */
@@ -6136,18 +6183,32 @@ function dnRanks(cid){
       if(p.kind==='user')return;
       /* 케이스 고민 칸과 겹치는 제품만 (흡수 보조로 곁들인 제품은 제외) */
       if(con&&typeof prProdCats==='function'&&!prProdCats(p).some(k=>con.includes(k)))return;
-      const otc=p.kind==='otc';
-      const key=otc?('o:'+(p.ing||p.pnm)+dnFormWord(p.pnm)):String(p.pid);
+      const pk=dnPairKind(p),otc=pk==='otc',herb=pk==='herb';
+      const key=herb?('h:'+dnHerbName(p)):otc?('o:'+(p.ing||p.pnm)+dnFormWord(p.pnm)):String(p.pid);
       if(seen.has(key))return;seen.add(key);
-      const name=otc?((p.ing||'')+' '+dnFormWord(p.pnm)).trim():(p.pnm||_pnm(p.pid));
-      const kind=otc?'otc':(p.kind==='ing'?'ing':'core');
+      const name=herb?dnHerbName(p):otc?((p.ing||'')+' '+dnFormWord(p.pnm)).trim():(p.pnm||_pnm(p.pid));
+      const kind=herb?'herb':otc?'otc':(p.kind==='ing'?'ing':'core');
       if(!by[key])by[key]={name,kind,n:0};
       by[key].n++;
     });
   });
   return Object.values(by).sort((a,b)=>b.n-a.n);
 }
-const DN_KLB={core:'건강기능식품',otc:'일반의약품',ing:'성분',food:'식품'};
+const DN_KLB={core:'건강기능식품',otc:'일반의약품',ing:'성분',food:'식품',herb:'한약제제'};
+/* 한약제제: 일반의약품 목록(otc_index.json)에서 h(처방명)가 있는 제품. 옛 소견(kind:'otc')도 목록을 보고 한약제제로 읽음 */
+function dnHerbOf(pid){const o=(OTC||[]).find(x=>x.id===pid);return o&&o.h||'';}
+function dnPairKind(p){if(p.kind==='herb')return 'herb';if(p.kind==='otc'&&dnHerbOf(p.pid))return 'herb';return p.kind||'core';}
+function dnHerbName(p){return (p.kind==='herb'&&p.ing)||dnHerbOf(p.pid)||p.pnm||'';}
+const HERB_CATS={
+'쌍화탕':['피로/활력','영양'],'보중익기탕':['피로/활력','면역/항산화','영양'],'공진단':['피로/활력','면역/항산화','영양'],'경옥고':['피로/활력','면역/항산화','영양'],'십전대보탕':['피로/활력','면역/항산화','영양'],'팔물탕':['피로/활력','면역/항산화','영양'],'사물탕':['피로/활력','여성 건강','혈관/혈액','영양'],'생맥산':['피로/활력'],'육미지황탕':['피로/활력','남성 건강','영양'],'육미지황환':['피로/활력','남성 건강','영양'],'팔미지황환':['피로/활력','남성 건강'],'우차신기환':['피로/활력','남성 건강'],'연령고본단':['피로/활력','영양'],'옥로환':['피로/활력'],'청서익기탕':['피로/활력'],'복령보심탕':['피로/활력'],'녹용대보탕':['피로/활력','영양'],'익위승양탕':['피로/활력'],'황기건중탕':['피로/활력','영양'],'원탕':['피로/활력'],
+'우황청심원':['수면/스트레스'],'우황청심환':['수면/스트레스'],'천왕보심단':['수면/스트레스'],'황련해독탕':['수면/스트레스','혈관/혈액','피부'],'반하후박탕':['수면/스트레스','소화/장'],'가미소요산':['수면/스트레스','여성 건강'],'가미귀비탕':['수면/스트레스'],'귀비탕':['수면/스트레스'],'산조인탕':['수면/스트레스'],'계지가용골모려탕':['수면/스트레스','남성 건강'],'시호가용골모려탕':['수면/스트레스'],'삼황사심탕':['수면/스트레스','소화/장','혈관/혈액'],'억간산가진피반하':['수면/스트레스'],'억간산':['수면/스트레스'],'사칠탕':['수면/스트레스'],'안신환':['수면/스트레스'],'청심연자음':['수면/스트레스'],'시호소간탕':['간','수면/스트레스'],
+'반하사심탕':['소화/장'],'향사평위산':['소화/장'],'평위산':['소화/장'],'이중탕':['소화/장'],'인삼탕':['소화/장'],'이진탕':['소화/장'],'소건중탕':['소화/장'],'불환금정기산':['소화/장'],'활명수':['소화/장'],'반하백출천마탕':['소화/장','두뇌/기억'],'삼출건비탕':['소화/장'],'내소산':['소화/장'],'소체환':['소화/장'],'궁하탕':['소화/장'],'대화중음':['소화/장'],'곽향정기산':['소화/장'],'계지가작약탕':['소화/장'],'육군자탕':['소화/장'],'향사육군자탕':['소화/장'],'대금음자':['소화/장'],'영계출감탕':['소화/장'],'을자탕':['소화/장'],'을자':['소화/장'],'생강사심탕':['소화/장'],'백출탕':['소화/장'],'위령탕':['소화/장'],'계지탕':['소화/장'],'오령산':['소화/장','혈관/혈액'],'작약감초탕':['뼈/근육','소화/장'],'청위산':['피부','소화/장'],'방풍통성산':['혈당/다이어트','소화/장'],'도핵승기탕':['소화/장','여성 건강'],'조위승기탕':['소화/장'],'소승기탕':['소화/장'],'대승기탕':['소화/장'],'대황목단피탕':['소화/장','여성 건강'],'대황감초탕':['소화/장'],'마자인환':['소화/장'],'안중산':['소화/장'],
+'소시호탕':['간','면역/항산화'],'대시호탕':['간','면역/항산화'],'시호계지탕':['간','면역/항산화'],'인진호탕':['간'],'인진오령산':['간'],'시호청간탕':['간'],'사역산':['간'],'시박탕':['간'],'용담사간탕':['간','남성 건강','피부'],
+'방기황기탕':['뼈/근육','혈당/다이어트'],'소경활혈탕':['뼈/근육'],'오적산':['뼈/근육'],'구미강활탕':['뼈/근육'],'의이인탕':['뼈/근육','피부'],'당귀수산':['뼈/근육'],'영선제통음':['뼈/근육'],
+'계지복령환':['여성 건강'],'당귀작약산':['여성 건강'],'온경탕':['여성 건강'],'당귀사역가오수유생강탕':['여성 건강'],'통도산':['여성 건강'],'궁귀교애탕':['여성 건강'],
+'오림산':['남성 건강'],'저령탕':['남성 건강'],'거풍지보단':['혈관/혈액'],
+'배농산급탕':['피부'],'배농산':['피부'],'청상방풍탕':['피부'],'십미패독탕':['피부'],'소풍산':['피부'],'탁리소독음':['피부'],'향성파적환':['피부'],'회춘양격산':['피부'],'청상견통탕':['두뇌/기억'],'고본환정환':['눈'],
+'갈근탕':['면역/항산화'],'갈근탕가천궁신이':['면역/항산화'],'은교산':['면역/항산화'],'소청룡탕':['면역/항산화'],'삼소음':['면역/항산화'],'패독산':['면역/항산화'],'인삼패독산':['면역/항산화'],'연교패독산':['면역/항산화'],'형개연교탕':['면역/항산화'],'마행감석탕':['면역/항산화'],'마황탕':['면역/항산화'],'갈근해기탕':['면역/항산화'],'구풍해독탕':['면역/항산화'],'길경탕':['면역/항산화'],'향갈탕':['면역/항산화'],'청폐탕':['면역/항산화'],'맥문동탕':['면역/항산화','영양'],'행소탕':['면역/항산화'],'자음강화탕':['면역/항산화','영양']};
 
 /* ── 스테이지 ── */
 function dnOpenStage(n,i){
@@ -6194,7 +6255,7 @@ function dnDrawObj(){
     if(!OTC){loadOtc().then(()=>{if(_dn.items[_dn.i]===c)dnDrawObj();});}
     const r=dnRanks(c.id),n=dnRespN(c.id);
     if(n<DN_RANK_MIN||!r.length){o.innerHTML='<div class="dn-wait">약사들이 답하고 있어요</div>';return;}
-    const col=(x,rank,h,w)=>x?`<div class="pd-col" style="width:${w}px">${dnProdObj(x.name,DN_KC[x.kind]||DN_KC.core,'')}<div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`:`<div class="pd-col" style="width:${w}px"><div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`;
+    const col=(x,rank,h,w)=>x?`<div class="pd-col" style="width:${w}px">${dnProdObj(x.name,DN_KC[x.kind]||DN_KC.core,'',x.kind)}<div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`:`<div class="pd-col" style="width:${w}px"><div class="pd-bk" style="height:${h}px"><i></i><span>${rank}</span></div></div>`;
     o.innerHTML=`<button type="button" class="dn-podium" onclick="dnRankOpen()" aria-label="전체 순위">${col(r[1],2,46,104)}${col(r[0],1,64,112)}${col(r[2],3,36,104)}</button>`;
     requestAnimationFrame(dnPodGlow);
     return;
@@ -6258,7 +6319,7 @@ function dnRenderBoxes(){
   if(!st||!st.classList.contains('up')||st.classList.contains('rank'))return;
   const o=document.getElementById('dnObj');
   o.classList.toggle('many',_rxTags.length>=3);
-  o.innerHTML=`<div class="dn-shelfrow">${_rxTags.map((t,i)=>dnProdObj(t.n,DN_KC[rxKindKey(t)]||DN_KC.core,`onclick="rxOpenTag(${i})"`)).join('')}${!_rxTags.length?'<div class="dn-slot">+</div>':''}</div>`;
+  o.innerHTML=`<div class="dn-shelfrow">${_rxTags.map((t,i)=>dnProdObj(t.kind==='herb'?(t.ing||t.n):t.n,DN_KC[rxKindKey(t)]||DN_KC.core,`onclick="rxOpenTag(${i})"`,rxKindKey(t))).join('')}${!_rxTags.length?'<div class="dn-slot">+</div>':''}</div>`;
 }
 
 /* 일반회원 — 전체 순위 */
@@ -6504,6 +6565,7 @@ function dnEditProfile(){
 async function dnSaveProfile(){
   const v=id=>(document.getElementById(id).value||'').trim();
   const d={bio:v('peBio'),pharmacy:v('pePh'),career:v('peCa').replace(/\D/g,''),interests:v('peIn').split(',').map(x=>x.trim()).filter(Boolean).slice(0,3)};
+  if(!badCheck(d.bio+' '+d.pharmacy+' '+d.interests.join(' '),'프로필'))return;
   try{await db.collection('users').doc(S.user.nick).set(d,{merge:true});Object.assign(_dnUsers[S.user.nick]=_dnUsers[S.user.nick]||{},d);S.bio=d.bio;toast('저장했어요');}catch(e){toast('저장에 실패했어요');}
   document.querySelector('.dn-sheet-bg')?.remove();dnProfileRender();
 }
@@ -6571,6 +6633,7 @@ function dnPostRow(p){
 async function dnAskSubmit(){
   const tx=(document.getElementById('askTx').value||'').trim();
   if(tx.length<10){toast('고민을 조금 더 적어주세요');return;}
+  if(!badCheck(tx))return;
   if(_sendLock)return;_sendLock=true;
   try{await db.collection('posts').add({type:'ask',body:tx,secret:document.getElementById('askSec').classList.contains('on'),nick:S.user.nick,nm:S.user.name||S.user.nick,likes:0,likers:[],commentCount:0,createdAt:new Date().toISOString()});toast('고민을 올렸어요');}
   catch(e){toast('올리지 못했어요');}
@@ -6584,6 +6647,7 @@ function dnTalkCompose(){
 async function dnTalkSubmit(){
   const t=(document.getElementById('tkT').value||'').trim(),b=(document.getElementById('tkB').value||'').trim();
   if(!t||!b){toast('제목과 내용을 적어주세요');return;}
+  if(!badCheck(t+' '+b))return;
   try{await db.collection('posts').add({type:'talk',title:t,body:b,nick:S.user.nick,nm:S.user.name||S.user.nick,likes:0,likers:[],commentCount:0,createdAt:new Date().toISOString()});toast('글을 올렸어요');}catch(e){toast('올리지 못했어요');}
   document.querySelector('.dn-sheet-bg')?.remove();dnCommRender();
 }
@@ -6594,6 +6658,7 @@ function dnDmCompose(to){
 }
 async function dnDmSubmit(to){
   const b=(document.getElementById('dmB').value||'').trim();if(!b){toast('내용을 적어주세요');return;}
+  if(!badCheck(b,'쪽지'))return;
   try{const tu=await db.collection('users').doc(to).get();if(((tu.data()||{}).blocked||[]).includes(S.user.nick)){toast('이 약사에게는 문의할 수 없어요');return;}}catch(e){}
   const now=new Date().toISOString();
   try{const ref=await db.collection('posts').add({type:'dm',to,body:b,nick:S.user.nick,nm:S.user.name||S.user.nick,read:false,lastBody:b,lastAt:now,commentCount:0,createdAt:now});
@@ -6633,6 +6698,7 @@ async function dnThreadRender(quick){
 }
 async function dnThreadSend(){
   const inp=document.getElementById('thIn'),b=(inp.value||'').trim();if(!b)return;
+  if(!badCheck(b,'댓글'))return;
   if(_sendLock)return;_sendLock=true;
   const p=(POSTS3||[]).find(x=>x.id===_dnTh),now=new Date().toISOString();
   try{
@@ -6724,11 +6790,13 @@ function prIngCats(name){
 function prProdCats(pr){
   const p=P.find(x=>x.id===pr.pid);
   if(p){const s=[];(p.cats||[]).forEach(c=>s.push(...(PR_ING[c]||[])));return [...new Set(s)];}
+  if(dnPairKind(pr)==='herb')return HERB_CATS[dnHerbName(pr)]||[];
   if(pr.kind==='otc'){const o=(OTC||[]).find(x=>x.id===pr.pid);return prOtcCats(o);}
   return prIngCats(pr.pnm||pr.ing);
 }
 function prKeyOf(pr){
   const mem=dnIsMember();
+  if(dnPairKind(pr)==='herb'){const nm=dnHerbName(pr);return {key:'h:'+nm,name:nm,co:'한약제제',kind:'herb'};}
   if(pr.kind==='otc'){const nm=mem?((pr.ing||'')+' '+dnFormWord(pr.pnm)).trim():(pr.pnm||_pnm(pr.pid));return {key:mem?'o:'+nm:pr.pid,name:nm,co:mem?'일반의약품':(((OTC||[]).find(x=>x.id===pr.pid)||{}).c||'일반의약품'),kind:'otc'};}
   const p=P.find(x=>x.id===pr.pid);
   if(p)return {key:pr.pid,name:p.n,co:p.c||'',kind:'core'};
@@ -6776,9 +6844,9 @@ function prList(first){
 function prOpen(i){
   const x=(_prData[_prCat]||[])[i];if(!x)return;
   const p=x.kind==='core'?P.find(q=>q.id===x.key):null;
-  const o=x.kind==='otc'?(OTC||[]).find(q=>x.pids.has(q.id)):null;
+  const o=(x.kind==='otc'||x.kind==='herb')?(OTC||[]).find(q=>x.pids.has(q.id)):null;
   const ings=p?(p.i||[]):o?(o.g||[]):[];
-  const kindLb=x.kind==='otc'?'일반의약품':x.kind==='ing'?'성분':'건강기능식품';
+  const kindLb=x.kind==='herb'?'한약제제':x.kind==='otc'?'일반의약품':x.kind==='ing'?'성분':'건강기능식품';
   const rs=[...new Map(x.resp.map(r=>[r.id,r])).values()].filter(r=>(r.summary||'').trim()&&ugcOk(r,'resp')).sort((a,b)=>(b.recs||0)-(a.recs||0));
   const bg=document.createElement('div');bg.className='dn-sheet-bg';bg.onclick=e=>{if(e.target===bg)bg.remove();};
   bg.innerHTML=`<div class="dn-sheet pr-sheet">
