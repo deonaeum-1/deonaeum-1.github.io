@@ -13,8 +13,8 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
 .topbar-sub{font-size:11px;opacity:.7}
 .wrap{padding:20px}
 /* TABS */
-.tabs{display:flex;gap:0;background:var(--card);border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:9px;color:var(--t3)}
+.tabs{display:flex;gap:0;background:var(--card);border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:9px;color:var(--t3);white-space:nowrap;flex:1 0 auto;padding:10px 12px}
 .tab.on{background:var(--pd);color:white}
 /* CASE LIST */
 .case-item{background:var(--card);border-radius:14px;padding:16px;margin-bottom:10px;border:.5px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
@@ -115,6 +115,7 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
     <button class="tab" onclick="switchTab('lounge',this)">약사 라운지</button>
     <button class="tab" onclick="switchTab('lic',this)">약사 인증 <span id="licBadge" style="display:none;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px"></span></button>
     <button class="tab" onclick="switchTab('reports',this)">신고 <span id="repBadge" style="display:none;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px"></span></button>
+    <button class="tab" onclick="switchTab('preq',this)">새 제품 <span id="preqBadge" style="display:none;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px"></span></button>
     <button class="tab" onclick="switchTab('members',this)">회원</button>
   </div>
 
@@ -204,6 +205,15 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
     <div class="form-title" style="margin:4px 0 12px">신고 처리 <span style="font-size:12px;font-weight:400;color:#888">· 약관상 24시간 안에 처리 · 3명 이상 신고되면 앱에서 자동 숨김</span></div>
     <div style="display:flex;gap:8px;margin-bottom:14px"><button class="tag-add-btn" onclick="loadReports()" style="flex:1">새로고침</button></div>
     <div id="repList"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <div id="preqTab" style="display:none">
+    <div class="form-title" style="margin:4px 0 12px">새 제품 요청 <span style="font-size:12px;font-weight:400;color:#888">· 약사님이 소견에 (제품명)으로 적은 제품 · 처리 전까지 랭킹 제외</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <select id="preqSt" class="tag-inp" onchange="renderPreq()" style="flex:1"><option value="open">확인 전</option><option value="done">확인함</option><option value="">전체</option></select>
+      <button class="tag-add-btn" onclick="loadPreq()" style="flex:1">새로고침</button>
+    </div>
+    <div id="preqList"><div class="empty">로딩 중...</div></div>
   </div>
 
   <div id="membersTab" style="display:none">
@@ -461,6 +471,8 @@ function switchTab(t, btn) {
   document.getElementById('membersTab').style.display = t==='members'?'block':'none';
   if(t==='lic') loadLicenses();
   if(t==='members') loadMembers();
+  document.getElementById('preqTab').style.display = t==='preq'?'block':'none';
+  if(t==='preq') loadPreq();
   document.getElementById('reportsTab').style.display = t==='reports'?'block':'none';
   if(t==='reports') loadReports();
 }
@@ -534,6 +546,7 @@ async function unbanUser(id){
 function adminReady(){
   try{loadCases();}catch(e){}
   (async()=>{try{const s=await db.collection('users').where('licStatus','==','pending').get();const b=document.getElementById('licBadge');if(b){b.textContent=s.size;b.style.display=s.size?'inline-block':'none';}}catch(e){}})();
+  (async()=>{try{const s=await db.collection('productRequests').where('status','==','open').get();const n=new Set();s.forEach(d=>n.add(d.data().norm||d.data().name));const b=document.getElementById('preqBadge');if(b){b.textContent=n.size;b.style.display=n.size?'inline-block':'none';}}catch(e){}})();
   (async()=>{try{const s=await db.collection('reports').where('status','==','open').get();const n=new Set();s.forEach(d=>{const x=d.data();n.add(x.kind+'|'+x.tid+'|'+(x.pid||''));});const b=document.getElementById('repBadge');if(b){b.textContent=n.size;b.style.display=n.size?'inline-block':'none';}}catch(e){}})();
 }
 /* 운영 계정 (약사·일반) — 휴대폰 인증·면허 심사 없이 바로 사용 가능, official:true 표시 */
@@ -562,6 +575,36 @@ async function makeOfficial(){
     ['ofId','ofNick','ofReal','ofPw'].forEach(i=>document.getElementById(i).value='');
     loadMembers();
   }catch(e){out.textContent='실패: '+(e.code||e.message);}
+}
+/* ── 새 제품 요청 (이름별로 묶어서 목록) ── */
+let _preq=[];
+async function loadPreq(){
+  const el=document.getElementById('preqList');el.innerHTML='<div class="empty">로딩 중...</div>';
+  try{
+    const snap=await db.collection('productRequests').get();
+    const g={};
+    snap.forEach(d=>{const x=d.data();const k=x.norm||String(x.name||'').toLowerCase().replace(/\s+/g,'');(g[k]=g[k]||{k,names:new Set(),items:[]}).items.push({id:d.id,...x});g[k].names.add(x.name);});
+    _preq=Object.values(g).map(r=>{r.open=r.items.some(i=>i.status!=='done');r.last=r.items.map(i=>i.createdAt||'').sort().pop()||'';return r;})
+      .sort((a,b)=>(b.open-a.open)||b.items.length-a.items.length||b.last.localeCompare(a.last));
+    const n=_preq.filter(r=>r.open).length,bd=document.getElementById('preqBadge');bd.textContent=n;bd.style.display=n?'inline-block':'none';
+    renderPreq();
+  }catch(e){console.log(e);el.innerHTML='<div class="empty">불러오기에 실패했습니다.</div>';}
+}
+function renderPreq(){
+  const st=document.getElementById('preqSt').value;
+  const rows=_preq.filter(r=>!st||(st==='open'?r.open:!r.open));
+  const caseNm=id=>{const c=(typeof cases!=='undefined'?cases:[]).find(x=>String(x.id)===String(id));return c?(c.title||id):id;};
+  document.getElementById('preqList').innerHTML=rows.length?`<div class="form-wrap" style="padding:0;overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">
+    <tr style="background:#F7F5F0;text-align:left"><th style="padding:10px">제품명</th><th>약사 수</th><th>케이스</th><th>최근</th><th></th></tr>
+    ${rows.map((r,i)=>{const nicks=[...new Set(r.items.map(x=>x.nick))];const cs=[...new Set(r.items.map(x=>caseNm(x.caseId)))];
+      return `<tr style="border-top:1px solid var(--border);${r.open?'':'opacity:.5'}"><td style="padding:10px;font-weight:700">${[...r.names].map(_esc).join(' / ')}</td>
+      <td title="${_esc(nicks.join(', '))}">${nicks.length}명</td><td>${cs.map(_esc).join(', ')}</td><td style="white-space:nowrap">${r.last.slice(0,10)}</td>
+      <td style="padding-right:10px;white-space:nowrap"><button onclick="preqToggle(${_preq.indexOf(r)})" style="font-size:12px;border:1px solid var(--border);background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer">${r.open?'확인함':'되돌리기'}</button></td></tr>`;}).join('')}
+  </table></div>`:'<div class="empty">요청이 없습니다.</div>';
+}
+async function preqToggle(i){
+  const r=_preq[i];if(!r)return;const st=r.open?'done':'open';
+  try{await Promise.all(r.items.map(x=>db.collection('productRequests').doc(x.id).update({status:st})));loadPreq();}catch(e){alert('처리하지 못했습니다');}
 }
 let _mem=[];
 const _esc=v=>String(v==null?'':v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
