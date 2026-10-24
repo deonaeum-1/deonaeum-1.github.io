@@ -90,7 +90,21 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
     <div class="topbar-title">집약처 관리자</div>
     <div class="topbar-sub">케이스 · 제품 관리</div>
   </div>
-  <div style="font-size:11px;opacity:.7">deonaeum-abcab</div>
+  <div style="text-align:right"><div style="font-size:11px;opacity:.7">deonaeum-abcab</div><div id="admWho" style="font-size:12px;margin-top:2px"></div></div>
+</div>
+
+<!-- 관리자 로그인 -->
+<div id="admGate" style="position:fixed;inset:0;z-index:9000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="form-wrap" style="width:100%;max-width:380px">
+    <div class="form-title" id="agTitle">관리자 로그인</div>
+    <div id="agNew" style="display:none;font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:12px">아직 관리자 계정이 없어요. 첫 관리자 계정을 만들어주세요.</div>
+    <div class="field"><label>아이디</label><input id="agId" autocapitalize="off" placeholder="영문 소문자·숫자 4~20자"></div>
+    <div class="field" id="agNickF" style="display:none"><label>이름(표시용)</label><input id="agNick" placeholder="예: 운영팀"></div>
+    <div class="field"><label>비밀번호</label><input id="agPw" type="password" placeholder="8자 이상" onkeydown="if(event.key==='Enter')agGo()"></div>
+    <div class="field" id="agPw2F" style="display:none"><label>비밀번호 확인</label><input id="agPw2" type="password"></div>
+    <div id="agErr" style="display:none;color:var(--red);font-size:13px;margin-bottom:10px"></div>
+    <button class="btn-save" id="agBtn" style="width:100%" onclick="agGo()">로그인</button>
+  </div>
 </div>
 
 <div class="wrap">
@@ -200,6 +214,14 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
       <button class="tag-add-btn" onclick="loadMembers()" style="flex:1">새로고침</button>
     </div>
     <div id="memList"><div class="empty">로딩 중...</div></div>
+    <div class="form-wrap" style="margin-top:14px">
+      <div class="form-title">운영 계정 만들기</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:10px">회사·심사용 계정. 휴대폰 인증·면허 심사 없이 바로 쓸 수 있어요. 목록에 "운영"으로 표시돼요.</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px"><select id="ofRole" class="tag-inp" style="flex:1"><option value="pharm">약사</option><option value="member">일반회원</option></select><input id="ofId" class="tag-inp" placeholder="아이디" autocapitalize="off" style="flex:1"></div>
+      <div style="display:flex;gap:8px;margin-bottom:8px"><input id="ofNick" class="tag-inp" placeholder="닉네임" style="flex:1"><input id="ofReal" class="tag-inp" placeholder="실명(선택)" style="flex:1"></div>
+      <div style="display:flex;gap:8px"><input id="ofPw" class="tag-inp" type="password" placeholder="비밀번호 8자 이상" style="flex:2"><button class="tag-add-btn" onclick="makeOfficial()" style="flex:1">만들기</button></div>
+      <div id="ofMsg" style="font-size:13px;margin-top:8px"></div>
+    </div>
     <div class="form-wrap" style="margin-top:14px">
       <div class="form-title">회원 정보 전환 (1회)</div>
       <div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:10px">민감 정보를 비공개 칸으로 옮기고, 기존 회원의 Firebase 로그인 계정을 만듭니다. 여러 번 실행해도 안전합니다.</div>
@@ -317,6 +339,54 @@ async function authEmail(id){
 }
 const privRef=id=>db.collection('users').doc(id).collection('private').doc('info');
 async function loadPriv(id){try{const r=await privRef(id).get();return r.exists?r.data():{};}catch(e){return {};}}
+/* ── 관리자 로그인 ──
+   관리자 = admins/{uid} 문서가 있는 Firebase 계정. users(회원 목록)에는 넣지 않음. */
+let _agMode='login';
+function agErr(t){const e=document.getElementById('agErr');e.textContent=t;e.style.display=t?'block':'none';}
+function agSetMode(m){
+  _agMode=m;const nw=m==='create';
+  document.getElementById('agTitle').textContent=nw?'첫 관리자 계정 만들기':'관리자 로그인';
+  ['agNew','agNickF','agPw2F'].forEach(i=>document.getElementById(i).style.display=nw?'block':'none');
+  document.getElementById('agBtn').textContent=nw?'만들고 들어가기':'로그인';
+}
+async function agGo(){
+  const id=document.getElementById('agId').value.trim().toLowerCase(),pw=document.getElementById('agPw').value;
+  agErr('');
+  if(!/^[a-z0-9]{4,20}$/.test(id)){agErr('아이디는 영문 소문자·숫자 4~20자예요');return;}
+  if(id==='admin'){agErr('admin 은 시스템에서 쓰는 이름이라 쓸 수 없어요');return;}
+  if(pw.length<8){agErr('비밀번호는 8자 이상이에요');return;}
+  const A=firebase.auth(),btn=document.getElementById('agBtn');btn.disabled=true;
+  try{
+    const em=await authEmail(id),ph=await hashPw(pw);
+    if(_agMode==='create'){
+      if(pw!==document.getElementById('agPw2').value){agErr('비밀번호가 일치하지 않아요');return;}
+      const nick=document.getElementById('agNick').value.trim()||id;
+      const c=await A.createUserWithEmailAndPassword(em,ph);
+      await c.user.updateProfile({displayName:id});
+      await db.collection('admins').doc(c.user.uid).set({id,nick,at:new Date().toISOString()});
+    }else{
+      await A.signInWithEmailAndPassword(em,ph);
+    }
+    await agCheck(A.currentUser);
+  }catch(e){
+    agErr(e.code==='auth/email-already-in-use'?'이미 있는 아이디예요':(e.code&&e.code.startsWith('auth/'))?'아이디 또는 비밀번호를 확인해주세요':'오류: '+(e.code||e.message));
+  }finally{btn.disabled=false;}
+}
+async function agCheck(u){
+  if(!u){document.getElementById('admGate').style.display='flex';return false;}
+  let ad=null;try{const d=await db.collection('admins').doc(u.uid).get();ad=d.exists?d.data():null;}catch(e){}
+  if(!ad){await firebase.auth().signOut();agErr('관리자 권한이 없는 계정이에요');document.getElementById('admGate').style.display='flex';return false;}
+  document.getElementById('admGate').style.display='none';
+  document.getElementById('admWho').innerHTML=`${(ad.nick||ad.id).replace(/</g,'&lt;')} · <a href="#" onclick="firebase.auth().signOut().then(()=>location.reload());return false" style="color:inherit">로그아웃</a>`;
+  if(typeof adminReady==='function')adminReady();
+  return true;
+}
+firebase.auth().onAuthStateChanged(async u=>{
+  if(u){await agCheck(u);return;}
+  try{const s=await db.collection('admins').limit(1).get();agSetMode(s.empty?'create':'login');}catch(e){agSetMode('login');}
+  document.getElementById('admGate').style.display='flex';
+});
+
 const SENS=['realName','phoneHash','phoneTail','pwHash','licName','licNo','licPath','licUrl','agreeAt','termsVer','marketing'];
 /* 1회용: 기존 회원 → 민감정보 분리 + Firebase 로그인 계정 생성 */
 async function migrateUsers(onlyId){
@@ -466,6 +536,39 @@ async function unbanUser(id){
   if(!confirm(id+' 님의 이용 정지를 풀까요?'))return;
   try{await window._db.collection('users').doc(id).update({banned:false});const m=_mem.find(x=>x.id===id);if(m)m.banned=false;renderMembers();}catch(e){alert('처리하지 못했습니다');}
 }
+/* 관리자 로그인 직후 — 관리자만 볼 수 있는 데이터 다시 불러오기 */
+function adminReady(){
+  try{loadCases();}catch(e){}
+  (async()=>{try{const s=await db.collection('users').where('licStatus','==','pending').get();const b=document.getElementById('licBadge');if(b){b.textContent=s.size;b.style.display=s.size?'inline-block':'none';}}catch(e){}})();
+  (async()=>{try{const s=await db.collection('reports').where('status','==','open').get();const n=new Set();s.forEach(d=>{const x=d.data();n.add(x.kind+'|'+x.tid+'|'+(x.pid||''));});const b=document.getElementById('repBadge');if(b){b.textContent=n.size;b.style.display=n.size?'inline-block':'none';}}catch(e){}})();
+}
+/* 운영 계정 (약사·일반) — 휴대폰 인증·면허 심사 없이 바로 사용 가능, official:true 표시 */
+async function makeOfficial(){
+  const g=i=>document.getElementById(i).value.trim();
+  const role=document.getElementById('ofRole').value,id=g('ofId').toLowerCase(),nick=g('ofNick'),real=g('ofReal'),pw=document.getElementById('ofPw').value;
+  const out=document.getElementById('ofMsg');out.style.color='var(--red)';
+  if(!/^[a-z0-9]{4,20}$/.test(id)){out.textContent='아이디는 영문 소문자·숫자 4~20자';return;}
+  if(id==='admin'){out.textContent='admin 은 쓸 수 없어요';return;}
+  if(!/^[가-힣a-zA-Z0-9._-]{2,20}$/.test(nick)){out.textContent='닉네임 2~20자';return;}
+  if(pw.length<8){out.textContent='비밀번호 8자 이상';return;}
+  try{
+    if((await db.collection('users').doc(id).get()).exists){out.textContent='이미 있는 아이디예요';return;}
+    if(!(await db.collection('users').where('nick','==',nick).limit(1).get()).empty){out.textContent='이미 있는 닉네임이에요';return;}
+    const sec=firebase.apps.find(a=>a.name==='mig')||firebase.initializeApp(firebase.app().options,'mig');
+    const c=await sec.auth().createUserWithEmailAndPassword(await authEmail(id),await hashPw(pw));
+    await c.user.updateProfile({displayName:id});
+    const now=new Date().toISOString();
+    const d={uid:c.user.uid,authAt:now,nick,role,hist:[],onboarded:true,createdAt:now,official:true};
+    if(role==='pharm')Object.assign(d,{licStatus:'verified',licAt:now,licVerifiedAt:now});
+    await db.collection('users').doc(id).set(d);
+    const pv={realName:real,agreeAt:now,termsVer:'official',marketing:false};if(role==='pharm')pv.licName=real;
+    await privRef(id).set(pv);
+    await sec.auth().signOut();
+    out.style.color='var(--p)';out.textContent=`만들었어요: ${id} (${role==='pharm'?'약사':'일반회원'})`;
+    ['ofId','ofNick','ofReal','ofPw'].forEach(i=>document.getElementById(i).value='');
+    loadMembers();
+  }catch(e){out.textContent='실패: '+(e.code||e.message);}
+}
 let _mem=[];
 const _esc=v=>String(v==null?'':v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function loadMembers(){
@@ -473,7 +576,7 @@ async function loadMembers(){
   try{
     const snap=await window._db.collection('users').get();
     const pvs={};await Promise.all(snap.docs.map(async d=>{pvs[d.id]=await loadPriv(d.id);}));
-    _mem=[];snap.forEach(d=>{const x={...d.data(),...pvs[d.id]};_mem.push({id:d.id,nick:x.nick||d.id,real:x.realName||x.licName||'',role:x.role||'',lic:x.licStatus||'',tail:x.phoneTail||'',at:x.createdAt||'',demo:!!(x.demo||x.demoProfile),banned:!!x.banned});});
+    _mem=[];snap.forEach(d=>{const x={...d.data(),...pvs[d.id]};_mem.push({id:d.id,nick:x.nick||d.id,real:x.realName||x.licName||'',role:x.role||'',lic:x.licStatus||'',tail:x.phoneTail||'',at:x.createdAt||'',demo:!!(x.demo||x.demoProfile),banned:!!x.banned,official:!!x.official});});
     _mem.sort((a,b)=>String(b.at).localeCompare(String(a.at)));
     renderMembers();
   }catch(e){console.log(e);el.innerHTML='<div class="empty">불러오기에 실패했습니다.</div>';}
@@ -486,7 +589,7 @@ function renderMembers(){
   document.getElementById('memList').innerHTML=rows.length?`<div class="form-wrap" style="padding:0;overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">
     <tr style="background:#F7F5F0;text-align:left"><th style="padding:10px">실명</th><th>닉네임 (아이디)</th><th>구분</th><th>휴대폰</th><th>가입일</th></tr>
     ${rows.map(m=>`<tr style="border-top:1px solid var(--border)"><td style="padding:10px;font-weight:700">${m.real?_esc(m.real):'<span style="color:#aaa;font-weight:400">미입력</span>'}</td>
-      <td>${_esc(m.nick)}${m.nick!==m.id?' <span style="color:#999">@'+_esc(m.id)+'</span>':''}${m.demo?' <span style="color:#C2524A;font-size:11px">예시</span>':''}</td>
+      <td>${_esc(m.nick)}${m.nick!==m.id?' <span style="color:#999">@'+_esc(m.id)+'</span>':''}${m.demo?' <span style="color:#C2524A;font-size:11px">예시</span>':''}${m.official?' <span style="color:#3E8E8A;font-size:11px;font-weight:700">운영</span>':''}</td>
       <td>${m.banned?`<span style="color:var(--red);font-weight:700">정지</span> <button onclick="unbanUser('${_esc(m.id)}')" style="font-size:11px;border:1px solid var(--border);background:#fff;border-radius:6px;padding:1px 6px;cursor:pointer">해제</button><br>`:''}${m.role==='pharm'?'약사'+(m.lic?' · '+(LS[m.lic]||m.lic):''):m.role==='member'?'일반회원':_esc(m.role||'-')}</td>
       <td>${m.tail?'···'+_esc(m.tail):'-'}</td><td style="white-space:nowrap;padding-right:10px">${String(m.at).slice(0,10)||'-'}</td></tr>`).join('')}
   </table></div>`:'<div class="empty">회원이 없습니다.</div>';
