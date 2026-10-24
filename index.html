@@ -2978,7 +2978,7 @@ async function phConfirm(){
   try{
     await _phConf.confirm(code);
     _phOk={e164:_phConf._e,hash:_phConf._h};
-    try{await firebase.auth().signOut();}catch(x){}
+    _phOk.uid=firebase.auth().currentUser&&firebase.auth().currentUser.uid;
     const d=_phOk.e164.replace('+82','0');
     document.getElementById('sfPhone').style.display='none';
     const ok=document.getElementById('sfPhoneOk');ok.style.display='flex';
@@ -3018,7 +3018,14 @@ async function doSignup(){
     const legacy=await db.collection('users').doc(nick).get();
     if(!dupNick.empty||legacy.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
     const pwHash=await hashPw(pw);
-    const d={agreeAt:new Date().toISOString(),termsVer:TERMS_VER,marketing:document.getElementById('agMkt').checked,nick,role,realName:(document.getElementById('sLicName').value||'').trim(),pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4)};
+    /* 휴대폰 인증한 계정에 아이디·비밀번호 연결 */
+    const A=firebase.auth(),au=A.currentUser;
+    if(!au||!au.phoneNumber){_phOk=null;showErr('serr','휴대폰 인증을 다시 해주세요');sfStep(1);return;}
+    if(au.providerData.some(p=>p.providerId==='password')){showErr('serr','이미 이 번호로 가입된 계정이 있어요');return;}
+    try{await au.linkWithCredential(firebase.auth.EmailAuthProvider.credential(await authEmail(id),pwHash));}
+    catch(e){showErr('serr',e.code==='auth/email-already-in-use'||e.code==='auth/credential-already-in-use'?'이미 사용 중인 아이디예요':'가입하지 못했어요 ['+(e.code||'')+']');return;}
+    await au.updateProfile({displayName:id});
+    const d={uid:au.uid,authAt:new Date().toISOString(),agreeAt:new Date().toISOString(),termsVer:TERMS_VER,marketing:document.getElementById('agMkt').checked,nick,role,realName:(document.getElementById('sLicName').value||'').trim(),pwHash,hist:[],onboarded:false,createdAt:new Date().toISOString(),phoneHash:_phOk.hash,phoneTail:_phOk.e164.slice(-4)};
     if(role==='pharm'){
       const dup=await db.collection('users').where('licNo','==',licNo).get();
       let taken=false;dup.forEach(x=>{const st=x.data().licStatus;if(st==='verified'||st==='pending')taken=true;});
@@ -3050,6 +3057,44 @@ function _setUser(id,d){
   S.hist=(d&&d.hist)||[];S.bio=(d&&d.bio)||'';
 }
 
+/* ── Firebase 로그인 (2026-10 전환) ──
+   계정 = 내부용 이메일 + 비밀번호(pwHash). 아이디가 영문·숫자가 아니면 해시로 이메일을 만듦.
+   기존 회원은 첫 로그인 때 옛 방식으로 확인한 뒤 Firebase 계정을 자동 생성. */
+const AUTH_DOM='jipyakcheo.app';
+async function authEmail(id){
+  id=String(id);
+  if(/^[a-z0-9._-]{1,60}$/.test(id))return id+'@'+AUTH_DOM;
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('dn-id:'+id));
+  return 'x'+Array.from(new Uint8Array(buf)).slice(0,20).map(b=>b.toString(16).padStart(2,'0')).join('')+'@'+AUTH_DOM;
+}
+const _AUTH_MISS=['auth/user-not-found','auth/wrong-password','auth/invalid-credential','auth/invalid-login-credentials','auth/invalid-email'];
+/* 성공하면 {id, d} / 실패하면 null */
+async function authLogin(raw,pw){
+  const A=firebase.auth(),pwHash=await hashPw(pw);
+  for(const id of [...new Set([raw,raw.toLowerCase()])]){
+    try{
+      await A.signInWithEmailAndPassword(await authEmail(id),pwHash);
+      const docId=A.currentUser.displayName||id;
+      const r=await db.collection('users').doc(docId).get();
+      if(!r.exists){await A.signOut();return null;}
+      return {id:docId,d:r.data()};
+    }catch(e){if(!_AUTH_MISS.includes(e.code))throw e;}
+  }
+  /* 기존 회원 → 옛 방식 확인 후 Firebase 계정 생성 */
+  const r=await _findUser(raw);if(!r.exists)return null;
+  const id=r.id,d=r.data();
+  const ok=d.pwHash?d.pwHash===pwHash:(d.pw!=null&&d.pw===pw);
+  if(!ok)return null;
+  try{await A.createUserWithEmailAndPassword(await authEmail(id),pwHash);}
+  catch(e){if(e.code==='auth/email-already-in-use')return null;throw e;}
+  await A.currentUser.updateProfile({displayName:id});
+  const up={uid:A.currentUser.uid,authAt:new Date().toISOString()};
+  if(!d.pwHash){up.pwHash=pwHash;up.pw=firebase.firestore.FieldValue.delete();}
+  await db.collection('users').doc(id).set(up,{merge:true});
+  return {id,d:{...d,uid:up.uid}};
+}
+async function authSignOut(){try{await firebase.auth().signOut();}catch(e){}}
+
 async function doLogin(){
   const raw=document.getElementById('lid').value.trim();
   const pw=document.getElementById('lpw').value;
@@ -3066,22 +3111,9 @@ async function doLogin(){
 
   setBtnLoading('loginBtn',true,'로그인 중...');
   try{
-    const r=await _findUser(raw);
-    if(!r.exists){showErr('lerr','아이디 또는 비밀번호를 확인해주세요');return;}
-    const id=r.id;
-    const d=r.data();
-    const pwHash=await hashPw(pw);
-
-    let match=false;
-    if(d.pwHash){
-      match=(d.pwHash===pwHash);
-    }else if(d.pw){
-      if(d.pw===pw){
-        match=true;
-        try{await db.collection('users').doc(id).update({pwHash,pw:firebase.firestore.FieldValue.delete()});}
-        catch(e){console.log('migrate fail',e);}
-      }
-    }
+    const res=await authLogin(raw,pw);
+    const match=!!res;
+    const id=res&&res.id,d=res&&res.d;
 
     if(!match){
       const newCount=attempts.count+1;
@@ -3106,12 +3138,19 @@ async function doLogin(){
 
 /* 자동 로그인 — 저장된 아이디로 재로그인 */
 async function tryAutoLogin(){
-  let id=null;
-  try{id=localStorage.getItem('deonaeum_nick');}catch(e){}
-  if(!id)return false;
+  const u=await new Promise(res=>{const un=firebase.auth().onAuthStateChanged(x=>{un();res(x);});});
+  /* 휴대폰 인증만 하고 가입을 안 끝낸 상태 · 옛 방식 자동 로그인 → 다시 로그인 */
+  if(!u||!u.providerData.some(p=>p.providerId==='password')){
+    if(u)await authSignOut();
+    try{localStorage.removeItem('deonaeum_nick');}catch(e){}
+    return false;
+  }
+  let id=u.displayName;
+  if(!id){try{id=localStorage.getItem('deonaeum_nick');}catch(e){}}
+  if(!id){await authSignOut();return false;}
   try{
     const r=await db.collection('users').doc(id).get();
-    if(!r.exists){try{localStorage.removeItem('deonaeum_nick');}catch(e){}return false;}
+    if(!r.exists){try{localStorage.removeItem('deonaeum_nick');}catch(e){}await authSignOut();return false;}
     const d=r.data();
     _setUser(id,d);
     await afterAuth(d);
@@ -3122,7 +3161,7 @@ function logout(){
   if(!confirm('로그아웃 할까요?'))return;
   try{localStorage.removeItem('deonaeum_nick');}catch(e){}
   S.user=null;S.hist=[];S.bio='';
-  location.reload();
+  authSignOut().finally(()=>location.reload());
 }
 
 /* ============================================================
@@ -3413,6 +3452,7 @@ async function deleteAccount(){
 
     /* 6) 계정 문서 */
     await db.collection('users').doc(nick).delete();
+    try{await firebase.auth().currentUser.delete();}catch(e){console.log('auth 삭제',e.code);await authSignOut();}
 
     try{localStorage.removeItem('deonaeum_nick');}catch(e){}
     alert('계정이 삭제되었습니다. 그동안 이용해주셔서 감사합니다.');
@@ -6746,6 +6786,7 @@ const _ugcAA=afterAuth;
 afterAuth=async function(d){
   if(d&&d.banned){
     try{localStorage.removeItem('deonaeum_nick');}catch(e){}
+    await authSignOut();
     S.user=null;gs('loginScreen');switchLTab('login');
     showErr('lerr','이용이 정지된 계정이에요. 문의: '+OP_MAIL);
     return;
