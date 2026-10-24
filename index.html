@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>집약처 — 집단지성 약사들의 처방</title>
+<title>집약처 — 집단지성 약사처방</title>
 
 <!-- ===== PWA / 홈화면 앱 ===== -->
 <meta name="description" content="약사 집단지성 임상 판단 플랫폼. 환자 케이스에 처방하고, 동료 약사의 판단과 비교하고, 목적별 제품 순위를 확인하세요.">
@@ -214,7 +214,7 @@ body{
 #loginScreen,#memberScreen{padding-bottom:0}
 .dn-logo{font-family:'Black Han Sans',sans-serif;font-size:48px;line-height:1.1;color:#191F28;letter-spacing:-.01em}
 .dn-logo i{font-style:normal;color:#7A9A7E}
-.lw .ll p{font-size:11px;letter-spacing:.18em;color:#8B6A4E;margin-top:10px;font-weight:500}
+.lw .ll p{font-family:'Black Han Sans',sans-serif;font-size:17px;letter-spacing:.04em;color:#191F28;margin-top:8px;font-weight:400}
 .lw .inp{background:#fff;border-color:#E5E8EB}
 .lw .inp:focus{border-color:#5E7D63}
 .lbtn{background:#5E7D63;margin-top:8px}
@@ -561,7 +561,8 @@ body{
 .pr-c.done small{margin-left:auto;font-size:12px;font-weight:700;opacity:.8}
 .pr-hl{border-radius:4px;background:#E8F2FF;color:#3182F6;box-shadow:0 0 0 2px #E8F2FF}
 .pr-hl.otc{background:#E0F5F1;color:#0F9D8A;box-shadow:0 0 0 2px #E0F5F1}
-.pr-hl.ing{background:#EEF0F3;color:#6B7684;box-shadow:0 0 0 2px #EEF0F3}
+.pr-hl.ing{background:#FFF4CC;color:#A67600;box-shadow:0 0 0 2px #FFF4CC}
+.pr-hl.user{background:#EEF0F3;color:#6B7684;box-shadow:0 0 0 2px #EEF0F3}
 .pr-tip{text-align:center;font-size:14px;font-weight:600;color:var(--t2);padding:0 0 10px}
 .pr-zoom{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom))}
 .pr-zoom.on{display:flex}
@@ -1672,7 +1673,8 @@ body{
 .rx-chip button{flex:none;border:none;background:none;color:var(--t3);font-size:15px;line-height:1;padding:0 4px;cursor:pointer}
 .rx-chip.k-otc,.rx-hl mark.k-otc{--kc:#0F9D8A;--kb:#E0F5F1}
 .rx-chip.k-food,.rx-hl mark.k-food{--kc:#B7791F;--kb:#FBF1DF}
-.rx-chip.k-ing,.rx-hl mark.k-ing{--kc:#6B7684;--kb:#EEF0F3}
+.rx-chip.k-ing,.rx-hl mark.k-ing{--kc:#E0A000;--kb:#FFF4CC}
+.rx-chip.k-user,.rx-hl mark.k-user{--kc:#8B95A1;--kb:#EEF0F3}
 .rx-list{max-height:216px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .rx-li{display:flex;align-items:center;gap:10px;width:100%;padding:9px 16px;border:none;border-bottom:1px solid var(--bd-soft);background:none;text-align:left;cursor:pointer;font-family:inherit}
 .rx-li:last-child{border-bottom:none}
@@ -2061,7 +2063,7 @@ body{
   <div id="lf" class="lw-in">
     <div class="ll">
       <div class="dn-logo">집약처<i>.</i></div>
-      <p>집단지성 약사들의 처방</p>
+      <p>집단지성 약사처방</p>
     </div>
     <div class="err" id="lerr"></div>
     <input class="inp" id="lid" placeholder="아이디" autocomplete="username" autocapitalize="off">
@@ -2120,7 +2122,7 @@ body{
 <!-- 일반회원 (준비 중) -->
 <div class="screen" id="memberScreen">
   <div class="lw"><div class="lw-in" style="text-align:center">
-    <div class="ll"><div class="dn-logo">집약처<i>.</i></div><p>집단지성 약사들의 처방</p></div>
+    <div class="ll"><div class="dn-logo">집약처<i>.</i></div><p>집단지성 약사처방</p></div>
     <p style="font-size:15px;color:var(--t2);margin-bottom:24px">일반회원 화면을 준비하고 있어요</p>
     <button class="btn lbtn" onclick="logout()">로그아웃</button>
   </div></div>
@@ -2170,7 +2172,7 @@ body{
 <div class="topbar" style="justify-content:center;padding-top:calc(18px + env(safe-area-inset-top))">
   <div class="hbrand">
     <div class="hb-l">집약처</div>
-    <div class="hb-s">집단지성 약사들의 처방</div>
+    <div class="hb-s">집단지성 약사처방</div>
   </div>
 </div>
 <div class="hguide">
@@ -2298,7 +2300,7 @@ body{
 <div class="rx-top"><button type="button" class="rx-bk" onclick="backFromRx()" aria-label="뒤로"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="rx-ttl" id="rcaseRx"></span><button type="button" class="rx-rv" onclick="backFromRx()"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>영상</button></div>
 <div class="rs" style="padding-top:4px">
   <div class="rx-wrap"><div class="rx-hl" id="rxHL" aria-hidden="true"></div>
-  <textarea class="cmt-area rx-area" id="rxText" placeholder="어떤 제품을, 왜 권하시겠어요?"
+  <textarea class="cmt-area rx-area" id="rxText" placeholder="어떤 제품을, 왜 권하시겠어요?&#10;제품명을 치면 아래에 목록이 떠요. 목록에 없으면 (제품명)처럼 괄호로 적어주세요."
     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
     oninput="rxOnInput()" onbeforeinput="rxBeforeInput(event)" onkeyup="rxOnCaret()" onclick="rxOnCaret()" onfocus="rxOnCaret()" onblur="rxOnBlur()" onscroll="rxSyncHL()"></textarea></div>
   <div class="rx-count" id="rxCount">0 / 20자</div>
@@ -4704,12 +4706,25 @@ function rxOnInput(){
   if(rxGuardCheck())return;
   S.summary=ta.value;
   /* 글에서 제품명이 사라지면 아래 태그도 함께 빠짐 */
-  const before=_rxTags.length;
-  _rxTags=_rxTags.filter(t=>ta.value.includes(t.n));
-  if(_rxTags.length!==before)rxRenderTags();
+  const before=_rxTags.map(t=>t.id).join('|');
+  _rxTags=_rxTags.filter(t=>t.kind==='user'?ta.value.includes('('+t.n+')'):ta.value.includes(t.n));
+  rxParenTags(ta.value);
+  if(_rxTags.map(t=>t.id).join('|')!==before)rxRenderTags();
   rxUpdateGate();rxRenderSug();rxSyncHL();
 }
 function rxOnCaret(){rxRenderSug();}
+/* 목록에 없는 제품: (제품명) 으로 적으면 회색 태그 — 관리자 확인 전까지 랭킹 제외 */
+let _rxParenWarn=0;const _rxIgnore=new Set();
+function rxNotProduct(i){const t=_rxTags[i];if(!t)return;_rxIgnore.add(t.n);_rxTags.splice(i,1);closePop();rxRenderTags();rxUpdateGate();rxSyncHL();}
+function rxParenTags(v){
+  const re=/\(([^()\n]{2,30})\)/g;let m;
+  while((m=re.exec(v))){
+    const n=m[1].trim();if(n.length<2)continue;
+    if(_rxTags.some(t=>t.n===n)||_rxIgnore.has(n))continue;
+    if(_rxTags.length>=RX_MAX){if(Date.now()-_rxParenWarn>3000){_rxParenWarn=Date.now();toast('처방 제품은 최대 4개까지 태그할 수 있어요');}continue;}
+    _rxTags.push({kind:'user',cat:'',id:'u:'+rxNorm(n),n,c:'',ings:[],ing:n,purposes:[]});
+  }
+}
 /* 표시된 제품명 끝에서 지우기 → 이름 전체가 한 번에 지워짐 (멘션처럼) */
 function rxBeforeInput(e){
   if(e.inputType!=='deleteContentBackward')return;
@@ -4806,6 +4821,7 @@ function rxOpenTag(i){
   const t=_rxTags[i];if(!t)return;
   document.getElementById('rxText').blur();
   if(t.kind==='core'&&P.find(x=>x.id===t.id)){openProdDetail(t.id);return;}
+  if(t.kind==='user'){document.getElementById('popContent').innerHTML=`<div class="pop-title">${esc(t.n)}</div><div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:16px">목록에 없어 직접 적은 제품이에요.<br>운영팀이 확인한 뒤 제품 목록과 랭킹에 반영돼요.</div><button class="btn" style="background:var(--bg);color:var(--t)" onclick="rxNotProduct(${i})">제품이 아니에요</button>`;showPop();return;}
   const box=(l,v)=>`<div style="flex:1;background:var(--bg);border-radius:10px;padding:10px 12px"><div style="font-size:10px;color:var(--t3);margin-bottom:3px">${l}</div><div style="font-size:13px;font-weight:700;color:var(--t)">${v||'-'}</div></div>`;
   let h='';
   if(t.kind==='otc'){
@@ -4880,6 +4896,8 @@ async function submitRx(){
       prod:{id:t.id,n:t.n,c:t.c||'',i:t.ings||[],e:_PILL}}));
     S.summary=txt;
     await saveResp();
+    const ut=_rxTags.filter(t=>t.kind==='user');
+    if(ut.length){const now=new Date().toISOString();await Promise.all(ut.map(t=>db.collection('productRequests').add({name:t.n,norm:rxNorm(t.n),nick:S.user.nick,caseId:S.case&&S.case.id,respId:S.myRespId||'',createdAt:now,status:'open'}).catch(()=>{})));}
     toast('처방이 등록됐어요!');
     goStep('peerCmt');
   }finally{
@@ -4981,7 +4999,7 @@ function peerHL(rx){
     while(i>=0){hits.push({s:i,e:i+w.length,k});i=low.indexOf(lw,i+1);}
   };
   (rx.pairs||[]).forEach(p=>{
-    const k=p.kind==='otc'?'otc':p.kind==='ing'?'ing':'';
+    const k=p.kind==='otc'?'otc':p.kind==='ing'?'ing':p.kind==='user'?'user':'';
     const nm=String(p.pnm||'').trim();
     if(nm){
       add(nm,k);
@@ -5209,12 +5227,12 @@ async function renderResult(){
   const prodCnt={},prodRec={};
   resps.forEach(r=>{
     (r.pairs||[]).forEach(p=>{
-      if(!p.pid)return;
+      if(!p.pid||p.kind==='user'||String(p.pid).startsWith('u:'))return;
       prodCnt[p.pid]=(prodCnt[p.pid]||0)+1;
       prodRec[p.pid]=(prodRec[p.pid]||0)+(r.recs||0);
     });
   });
-  const myIds=S.pairs.map(p=>p.prod.id);
+  const myIds=S.pairs.map(p=>p.prod.id).filter(id=>!String(id).startsWith('u:'));
   const allIds=new Set([...myIds,...Object.keys(prodCnt)]);
   const maxCnt=Math.max(...Object.values(prodCnt),1);
   const ranked=[...allIds].map(id=>{
@@ -5991,7 +6009,7 @@ const DN_KIT="<svg width=\"152\" height=\"90\" viewBox=\"0 0 190 112\">\n       
 const DN_LEAF="<svg width=\"132\" height=\"138\" viewBox=\"0 0 132 138\" aria-hidden=\"true\">\n        <defs>\n          <linearGradient id=\"acr\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#FFFFFF\" stop-opacity=\"0.35\"></stop><stop offset=\"0.5\" stop-color=\"#FFFFFF\" stop-opacity=\"0.08\"></stop><stop offset=\"1\" stop-color=\"#FFFFFF\" stop-opacity=\"0.3\"></stop></linearGradient>\n          <linearGradient id=\"paper\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#FFFFFF\"></stop><stop offset=\"1\" stop-color=\"#EEF0F2\"></stop></linearGradient>\n        </defs>\n        <path d=\"M14 10 L118 10 L122 128 L10 128 Z\" fill=\"url(#acr)\" stroke=\"rgba(255,255,255,0.55)\" stroke-width=\"1\"></path>\n        <g>\n          <path d=\"M22 18 L110 18 L113 118 L19 118 Z\" fill=\"url(#paper)\"></path>\n          <path d=\"M22 18 L110 18 L110.3 26 L21.7 26 Z\" fill=\"#7A9A7E\"></path>\n          <text x=\"66\" y=\"64\" text-anchor=\"middle\" font-family=\"Black Han Sans, sans-serif\" font-size=\"18\" letter-spacing=\"0\" fill=\"#4E6B53\">\uc804\ubb38 \uc57d\uc0ac\uc758</text>\n          <text x=\"66\" y=\"88\" text-anchor=\"middle\" font-family=\"Black Han Sans, sans-serif\" font-size=\"18\" letter-spacing=\"0\" fill=\"#4E6B53\">\uc774\uc57c\uae30 \ub4e3\uae30</text>\n          <rect x=\"54\" y=\"98\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#7A9A7E\"></rect>\n        </g>\n        <path d=\"M10 112 L122 112 L124 130 Q124 134 120 134 L12 134 Q8 134 8 130 Z\" fill=\"rgba(255,255,255,0.22)\" stroke=\"rgba(255,255,255,0.6)\" stroke-width=\"1\"></path>\n        <rect x=\"14\" y=\"113\" width=\"104\" height=\"1.2\" fill=\"rgba(255,255,255,0.8)\"></rect>\n        <path d=\"M18 14 L24 124\" stroke=\"rgba(255,255,255,0.5)\" stroke-width=\"2\" stroke-linecap=\"round\"></path>\n      </svg>";
 function dnKit(label){return DN_KIT.replace(/>처방하기<\/text>/g,'>'+label+'</text>');}
 function dnLeaf(l1,l2){return DN_LEAF.replace('>전문 약사의</text>','>'+l1+'</text>').replace('>이야기 듣기</text>','>'+l2+'</text>');}
-const DN_KC={core:'#3182F6',food:'#B7791F',otc:'#0F9D8A',ing:'#6B7684'};
+const DN_KC={core:'#3182F6',food:'#B7791F',otc:'#0F9D8A',ing:'#E0A000',user:'#8B95A1'};
 
 /* 제형 추정 — 이름 속 단어로 모양을 고릅니다 (모르면 박스) */
 function dnShape(name){
@@ -6030,6 +6048,7 @@ function dnRanks(cid){
   (RESP_CACHE||[]).filter(r=>String(r.caseId)===String(cid)).forEach(r=>{
     const seen=new Set();
     (r.pairs||[]).forEach(p=>{
+      if(p.kind==='user')return;
       const otc=p.kind==='otc';
       const key=otc?('o:'+(p.ing||p.pnm)+dnFormWord(p.pnm)):String(p.pid);
       if(seen.has(key))return;seen.add(key);
@@ -6133,7 +6152,7 @@ function dnWriteOpen(){
   setTimeout(()=>{const t=document.getElementById('rxText');if(t)t.focus({preventScroll:true});},450);
 }
 function dnRxReset(){
-  _rxTags=[];S.summary='';_rxGuard=null;_rxComposing=false;
+  _rxIgnore.clear();_rxTags=[];S.summary='';_rxGuard=null;_rxComposing=false;
   const t=document.getElementById('rxText');if(t){t.value='';t.blur();}
   try{rxRenderTags();rxUpdateGate();rxSyncHL();}catch(e){}
 }
@@ -6624,6 +6643,7 @@ async function prCompute(){
     const con=caseCon[r.caseId];if(!con||!r.nick)return;
     const seen=new Set();
     (r.pairs||[]).forEach(pr=>{
+      if(pr.kind==='user')return;
       const info=prKeyOf(pr);if(!info.name||seen.has(info.key))return;seen.add(info.key);
       prProdCats(pr).filter(k=>con.includes(k)).forEach(k=>{
         const e=D[k][info.key]||(D[k][info.key]={...info,pids:new Set(),nicks:new Set(),recs:0,resp:[]});
