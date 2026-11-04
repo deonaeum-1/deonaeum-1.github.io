@@ -4753,6 +4753,9 @@ function rxSearch(q){
     if(t<0&&ingHit([...(p.i||[]),...(p.cats||[])]))t=2;
     if(t>=0)add({kind:'core',cat:p.cat||'',id:p.id,n:p.n,c:p.c||'',ings:p.i||[],ing:(p.cats&&p.cats[0])||(p.i&&p.i[0])||'',t});
   });
+  /* 한약제제 = 방제명으로 통칭 (쌍화탕 · 갈근탕) */
+  {const hs=new Set(Object.keys(HERB_CATS));(OTC||[]).forEach(o=>{if(o.h)hs.add(o.h);});
+   hs.forEach(h=>{const t=nameTier(h);if(t>=0)add({kind:'herb',id:'h:'+h,n:h,c:'',ings:[],ing:h,t});});}
   ING_MASTER.forEach(g=>{
     const t=nameTier(g);
     if(t>=0)add({kind:'ing',id:'i:'+g,n:g,c:'',ings:[g],ing:g,t});
@@ -4761,10 +4764,10 @@ function rxSearch(q){
     let t=nameTier(o.n);
     if(t<0&&o.h){const ft=nameTier(o.h);if(ft>=0)t=rxNorm(o.n).includes(nq)?ft:ft+1;}
     if(t<0&&ingHit(o.g))t=2;
-    if(t>=0)add({kind:o.h?'herb':'otc',id:o.id,n:o.n,c:o.c||'',ings:o.g||[],ing:o.h||(o.g&&o.g[0])||'',t});
+    if(t>=0)add({kind:'otc',id:o.id,n:o.n,c:o.c||'',ings:o.g||[],ing:(o.g&&o.g[0])||'',t});
   });
 
-  const kindOrd={core:0,ing:1,otc:2};
+  const kindOrd={core:0,herb:1,ing:2,otc:3};
   out.sort((a,b)=>a.t-b.t||(_rxUse[b.id]||0)-(_rxUse[a.id]||0)||kindOrd[a.kind]-kindOrd[b.kind]||a.n.length-b.n.length);
   return out.slice(0,RX_SUG_MAX);
 }
@@ -6206,8 +6209,9 @@ function dnRanks(cid){
 const DN_KLB={core:'건강기능식품',otc:'일반의약품',ing:'성분',food:'식품',herb:'한약제제'};
 /* 한약제제: 일반의약품 목록(otc_index.json)에서 h(처방명)가 있는 제품. 옛 소견(kind:'otc')도 목록을 보고 한약제제로 읽음 */
 function dnHerbOf(pid){const o=(OTC||[]).find(x=>x.id===pid);return o&&o.h||'';}
-function dnPairKind(p){if(p.kind==='herb')return 'herb';if(p.kind==='otc'&&dnHerbOf(p.pid))return 'herb';return p.kind||'core';}
-function dnHerbName(p){return (p.kind==='herb'&&p.ing)||dnHerbOf(p.pid)||p.pnm||'';}
+/* 2026-11: 한약제제 = 방제명 태그(pid 'h:쌍화탕')만. 광동쌍화탕 같은 상품은 일반의약품 */
+function dnPairKind(p){if(p.kind==='herb')return String(p.pid||'').startsWith('h:')?'herb':'otc';return p.kind||'core';}
+function dnHerbName(p){if(String(p.pid||'').startsWith('h:'))return p.ing||String(p.pid).slice(2);return dnHerbOf(p.pid)||p.ing||p.pnm||'';}
 const HERB_CATS={
 '쌍화탕':['피로/활력','영양'],'보중익기탕':['피로/활력','면역/항산화','영양'],'공진단':['피로/활력','면역/항산화','영양'],'경옥고':['피로/활력','면역/항산화','영양'],'십전대보탕':['피로/활력','면역/항산화','영양'],'팔물탕':['피로/활력','면역/항산화','영양'],'사물탕':['피로/활력','여성 건강','혈관/혈액','영양'],'생맥산':['피로/활력'],'육미지황탕':['피로/활력','남성 건강','영양'],'육미지황환':['피로/활력','남성 건강','영양'],'팔미지황환':['피로/활력','남성 건강'],'우차신기환':['피로/활력','남성 건강'],'연령고본단':['피로/활력','영양'],'옥로환':['피로/활력'],'청서익기탕':['피로/활력'],'복령보심탕':['피로/활력'],'녹용대보탕':['피로/활력','영양'],'익위승양탕':['피로/활력'],'황기건중탕':['피로/활력','영양'],'원탕':['피로/활력'],
 '우황청심원':['수면/스트레스'],'우황청심환':['수면/스트레스'],'천왕보심단':['수면/스트레스'],'황련해독탕':['수면/스트레스','혈관/혈액','피부'],'반하후박탕':['수면/스트레스','소화/장'],'가미소요산':['수면/스트레스','여성 건강'],'가미귀비탕':['수면/스트레스'],'귀비탕':['수면/스트레스'],'산조인탕':['수면/스트레스'],'계지가용골모려탕':['수면/스트레스','남성 건강'],'시호가용골모려탕':['수면/스트레스'],'삼황사심탕':['수면/스트레스','소화/장','혈관/혈액'],'억간산가진피반하':['수면/스트레스'],'억간산':['수면/스트레스'],'사칠탕':['수면/스트레스'],'안신환':['수면/스트레스'],'청심연자음':['수면/스트레스'],'시호소간탕':['간','수면/스트레스'],
@@ -6800,13 +6804,13 @@ function prProdCats(pr){
   const p=P.find(x=>x.id===pr.pid);
   if(p){const s=[];(p.cats||[]).forEach(c=>s.push(...(PR_ING[c]||[])));return [...new Set(s)];}
   if(dnPairKind(pr)==='herb')return HERB_CATS[dnHerbName(pr)]||[];
-  if(pr.kind==='otc'){const o=(OTC||[]).find(x=>x.id===pr.pid);return prOtcCats(o);}
+  if(dnPairKind(pr)==='otc'){const o=(OTC||[]).find(x=>x.id===pr.pid);if(o&&o.h)return HERB_CATS[o.h]||[];return prOtcCats(o);}
   return prIngCats(pr.pnm||pr.ing);
 }
 function prKeyOf(pr){
   const mem=dnIsMember();
   if(dnPairKind(pr)==='herb'){const nm=dnHerbName(pr);return {key:'h:'+nm,name:nm,co:'한약제제',kind:'herb'};}
-  if(pr.kind==='otc'){const nm=mem?((pr.ing||'')+' '+dnFormWord(pr.pnm)).trim():(pr.pnm||_pnm(pr.pid));return {key:mem?'o:'+nm:pr.pid,name:nm,co:mem?'일반의약품':(((OTC||[]).find(x=>x.id===pr.pid)||{}).c||'일반의약품'),kind:'otc'};}
+  if(dnPairKind(pr)==='otc'){const nm=mem?((pr.ing||'')+' '+dnFormWord(pr.pnm)).trim():(pr.pnm||_pnm(pr.pid));return {key:mem?'o:'+nm:pr.pid,name:nm,co:mem?'일반의약품':(((OTC||[]).find(x=>x.id===pr.pid)||{}).c||'일반의약품'),kind:'otc'};}
   const p=P.find(x=>x.id===pr.pid);
   if(p)return {key:pr.pid,name:p.n,co:p.c||'',kind:'core'};
   const nm=pr.pnm||pr.ing||'';return {key:'i:'+nm,name:nm,co:'성분',kind:'ing'};
