@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>집약처 베타 테스트</title>
+<meta name="description" content="약사 집단지성 플랫폼 집약처 베타 앱 설치 안내">
+<style>
+  /* 집약처 베타 설치 안내 — QR 하나로 아이폰·안드로이드 모두
+     링크가 바뀌면 아래 LINKS 만 고치면 됨 (QR 은 그대로) */
+  :root{--bg:#F7F3EC;--card:#fff;--ink:#2E3B30;--sub:#6F685C;--line:#E9E2D6;--green:#5E7D63;--ios:#1F1F1F;--and:#0F9D8A}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
+       min-height:100vh;display:flex;justify-content:center;padding:32px 16px calc(32px + env(safe-area-inset-bottom))}
+  main{width:100%;max-width:420px}
+  h1{font-size:30px;font-weight:900;letter-spacing:-1px}
+  .lead{color:var(--sub);font-size:15px;line-height:1.6;margin-top:6px}
+  .card{background:var(--card);border-radius:18px;padding:20px;margin-top:18px;box-shadow:0 1px 3px rgba(60,40,20,.08)}
+  .card.on{outline:2px solid var(--green)}
+  .tag{display:inline-block;font-size:12px;font-weight:700;color:#fff;border-radius:8px;padding:3px 8px}
+  .card h2{font-size:19px;margin:10px 0 12px}
+  ol{padding-left:20px;color:#333D4B;font-size:15px;line-height:1.7}
+  ol b{color:var(--ink)}
+  .btn{display:block;text-align:center;text-decoration:none;color:#fff;font-weight:800;font-size:17px;border-radius:14px;padding:16px;margin-top:16px}
+  .mine{font-size:12px;color:var(--green);font-weight:700;margin-left:6px}
+  .other{margin-top:22px;text-align:center;font-size:14px;color:var(--sub)}
+  .other a{color:var(--sub)}
+  .foot{margin-top:28px;font-size:12px;color:#958C7E;line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+<main>
+  <h1>집약처 베타</h1>
+  <p class="lead">약사들의 처방과 근거가 모이는 집단지성 앱이에요.<br>정식 출시 전 먼저 써보고 의견을 들려주세요 🙏</p>
+
+  <section class="card" id="ios">
+    <span class="tag" style="background:var(--ios)">아이폰</span><span class="mine" hidden>지금 쓰는 폰</span>
+    <h2>TestFlight로 설치</h2>
+    <ol>
+      <li>App Store에서 <b>TestFlight</b> 앱 설치</li>
+      <li>아래 버튼 → <b>수락</b> → <b>설치</b></li>
+    </ol>
+    <a class="btn" style="background:var(--ios)" data-link="ios">아이폰 앱 설치하기</a>
+  </section>
+
+  <section class="card" id="android">
+    <span class="tag" style="background:var(--and)">안드로이드</span><span class="mine" hidden>지금 쓰는 폰</span>
+    <h2>설치 파일로 설치</h2>
+    <ol>
+      <li>아래 버튼 → <b>Install</b> → 파일 다운로드</li>
+      <li>받은 파일 열기 → "출처를 알 수 없는 앱" 경고 → <b>이 출처 허용</b> → <b>설치</b></li>
+      <li>"Play 프로텍트" 경고가 뜨면 <b>무시하고 설치</b> (정식 등록 전이라 떠요)</li>
+    </ol>
+    <a class="btn" style="background:var(--and)" data-link="android">안드로이드 앱 설치하기</a>
+  </section>
+
+  <p class="other" hidden><a href="#" id="showAll">다른 기기 설치 방법 보기</a></p>
+  <p class="foot">불편한 점은 앱에서 화면을 캡처해 보내주시거나<br>초대해 준 분께 알려주세요. — 헬스앤소울</p>
+</main>
+<script>
+  const LINKS = {
+    ios: 'https://testflight.apple.com/join/jR5sWTbZ',
+    android: 'https://expo.dev/accounts/hwangjiho/projects/deonaeum-app/builds/1977d5d3-703e-4198-8af7-10dd64fc6553'
+  };
+  document.querySelectorAll('[data-link]').forEach(a => a.href = LINKS[a.dataset.link]);
+
+  // 폰 종류를 알면 그 칸만 보여줌 (아이패드는 맥처럼 보이기도 해서 터치 여부로 구분)
+  const ua = navigator.userAgent;
+  const os = /Android/i.test(ua) ? 'android'
+    : (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) ? 'ios' : null;
+  if (os) {
+    const me = document.getElementById(os), other = document.getElementById(os === 'ios' ? 'android' : 'ios');
+    me.classList.add('on'); me.querySelector('.mine').hidden = false;
+    other.hidden = true;
+    const more = document.querySelector('.other'); more.hidden = false;
+    document.getElementById('showAll').onclick = e => { e.preventDefault(); other.hidden = false; more.hidden = true; };
+  }
+</script>
+</body>
+</html>
