@@ -109,7 +109,8 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
 
 <div class="wrap">
   <div class="tabs">
-    <button class="tab on" onclick="switchTab('cases',this)">케이스</button>
+    <button class="tab on" onclick="switchTab('shorts',this)">영상</button>
+    <button class="tab" onclick="switchTab('cases',this)">옛 케이스</button>
     <button class="tab" onclick="switchTab('products',this)">제품</button>
     <button class="tab" onclick="switchTab('notices',this)">집약처 소식</button>
     <button class="tab" onclick="switchTab('lounge',this)">약사 라운지</button>
@@ -119,8 +120,15 @@ body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);ma
     <button class="tab" onclick="switchTab('members',this)">회원</button>
   </div>
 
-  <!-- 케이스 탭 -->
-  <div id="casesTab">
+  <!-- 영상 탭 (시즌1 숏폼) -->
+  <div id="shortsTab">
+    <button class="add-btn" onclick="sfOpen()">＋ 새 영상 케이스</button>
+    <div class="field-hint" style="margin:-6px 0 14px">앱 홈에는 <b>공개</b>한 영상만 조회수 순으로 보여요 · 영상은 세로 MP4(H.264) 권장, 30MB 이하</div>
+    <div id="shortList"><div class="empty">로딩 중...</div></div>
+  </div>
+
+  <!-- 옛 케이스 탭 (세트 구조 — 시즌1 앱 출시 후 삭제) -->
+  <div id="casesTab" style="display:none">
     <div class="form-wrap" style="margin-bottom:14px">
       <div class="form-title">세트 관리</div>
       <div id="setList"><div class="empty">로딩 중...</div></div>
@@ -509,6 +517,8 @@ let editingId = null;
 function switchTab(t, btn) {
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
+  document.getElementById('shortsTab').style.display = t==='shorts'?'block':'none';
+  if(t==='shorts') loadShorts();
   document.getElementById('casesTab').style.display = t==='cases'?'block':'none';
   document.getElementById('productsTab').style.display = t==='products'?'block':'none';
   document.getElementById('noticesTab').style.display = t==='notices'?'block':'none';
@@ -536,11 +546,12 @@ async function saveBadwords(){
   catch(e){alert('저장하지 못했습니다');}
 }
 /* ── 신고 ── */
-const REP_KIND={resp:'처방 소견',post:'게시글',cmt:'댓글',user:'사용자'};
+const REP_KIND={resp:'처방 소견',rxc:'처방 댓글',post:'게시글',cmt:'댓글',user:'사용자'};
 let _repG=[];
 function _repRef(k,id,pid){
   const db=window._db;
   if(k==='resp')return db.collection('responses').doc(id);
+  if(k==='rxc')return db.collection('rxComments').doc(id);
   if(k==='post')return db.collection('posts').doc(id);
   if(k==='cmt')return db.collection('posts').doc(pid).collection('comments').doc(id);
   if(k==='user')return db.collection('users').doc(id);
@@ -557,7 +568,7 @@ async function loadReports(){
     await Promise.all(_repG.map(async r=>{try{const d=await _repRef(r.kind,r.tid,r.pid).get();r.doc=d.exists?d.data():null;}catch(e){r.doc=null;}}));
     el.innerHTML=_repG.map((r,i)=>{
       const x=r.doc||{};
-      const text=r.kind==='resp'?(x.summary||''):r.kind==='post'?((x.title?x.title+'\n':'')+(x.body||'')):r.kind==='cmt'?(x.body||''):('닉네임: '+(x.nick||r.tid)+(x.bio?'\n소개: '+x.bio:''));
+      const text=r.kind==='resp'?(x.summary||''):r.kind==='post'?((x.title?x.title+'\n':'')+(x.body||'')):(r.kind==='cmt'||r.kind==='rxc')?(x.body||''):('닉네임: '+(x.nick||r.tid)+(x.bio?'\n소개: '+x.bio:''));
       const rs={};r.items.forEach(it=>rs[it.reason]=(rs[it.reason]||0)+1);
       const memos=r.items.filter(it=>it.memo).map(it=>`<div style="font-size:12px;color:var(--t2)">· ${_esc(it.memo)} <span style="color:#aaa">(${_esc(it.reporter)})</span></div>`).join('');
       const last=r.items.map(it=>it.createdAt).sort().pop()||'';
@@ -587,6 +598,7 @@ async function repAct(i,act){
     if(act==='del'){
       await ref.delete();
       if(r.kind==='cmt')await db.collection('posts').doc(r.pid).update({commentCount:FV.increment(-1)}).catch(()=>{});
+      if(r.kind==='rxc'&&r.doc&&r.doc.rid)await db.collection('responses').doc(r.doc.rid).update({cmtCount:FV.increment(-1)}).catch(()=>{});
     }
     if(act==='ban'){
       await db.collection('users').doc(r.author).update({banned:true,bannedAt:now});
@@ -604,6 +616,7 @@ async function unbanUser(id){
 /* 관리자 로그인 직후 — 관리자만 볼 수 있는 데이터 다시 불러오기 */
 function adminReady(){
   try{loadCases();}catch(e){}
+  try{loadShorts();}catch(e){}
   (async()=>{try{const s=await db.collection('users').where('licStatus','==','pending').get();const b=document.getElementById('licBadge');if(b){b.textContent=s.size;b.style.display=s.size?'inline-block':'none';}}catch(e){}})();
   (async()=>{try{const s=await db.collection('productRequests').where('status','==','open').get();const n=new Set();s.forEach(d=>n.add(d.data().norm||d.data().name));const b=document.getElementById('preqBadge');if(b){b.textContent=n.size;b.style.display=n.size?'inline-block':'none';}}catch(e){}})();
   (async()=>{try{const s=await db.collection('reports').where('status','==','open').get();const n=new Set();s.forEach(d=>{const x=d.data();n.add(x.kind+'|'+x.tid+'|'+(x.pid||''));});const b=document.getElementById('repBadge');if(b){b.textContent=n.size;b.style.display=n.size?'inline-block':'none';}}catch(e){}})();
@@ -697,7 +710,7 @@ async function loadCases() {
   try {
     const snap = await window._db.collection('cases').get();
     cases = [];
-    snap.forEach(d => cases.push({id:d.id, ...d.data()}));
+    snap.forEach(d => { if (d.data().season !== 1) cases.push({id:d.id, ...d.data()}); });
     cases.sort((a,b) => a.id.localeCompare(b.id));
 
     if (!cases.length) {
@@ -1611,6 +1624,144 @@ async function revokeLic(encNick){
   }catch(e){ toast('처리에 실패했습니다'); }
 }
 
+</script>
+
+<!-- 영상 케이스 편집 -->
+<div id="sfModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:20px 20px 32px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:17px;font-weight:800" id="sfHead">새 영상 케이스</div>
+      <button onclick="sfClose()" aria-label="닫기" style="border:0;background:#F1F3F5;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer">✕</button>
+    </div>
+    <div class="field"><label>제목</label><input id="sfTitle" maxlength="20" placeholder="예: 창백한 선미씨"><div class="field-hint">영상 위에 크게 보이는 이름 · 20자까지</div></div>
+    <div class="field"><label>영상</label>
+      <input type="file" id="sfFile" accept="video/mp4,video/*" onchange="sfPick(this)" style="padding:10px;background:var(--bg);border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;width:100%">
+      <div class="field-hint" id="sfFileInfo">수정할 때는 영상을 바꿀 때만 선택하세요</div>
+    </div>
+    <div style="display:flex;gap:14px;align-items:flex-start">
+      <div style="width:150px;flex-shrink:0">
+        <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">영상</div>
+        <video id="sfVid" playsinline muted controls style="width:150px;aspect-ratio:9/16;background:#000;border-radius:10px;object-fit:cover"></video>
+      </div>
+      <div style="width:150px;flex-shrink:0">
+        <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">썸네일</div>
+        <div style="width:150px;aspect-ratio:9/16;background:var(--bg);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:12px" id="sfThumbBox">없음</div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:12px"><label>썸네일 장면</label>
+      <button class="tag-add-btn" onclick="sfGrab()" id="sfGrabBtn" disabled>지금 영상 장면으로</button>
+      <span style="font-size:12px;color:var(--t3);margin:0 6px">또는</span>
+      <input type="file" id="sfThumbFile" accept="image/*" onchange="sfThumbPick(this)" style="font-size:12px">
+      <div class="field-hint">왼쪽 영상을 원하는 장면에 멈추고 버튼을 누르세요 (새 영상을 고른 경우에만)</div>
+    </div>
+    <div class="field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none"><input type="checkbox" id="sfLive" style="width:auto"> 앱에 공개</label></div>
+    <div id="sfProg" style="font-size:13px;color:var(--t2);min-height:18px;margin-bottom:6px"></div>
+    <div class="btn-row">
+      <button class="btn-del" id="sfDel" onclick="sfDelete()" style="display:none">삭제</button>
+      <button class="btn-save" id="sfSave" onclick="sfSaveCase()">저장</button>
+    </div>
+  </div>
+</div>
+<script>
+/* ── 영상 케이스 (시즌1) — cases/{s001…}: title · videoUrl · thumbUrl · live · createdAt · views · season:1 ── */
+let _shorts=[], _sfId=null, _sfFile=null, _sfThumb=null, _sfBusy=false;
+const fmtN=n=>n>=1e4?(Math.floor(n/1e3)/10)+'만':Number(n||0).toLocaleString('ko-KR');
+async function loadShorts(){
+  const el=document.getElementById('shortList');
+  try{
+    const [cs,rs]=await Promise.all([window._db.collection('cases').where('season','==',1).get(),window._db.collection('responses').get()]);
+    const rx={};rs.forEach(d=>{const x=d.data();const k=String(x.caseId||'');(rx[k]=rx[k]||new Set()).add(x.nick);});
+    _shorts=[];cs.forEach(d=>_shorts.push({id:d.id,...d.data(),rx:(rx[d.id]||new Set()).size}));
+    _shorts.sort((a,b)=>(b.live?1:0)-(a.live?1:0)||(b.views||0)-(a.views||0)||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    if(!_shorts.length){el.innerHTML='<div class="empty">아직 영상 케이스가 없어요</div>';return;}
+    el.innerHTML=_shorts.map(c=>`
+      <div class="case-item" onclick="sfOpen('${c.id}')">
+        <div style="width:54px;height:96px;border-radius:8px;overflow:hidden;background:#000;flex-shrink:0">${c.thumbUrl?`<img src="${_esc(c.thumbUrl)}" alt="" style="width:100%;height:100%;object-fit:cover">`:''}</div>
+        <div class="case-info">
+          <div class="case-title">${_esc(c.title||'제목 없음')}</div>
+          <div class="case-meta"><span>조회 ${fmtN(c.views||0)}</span><span>처방 ${c.rx}</span><span>${(c.createdAt||'').slice(0,10)}</span></div>
+        </div>
+        <button class="mini-btn${c.live?'':' del'}" onclick="event.stopPropagation();sfToggle('${c.id}')">${c.live?'공개 중':'비공개'}</button>
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div class="empty">불러오기 실패<br>'+_esc(e.message)+'</div>';}
+}
+function sfNextId(){const n=_shorts.map(c=>c.id).filter(x=>/^s\d+$/.test(x)).map(x=>+x.slice(1));return 's'+String((n.length?Math.max(...n):0)+1).padStart(3,'0');}
+function sfSetThumb(url){document.getElementById('sfThumbBox').innerHTML=url?`<img src="${_esc(url)}" alt="" style="width:100%;height:100%;object-fit:cover">`:'없음';}
+function sfOpen(id){
+  const c=id?_shorts.find(x=>x.id===id):null;
+  _sfId=c?c.id:null;_sfFile=null;_sfThumb=null;
+  document.getElementById('sfHead').textContent=c?'영상 케이스 수정 · '+c.id:'새 영상 케이스';
+  document.getElementById('sfTitle').value=c?c.title||'':'';
+  document.getElementById('sfLive').checked=c?!!c.live:false;
+  document.getElementById('sfFile').value='';document.getElementById('sfThumbFile').value='';
+  document.getElementById('sfFileInfo').textContent=c?'영상을 바꿀 때만 선택하세요':'세로 MP4(H.264) · 30MB 이하 권장';
+  const v=document.getElementById('sfVid');v.removeAttribute('src');if(c&&c.videoUrl)v.src=c.videoUrl;
+  document.getElementById('sfGrabBtn').disabled=true;
+  sfSetThumb(c?c.thumbUrl:'');
+  document.getElementById('sfDel').style.display=c?'block':'none';
+  document.getElementById('sfProg').textContent='';
+  document.getElementById('sfModal').style.display='flex';
+}
+function sfClose(){if(_sfBusy)return;document.getElementById('sfModal').style.display='none';const v=document.getElementById('sfVid');v.pause();}
+function sfPick(input){
+  const f=input.files[0];if(!f)return;
+  const mb=f.size/1048576;
+  document.getElementById('sfFileInfo').innerHTML=`${_esc(f.name)} · ${mb.toFixed(1)}MB`+(mb>30?' <b style="color:var(--red)">· 용량이 커요 (보는 사람 데이터·서버 비용)</b>':'');
+  _sfFile=f;
+  const v=document.getElementById('sfVid');v.src=URL.createObjectURL(f);
+  v.onloadeddata=()=>{document.getElementById('sfGrabBtn').disabled=false;if(v.videoHeight<v.videoWidth)document.getElementById('sfFileInfo').innerHTML+=' <b style="color:var(--red)">· 가로 영상이에요</b>';v.currentTime=Math.min(2,v.duration*0.15);};
+  v.onseeked=()=>{if(!_sfThumb)sfGrab();v.onseeked=null;};
+  v.onerror=()=>{document.getElementById('sfFileInfo').innerHTML+=' <b style="color:var(--red)">· 이 브라우저에서 재생이 안 돼요 (H.264 MP4로 바꿔주세요)</b>';};
+}
+function sfGrab(){
+  const v=document.getElementById('sfVid');if(!_sfFile||!v.videoWidth)return;
+  const w=540,h=Math.round(v.videoHeight*w/v.videoWidth),cv=document.createElement('canvas');cv.width=w;cv.height=h;
+  cv.getContext('2d').drawImage(v,0,0,w,h);
+  cv.toBlob(b=>{_sfThumb=b;sfSetThumb(URL.createObjectURL(b));},'image/jpeg',0.82);
+}
+function sfThumbPick(input){const f=input.files[0];if(!f)return;_sfThumb=f;sfSetThumb(URL.createObjectURL(f));}
+function sfPut(path,blob,label){
+  return new Promise((ok,no)=>{
+    const ref=firebase.storage().ref(path),t=ref.put(blob,{contentType:blob.type||'application/octet-stream',cacheControl:'public,max-age=31536000'});
+    t.on('state_changed',s=>{document.getElementById('sfProg').textContent=`${label} 올리는 중… ${Math.round(s.bytesTransferred/s.totalBytes*100)}%`;},no,async()=>ok(await ref.getDownloadURL()));
+  });
+}
+async function sfSaveCase(){
+  if(_sfBusy)return;
+  const title=document.getElementById('sfTitle').value.trim();
+  if(!title){alert('제목을 입력해주세요');return;}
+  const old=_sfId?_shorts.find(x=>x.id===_sfId):null;
+  if(!old&&!_sfFile){alert('영상을 선택해주세요');return;}
+  if(!_sfThumb&&!(old&&old.thumbUrl)){alert('썸네일을 정해주세요');return;}
+  const id=_sfId||sfNextId(),stamp=Date.now(),now=new Date().toISOString();
+  _sfBusy=true;document.getElementById('sfSave').disabled=true;
+  try{
+    const data={title,live:document.getElementById('sfLive').checked,season:1,updatedAt:now};
+    if(_sfFile)data.videoUrl=await sfPut(`videos/${id}_${stamp}.${(_sfFile.name.split('.').pop()||'mp4').toLowerCase()}`,_sfFile,'영상');
+    if(_sfThumb)data.thumbUrl=await sfPut(`thumbs/${id}_${stamp}.jpg`,_sfThumb,'썸네일');
+    if(!old){data.createdAt=now;data.views=0;}
+    await window._db.collection('cases').doc(id).set(data,{merge:true});
+    if(old){for(const k of ['videoUrl','thumbUrl'])if(data[k]&&old[k])firebase.storage().refFromURL(old[k]).delete().catch(()=>{});}
+    document.getElementById('sfProg').textContent='✓ 저장됐어요';
+    _sfBusy=false;sfClose();loadShorts();
+  }catch(e){document.getElementById('sfProg').textContent='저장 실패: '+e.message;}
+  finally{_sfBusy=false;document.getElementById('sfSave').disabled=false;}
+}
+async function sfToggle(id){
+  const c=_shorts.find(x=>x.id===id);if(!c)return;
+  try{await window._db.collection('cases').doc(id).update({live:!c.live,updatedAt:new Date().toISOString()});loadShorts();}catch(e){alert('바꾸지 못했어요: '+e.message);}
+}
+async function sfDelete(){
+  const c=_shorts.find(x=>x.id===_sfId);if(!c)return;
+  if(!confirm(`"${c.title}" 영상 케이스를 삭제할까요?\n영상 파일도 지워지고 되돌릴 수 없어요.\n(달린 처방은 남아요 — 숨기기만 하려면 비공개를 쓰세요)`))return;
+  try{
+    await window._db.collection('cases').doc(c.id).delete();
+    for(const k of ['videoUrl','thumbUrl'])if(c[k])firebase.storage().refFromURL(c[k]).delete().catch(()=>{});
+    sfClose();loadShorts();
+  }catch(e){alert('삭제 실패: '+e.message);}
+}
+Object.assign(window,{loadShorts,sfOpen,sfClose,sfPick,sfGrab,sfThumbPick,sfSaveCase,sfToggle,sfDelete});
+loadShorts();
 </script>
 </body>
 </html>
