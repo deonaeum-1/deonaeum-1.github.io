@@ -7,7 +7,7 @@
 <meta name="description" content="약사 집단지성 플랫폼 집약처 베타 앱 설치 안내">
 <style>
   /* 집약처 베타 설치 안내 — QR 하나로 아이폰·안드로이드 모두
-     링크가 바뀌면 아래 LINKS 만 고치면 됨 (QR 은 그대로) */
+     링크가 바뀌면 links.js 만 고치면 됨 (QR 은 그대로) */
   :root{--bg:#F7F3EC;--card:#fff;--ink:#2E3B30;--sub:#6F685C;--line:#E9E2D6;--green:#5E7D63;--ios:#1F1F1F;--and:#0F9D8A}
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
@@ -55,14 +55,13 @@
   </section>
 
   <p class="other" hidden><a href="#" id="showAll">다른 기기 설치 방법 보기</a></p>
-  <p class="foot">불편한 점은 앱에서 화면을 캡처해 보내주시거나<br>초대해 준 분께 알려주세요. — 헬스앤소울</p>
+  <p class="foot">불편한 점은 앱에서 화면을 캡처해 보내주시거나<br>초대해 준 분께 알려주세요. — 헬스앤소울<br>
+    <a href="/privacy.html" style="color:#958C7E">개인정보처리방침</a> · <a href="/terms.html" style="color:#958C7E">이용약관</a> · <a href="/support.html" style="color:#958C7E">고객지원</a></p>
 </main>
+<script src="/links.js"></script>
 <script>
-  const LINKS = {
-    ios: 'https://testflight.apple.com/join/jR5sWTbZ',
-    android: 'https://expo.dev/accounts/hwangjiho/projects/deonaeum-app/builds/1977d5d3-703e-4198-8af7-10dd64fc6553'
-  };
-  document.querySelectorAll('[data-link]').forEach(a => a.href = LINKS[a.dataset.link]);
+  // 설치 링크는 links.js 한 곳에서 (공유 미리보기 페이지와 같이 씀)
+  document.querySelectorAll('[data-link]').forEach(a => a.href = window.JYC[a.dataset.link]);
 
   // 폰 종류를 알면 그 칸만 보여줌 (아이패드는 맥처럼 보이기도 해서 터치 여부로 구분)
   const ua = navigator.userAgent;
