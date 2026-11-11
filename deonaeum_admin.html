@@ -1738,7 +1738,7 @@ async function sfSaveCase(){
   try{
     const data={title,live:document.getElementById('sfLive').checked,season:1,updatedAt:now};
     if(_sfFile)data.videoUrl=await sfPut(`videos/${id}_${stamp}.${(_sfFile.name.split('.').pop()||'mp4').toLowerCase()}`,_sfFile,'영상');
-    if(_sfThumb)data.thumbUrl=await sfPut(`thumbs/${id}_${stamp}.jpg`,_sfThumb,'썸네일');
+    if(_sfThumb)data.thumbUrl=await sfPut(`videos/${id}_${stamp}_thumb.jpg`,_sfThumb,'썸네일'); // 서버 저장소 규칙이 videos 폴더만 허락
     if(!old){data.createdAt=now;data.views=0;}
     await window._db.collection('cases').doc(id).set(data,{merge:true});
     if(old){for(const k of ['videoUrl','thumbUrl'])if(data[k]&&old[k])firebase.storage().refFromURL(old[k]).delete().catch(()=>{});}
