@@ -26,8 +26,9 @@
        min-height:100vh;display:flex;justify-content:center;padding:calc(16px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom))}
   main{width:100%;max-width:420px;display:flex;flex-direction:column;gap:16px}
   .logo{align-self:center;display:flex;align-items:flex-end;font-family:"Black Han Sans",sans-serif;font-size:30px;line-height:1;letter-spacing:-.02em;color:#fff;text-decoration:none;padding:7px 0}
-  /* 명함과 같은 집 — 글자 높이 1/3쯤, 기준선(글자 칸 아래 0.21em)에 붙음 */
-  .logo svg{margin:0 0 6.3px 3.5px}
+  /* 명함과 같은 집 — 글자 높이 1/3쯤, 기준선(글자 칸 아래 0.21em)에 붙음
+     간격: '처' 오른쪽 빈칸 0.06em + 글자 간격 -0.02em 을 감안해 1.2px → 눈에 보이는 간격 0.08em */
+  .logo svg{margin:0 0 6.3px 1.2px}
   /* 항상 9:16 — 화면이 낮으면 높이를 줄이고 폭도 같이 줄임 */
   .stage{position:relative;height:min(62vh,calc((min(100vw,420px) - 32px) * 16 / 9));aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#1B201D;align-self:center}
   .stage video{width:100%;height:100%;object-fit:cover;display:block}
@@ -46,7 +47,7 @@
 </head>
 <body>
 <main>
-  <a class="logo" href="/beta.html" aria-label="집약처">집약처<svg width="5.7" height="8" viewBox="0 0 10 14" aria-hidden="true"><polygon points="0,4 5,0 10,4 10,14 0,14" fill="#E8826A"/></svg></a>
+  <a class="logo" href="/beta.html" aria-label="집약처">집약처<svg width="5.7" height="8" viewBox="0 0 10 14" aria-hidden="true"><polygon points="0,4 5,0 10,4 10,14 0,14" fill="#3CC27F"/></svg></a>
 
   <div id="card" style="display:flex;justify-content:center" hidden>
     <div class="stage"><video id="vid" playsinline controls preload="metadata"></video></div>
